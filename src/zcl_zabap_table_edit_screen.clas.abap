@@ -13,7 +13,7 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
   METHOD update_screen_controls.
     zcl_zabap_screen_with_containe=>dynamic_commands->remove_all_commands( ).
 
-    DATA(include_commands) = VALUE ztt_commands( ( |OK| )  ( |BACK| )  ( |EXIT| )  ( |CANCEL| ) ).
+    DATA(include_commands) = VALUE ztt_zabap_commands( ( |OK| )  ( |BACK| )  ( |EXIT| )  ( |CANCEL| ) ).
 
     zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = 'TOGGLE_DISPLAY'
         description = VALUE #( text = TEXT-001 icon_id = '@3I@' icon_text = TEXT-001 ) ).

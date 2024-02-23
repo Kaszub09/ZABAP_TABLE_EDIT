@@ -10,14 +10,14 @@ CLASS zcl_zabap_swc_top_commands DEFINITION
     METHODS:
       "! <p class="shorttext synchronized">OK, BACK, EXIT, CANCEL</p>
       set_navigation_only_commands,
-      exclude_only_commands IMPORTING functions TYPE ztt_commands,
-      include_only_commands IMPORTING functions TYPE ztt_commands.
+      exclude_only_commands IMPORTING functions TYPE ztt_zabap_commands,
+      include_only_commands IMPORTING functions TYPE ztt_zabap_commands.
 
     CLASS-DATA:
-        all_available_commands TYPE ztt_commands READ-ONLY .
+        all_available_commands TYPE ztt_zabap_commands READ-ONLY .
 
     DATA:
-        commands_to_exclude TYPE ztt_commands READ-ONLY.
+        commands_to_exclude TYPE ztt_zabap_commands READ-ONLY.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
