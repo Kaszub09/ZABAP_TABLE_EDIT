@@ -23,7 +23,7 @@ interface ZIF_ZABAP_TABLE_EDIT
       "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with non-modified data</p>
       "! @parameter modified_data | <p class="shorttext synchronized">Table with add fields that will be displayed</p>
       refresh_grid IMPORTING in_edit_mode TYPE abap_bool
-                   CHANGING field_catalogue TYPE zcl_field_catalogue_builder=>tt_field_cat header_text type string
+                   CHANGING field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat header_text type string
                             initial_data TYPE REF TO data modified_data_ext TYPE REF TO data,
       "! <p class="shorttext synchronized">Called whenever edit mode is changed</p>
       set_edit_mode CHANGING editable TYPE abap_bool,
