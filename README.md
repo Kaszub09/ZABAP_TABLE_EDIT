@@ -4,7 +4,6 @@ Better SM30
 ## FEATURES
 Edit any table. Create change document automatically. Extend basic funcitonality if needed.
 ![obraz](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/14c40616-dbc4-48ae-88a5-4dc717ef263b)
-![obraz](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/6c720500-fb25-42a6-a52a-5df9572a4cbb)
 ![obraz](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/e8750c24-5f8e-40b6-b3b3-c5c827e5ed01)
 
 ## INSTALATION
