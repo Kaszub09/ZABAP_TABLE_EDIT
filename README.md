@@ -8,7 +8,7 @@ Edit any table. Create change document automatically. Extend basic functionality
 ![asd](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/bbf6c17d-ee3c-4ffe-923a-f4def14acc44)
 
 ## INSTALATION
-Via https://github.com/abapGit/abapGit. Requires https://github.com/Kaszub09/ZABAP_SALV_REPORT. Written in ABAPP 7.50.
+Via https://github.com/abapGit/abapGit. Requires https://github.com/Kaszub09/ZABAP_SALV_REPORT. Written in ABAP 7.50.
 
 ## WHY
 To streamline the process of making table available for edit and tracking changes. 
