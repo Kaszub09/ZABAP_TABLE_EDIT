@@ -1,4 +1,4 @@
-![obraz](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/7351b148-b3e8-41fa-9ae9-e6d40d6642ea)# ZABAP_TABLE_EDIT
+# ZABAP_TABLE_EDIT
 Better SM30
 
 ## FEATURES
