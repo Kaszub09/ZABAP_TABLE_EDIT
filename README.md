@@ -19,7 +19,7 @@ With SM30:
 - Table and column on generated screen are really narrow and usually needs to be manually widened. No more!
 
 With ZSM30
-- Any changes are automatically reflected in transaction
+- Any changes to table are automatically reflected in transaction. No more generating maintenance module.
 - No code is ever lost
 - Change document is implemented automatically for all tables - you can decide, whether to use it or not
 - Change document can be generated even for fields not marked as such
