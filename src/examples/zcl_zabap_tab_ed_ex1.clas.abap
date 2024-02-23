@@ -92,6 +92,8 @@ CLASS zcl_zabap_tab_ed_ex1 IMPLEMENTATION.
     LOOP AT <modified_data_ext> ASSIGNING FIELD-SYMBOL(<row_ext>).
       ASSIGN COMPONENT 'MAKTX' OF STRUCTURE <row_ext> TO FIELD-SYMBOL(<maktx>).
       ASSIGN COMPONENT 'MATNR' OF STRUCTURE <row_ext> TO FIELD-SYMBOL(<matnr>).
+      "Ideally you would create e.g. ranges table and use it to get all necessary descriptions with 'MANTR IN @RANGE' or 'FOR ALL ENTRIES'
+      "into hashed table at once, then read it via key, but we will use SELECT SINGLE for the sake of example simplicity
       SELECT SINGLE maktx FROM makt WHERE spras = @sy-langu AND matnr = @<matnr> INTO @<maktx>.
     ENDLOOP.
 
