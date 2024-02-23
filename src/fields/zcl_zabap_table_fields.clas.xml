@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_ZABAP_TABLE_FIELDS</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>RTTS helpers for tables and structures</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_KEYS_STRUCTURE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Based on key fields of table specified in constructor</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_EDIT_MODE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Changes field catalogue &apos;edit&apos; field</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_KEYS_STRUCTURE</CMPNAME>
+     <SCONAME>INCLUDE_INDEX_FIELD</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Appends integer field at the end of struct</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_KEYS_STRUCTURE</CMPNAME>
+     <SCONAME>INDEX_FIELD_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Name of appended integer field if applicable</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_KEYS_STRUCTURE</CMPNAME>
+     <SCONAME>STRUCT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Key fields + index field if applicable</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_KEYS_STRUCTURE</CMPNAME>
+     <SCONAME>TABLE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Key fields + index field if applicable</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>
