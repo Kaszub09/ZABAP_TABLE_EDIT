@@ -27,4 +27,4 @@ With ZSM30
 - It's possible to save default layout, so every time you open table for edit columns width/layout will be perfect!
 
 ## USAGE
-See examples package. Either call transaction only with table name, or with name of class implementing interface ZIF_ZABAP_TABLE_EDIT.
+See examples package. Either call transaction ZABAP_TABLE_EDIT only with table name, or with name of class implementing interface ZIF_ZABAP_TABLE_EDIT.
