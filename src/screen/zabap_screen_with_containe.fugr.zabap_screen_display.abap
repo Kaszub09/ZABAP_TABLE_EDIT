@@ -3,8 +3,9 @@ FUNCTION ZABAP_SCREEN_DISPLAY.
 *"*"Local Interface:
 *"  IMPORTING
 *"     REFERENCE(HEADER_TEXT) TYPE  STRING OPTIONAL
-*"     REFERENCE(TOP_COMMANDS_TO_EXCLUDE) TYPE  ZTT_COMMANDS OPTIONAL
-*"     REFERENCE(DYNAMIC_COMMANDS) TYPE  ZTT_SWC_DYNAMIC_COMMAND
+*"     REFERENCE(TOP_COMMANDS_TO_EXCLUDE) TYPE  ZTT_ZABAP_COMMANDS
+*"       OPTIONAL
+*"     REFERENCE(DYNAMIC_COMMANDS) TYPE  ZTT_ZABAP_SWC_DYNAMIC_COMMAND
 *"       OPTIONAL
 *"----------------------------------------------------------------------
   " You can use the template 'functionModuleParameter' to add here the signature!

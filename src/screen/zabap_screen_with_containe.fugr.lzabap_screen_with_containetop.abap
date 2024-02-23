@@ -9,7 +9,7 @@ DATA:
   gui_container                TYPE REF TO cl_gui_custom_container,
   status_to_display            TYPE string VALUE 'DYNAMIC_COMMANDS',
   header_text_to_display       TYPE string,
-  commands_to_exclude_from_top TYPE ztt_commands,
+  commands_to_exclude_from_top TYPE ztt_zabap_commands,
   was_screen_called            TYPE abap_bool VALUE abap_false.
 
 DATA:
