@@ -21,7 +21,7 @@ With SM30:
 With ZSM30
 - Any changes to table are automatically reflected in transaction. Generating maintenance module is not needed.
 - No code is ever lost
-- Change document is implemented automatically for all tables - you can decide, whether to use it or not
+- Change document is implemented automatically - you can decide, whether to use it or not
 - Change document can be generated even for fields not marked as such
 - Transaction can be easily extended with custom logic per table (additional fields with description, make some fields non-editable, add additional validation, add new commands, edit entries before save etc. ) - instead of creating maintenance view or editing maintenance modules
 - It's possible to save default layout, so every time you open table for edit columns width/layout will be ~~perfect!~~ the same
