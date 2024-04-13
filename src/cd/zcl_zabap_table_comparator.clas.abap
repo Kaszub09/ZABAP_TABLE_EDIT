@@ -136,7 +136,7 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
 
     "Add skipped records
     WHILE i_initial <= i_max_initial.
-      ASSIGN COMPONENT index_field OF STRUCTURE <initial_keys>[ i_max_initial ] TO <initial_data_index>.
+      ASSIGN COMPONENT index_field OF STRUCTURE <initial_keys>[ i_initial ] TO <initial_data_index>.
       initial_data_index = COND #(  WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
       APPEND <initial_data>[ initial_data_index ] TO <deleted>.
       i_initial = i_initial + 1.
