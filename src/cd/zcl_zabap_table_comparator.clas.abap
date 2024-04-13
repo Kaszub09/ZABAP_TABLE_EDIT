@@ -181,9 +181,16 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
       index = index + 1.
     ENDLOOP.
 
+    "Create sort condition
+    DATA sort_order TYPE abap_sortorder_tab .
+    table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(struct)  ).
+    LOOP AT struct->components REFERENCE INTO DATA(component).
+      APPEND VALUE #( name = component->name descending = abap_false ) TO sort_order.
+    ENDLOOP.
+
     "Sort key tables
-    SORT modified_keys ASCENDING.
-    SORT initial_keys ASCENDING.
+    SORT modified_keys BY (sort_order).
+    SORT initial_keys BY (sort_order).
   ENDMETHOD.
 
   METHOD update_mandant.
