@@ -30,4 +30,4 @@ With ZSM30
 See examples package. Either call transaction ZABAP_TABLE_EDIT only with table name, or with name of class implementing interface ZIF_ZABAP_TABLE_EDIT.
 
 ## Known issues
-- Some version of funciton module CHANGEDOCUMENT_MULTIPLE_CASE2 require change indicator field to be named 'KZ' - in which case you can correct it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
+- Some version of function module 'CHANGEDOCUMENT_MULTIPLE_CASE2' require change indicator field to be named 'KZ', causing shortdump otherwise - you can fix it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
