@@ -102,7 +102,7 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
   METHOD get_keys_structure.
     DATA(components) = VALUE cl_abap_structdescr=>component_table(  ).
     " Don't use secondary keys because they don't preserve field order
-    LOOP AT field_catalogue REFERENCE INTO DATA(field) WHERE key = abap_true. 
+    LOOP AT field_catalogue REFERENCE INTO DATA(field) WHERE key = abap_true.
       DATA(name) = COND #( WHEN field->dd_roll IS INITIAL THEN |{ table_name }-{ field->fieldname }| ELSE |{ field->dd_roll }| ).
       APPEND VALUE #( name = field->fieldname type = CAST #( cl_abap_structdescr=>describe_by_name( name ) ) ) TO components.
     ENDLOOP.

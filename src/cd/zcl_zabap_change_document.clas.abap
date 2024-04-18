@@ -302,7 +302,7 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
 
   METHOD create_table_with_indicator.
     DATA(table_fields) = get_table_fields( table_name = table_name ).
-    table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = DATA(available_field_name) ).
+    table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = DATA(available_field_name) struct = data(key_struct) ).
     table_fields->get_table_with_add_fields(
         EXPORTING additional_fields = VALUE #( ( name = available_field_name type = CAST #( cl_abap_structdescr=>describe_by_name( 'CDCHNGINDH' ) ) ) )
         IMPORTING struct = DATA(struct) table = DATA(table) ).
@@ -323,7 +323,13 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
     ENDLOOP.
 
     IF sort = abap_true.
-      SORT <table_with_indicator> ASCENDING.
+      "Create sort condition
+      DATA sort_order TYPE abap_sortorder_tab .
+      LOOP AT key_struct->components REFERENCE INTO DATA(component).
+        APPEND VALUE #( name = component->name descending = abap_false ) TO sort_order.
+      ENDLOOP.
+
+      SORT <table_with_indicator> BY (sort_order).
     ENDIF.
   ENDMETHOD.
 

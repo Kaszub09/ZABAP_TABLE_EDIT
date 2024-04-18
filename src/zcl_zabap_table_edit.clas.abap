@@ -250,7 +250,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         "Commmit all and check for errors
         COMMIT WORK AND WAIT.
         IF sy-subrc <> 0.
-          RAISE EXCEPTION TYPE zcx_exception EXPORTING custom_message = |SAP LUW commit returned { sy-subrc }|.
+          RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |SAP LUW commit returned { sy-subrc }|.
         ENDIF.
 
         "---EXTENSION CALL---
@@ -262,7 +262,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         in_edit_mode = abap_false.
         display( ).
 
-      CATCH zcx_exception INTO DATA(zcx).
+      CATCH zcx_zabap_table_edit INTO DATA(zcx).
         ROLLBACK WORK.
         messages->save_error( zcx->get_text( ) ).
 
