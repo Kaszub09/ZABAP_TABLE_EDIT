@@ -142,10 +142,10 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     "---EXTENSION CALL---
     extension->replace_initial_data_select( CHANGING initial_data = initial_data ).
 
-    IF initial_data IS NOT BOUND.
-      FIELD-SYMBOLS <initial_data> TYPE table.
-      ASSIGN initial_data->* TO <initial_data>.
+    FIELD-SYMBOLS <initial_data> TYPE table.
+    ASSIGN initial_data->* TO <initial_data>.
 
+    IF <initial_data> IS INITIAL.
       SELECT * FROM (table_name) INTO TABLE @<initial_data>
       ORDER BY PRIMARY KEY.
     ENDIF.
