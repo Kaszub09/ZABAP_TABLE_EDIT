@@ -202,7 +202,7 @@
       <CODE>BACK</CODE>
       <TEXTNO>001</TEXTNO>
       <TEXT_TYPE>S</TEXT_TYPE>
-      <FUN_TEXT>Powrót</FUN_TEXT>
+      <FUN_TEXT>Back</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>CANCEL</CODE>
@@ -210,7 +210,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_CANCEL</TEXT_NAME>
       <ICON_ID>@0W@</ICON_ID>
-      <FUN_TEXT>Zaniechanie</FUN_TEXT>
+      <FUN_TEXT>Cancel</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>DYNAMIC_1</CODE>
@@ -426,13 +426,13 @@
       <CODE>EXIT</CODE>
       <TEXTNO>001</TEXTNO>
       <TEXT_TYPE>S</TEXT_TYPE>
-      <FUN_TEXT>Koniec</FUN_TEXT>
+      <FUN_TEXT>Exit</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>OK</CODE>
       <TEXTNO>001</TEXTNO>
       <TEXT_TYPE>S</TEXT_TYPE>
-      <FUN_TEXT>Potwierdź</FUN_TEXT>
+      <FUN_TEXT>Okay</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>P+</CODE>
@@ -440,7 +440,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_NEXT_PAGE</TEXT_NAME>
       <ICON_ID>@30@</ICON_ID>
-      <FUN_TEXT>Następna strona</FUN_TEXT>
+      <FUN_TEXT>Next Page</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>P++</CODE>
@@ -448,7 +448,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_LAST_PAGE</TEXT_NAME>
       <ICON_ID>@31@</ICON_ID>
-      <FUN_TEXT>Ostatnia strona</FUN_TEXT>
+      <FUN_TEXT>Last Page</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>P-</CODE>
@@ -456,7 +456,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_PREVIOUS_PAGE</TEXT_NAME>
       <ICON_ID>@2Z@</ICON_ID>
-      <FUN_TEXT>Poprzednia strona</FUN_TEXT>
+      <FUN_TEXT>Previous Page</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>P--</CODE>
@@ -464,7 +464,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_FIRST_PAGE</TEXT_NAME>
       <ICON_ID>@2Y@</ICON_ID>
-      <FUN_TEXT>Pierwsza strona</FUN_TEXT>
+      <FUN_TEXT>First Page</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>PRINT</CODE>
@@ -472,7 +472,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_PRINT</TEXT_NAME>
       <ICON_ID>@0X@</ICON_ID>
-      <FUN_TEXT>Drukowanie</FUN_TEXT>
+      <FUN_TEXT>Print</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>SAVE</CODE>
@@ -480,7 +480,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_SYSTEM_SAVE</TEXT_NAME>
       <ICON_ID>@2L@</ICON_ID>
-      <FUN_TEXT>Zapamiętanie</FUN_TEXT>
+      <FUN_TEXT>Save</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>SEARCH</CODE>
@@ -488,7 +488,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_SEARCH</TEXT_NAME>
       <ICON_ID>@13@</ICON_ID>
-      <FUN_TEXT>Szukanie</FUN_TEXT>
+      <FUN_TEXT>Search</FUN_TEXT>
      </RSMPE_FUNT>
      <RSMPE_FUNT>
       <CODE>SEARCH+</CODE>
@@ -496,7 +496,7 @@
       <TEXT_TYPE>S</TEXT_TYPE>
       <TEXT_NAME>ICON_SEARCH_NEXT</TEXT_NAME>
       <ICON_ID>@4E@</ICON_ID>
-      <FUN_TEXT>Kontynuacja szukania</FUN_TEXT>
+      <FUN_TEXT>Search next</FUN_TEXT>
      </RSMPE_FUNT>
     </FUN>
     <BUT>
