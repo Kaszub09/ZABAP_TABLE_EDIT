@@ -72,6 +72,11 @@
      <DESCRIPT>Called whenever display mode is changed/refreshed, ...</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
+     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Display / table edit will be based on this data.</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
      <CMPNAME>SET_EDIT_MODE</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Called whenever edit mode is changed</DESCRIPT>
@@ -91,6 +96,12 @@
      <DESCRIPT>Of type c_validation in this interface</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
+     <CMPNAME>AFTER_COMMAND</CMPNAME>
+     <SCONAME>COMMAND</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Can be modified to alter called command</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
      <CMPNAME>BEFORE_COMMAND</CMPNAME>
      <SCONAME>CANCEL_COMMAND</SCONAME>
      <LANGU>E</LANGU>
@@ -103,6 +114,12 @@
      <DESCRIPT>Can be modified to alter called command</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
+     <CMPNAME>CHANGE_COMMANDS</CMPNAME>
+     <SCONAME>IN_EDIT_MODE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>If called in edit mode</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
      <CMPNAME>INITIAL_DATA</CMPNAME>
      <SCONAME>INITIAL_DATA</SCONAME>
      <LANGU>E</LANGU>
@@ -112,13 +129,19 @@
      <CMPNAME>REFRESH_GRID</CMPNAME>
      <SCONAME>INITIAL_DATA</SCONAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Ref to table of given type with non-modified data</DESCRIPT>
+     <DESCRIPT>Ref to table of given type with all data from table...</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
      <CMPNAME>REFRESH_GRID</CMPNAME>
      <SCONAME>IN_EDIT_MODE</SCONAME>
      <LANGU>E</LANGU>
      <DESCRIPT>If called in edit mode</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
+     <SCONAME>INITIAL_DATA</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Ref to table of given type with all data from table...</DESCRIPT>
     </SEOSUBCOTX>
    </DESCRIPTIONS_SUB>
   </asx:values>

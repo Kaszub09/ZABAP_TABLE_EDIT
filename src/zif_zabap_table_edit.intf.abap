@@ -12,6 +12,11 @@ interface ZIF_ZABAP_TABLE_EDIT
       "! <p class="shorttext synchronized">Display / table edit will be based on this data.</p>
       "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with all data from table...</p>
       "! All insert/deletion/modify will be executed in according to changes compared to this table
+      "! can be used to replace the default db selection, similar to initial_data
+      replace_initial_data_select CHANGING initial_data TYPE REF TO data,
+      "! <p class="shorttext synchronized">Display / table edit will be based on this data.</p>
+      "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with all data from table...</p>
+      "! All insert/deletion/modify will be executed in according to changes compared to this table
       initial_data CHANGING initial_data TYPE REF TO data,
       "! <p class="shorttext synchronized">Allows to extend displayed table - fill fields manually... </p>
       "! E.g. with MAKTX for material description - must be filled later on e.g. in change events
