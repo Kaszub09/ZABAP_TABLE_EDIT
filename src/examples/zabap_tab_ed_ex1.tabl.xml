@@ -4,8 +4,10 @@
   <asx:values>
    <DD02V>
     <TABNAME>ZABAP_TAB_ED_EX1</TABNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
     <TABCLASS>TRANSP</TABCLASS>
     <CLIDEP>X</CLIDEP>
+    <DDTEXT>Example 1 for table edit</DDTEXT>
     <CONTFLAG>A</CONTFLAG>
    </DD02V>
    <DD09L>
@@ -60,7 +62,7 @@
    <DD02_TEXTS>
     <item>
      <DDLANGUAGE>L</DDLANGUAGE>
-     <DDTEXT>Example 1 for table edit</DDTEXT>
+     <DDTEXT>Przykład 1 dla ZABAP_TABLE_EDIT</DDTEXT>
     </item>
    </DD02_TEXTS>
   </asx:values>
