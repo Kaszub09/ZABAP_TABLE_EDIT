@@ -8,7 +8,7 @@ CLASS zcl_zabap_table_edit DEFINITION
       "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC transparent table</p>
       "! @parameter class_name | <p class="shorttext synchronized">Must implement ZIF_ZABAP_TABLE_EDIT interface or left empty</p>
       "! @raising cx_sy_create_object_error | <p class="shorttext synchronized">If there is error when creating class of supplied name </p>
-      constructor IMPORTING table_name TYPE string class_name TYPE string DEFAULT '' header_text TYPE string DEFAULT '' RAISING cx_sy_create_object_error,
+      constructor IMPORTING table_name TYPE string extension_inst TYPE REF TO zif_zabap_table_edit OPTIONAL header_text TYPE string DEFAULT '' RAISING cx_sy_create_object_error,
       set_change_doc_type IMPORTING change_doc_type TYPE zabap_change_doc_type,
       set_edit_mode IMPORTING editable TYPE abap_bool,
       display.
@@ -23,7 +23,7 @@ CLASS zcl_zabap_table_edit DEFINITION
 
     METHODS:
       "! <p class="shorttext synchronized">Create object and hook up grid events</p>
-      setup_extension IMPORTING class_name TYPE string RAISING cx_sy_create_object_error,
+      setup_extension IMPORTING extension_inst TYPE REF TO zif_zabap_table_edit,
       "! <p class="shorttext synchronized">Initial query from specified table</p>
       prepare_initial_data,
       "! <p class="shorttext synchronized">Recreate table and field catalogue for grid</p>
@@ -88,7 +88,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     SET HANDLER me->on_user_command.
     SET HANDLER on_data_changed FOR grid.
 
-    setup_extension( class_name = class_name ).
+    setup_extension( extension_inst ).
     "---EXTENSION CALL---
     extension->grid_setup( CHANGING grid = grid ).
     extension->additional_fields( CHANGING additional_fields = additional_fields ).
@@ -392,8 +392,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
 
   METHOD setup_extension.
-    IF strlen( class_name ) > 0.
-      CREATE OBJECT extension TYPE (class_name).
+    IF extension_inst IS BOUND.
+      extension = extension_inst.
     ELSE.
       extension = NEW zcl_zabap_table_edit_empty_if(  ).
     ENDIF.
