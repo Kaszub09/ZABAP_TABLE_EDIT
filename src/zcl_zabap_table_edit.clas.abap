@@ -142,8 +142,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     FIELD-SYMBOLS <initial_data> TYPE table.
     ASSIGN initial_data->* TO <initial_data>.
 
-    SELECT * FROM (table_name) INTO TABLE @<initial_data>.
-    SORT <initial_data> ASCENDING.
+    SELECT * FROM (table_name) INTO TABLE @<initial_data>
+    ORDER BY PRIMARY KEY.
 
     "---EXTENSION CALL---
     extension->initial_data( CHANGING initial_data = initial_data ).
