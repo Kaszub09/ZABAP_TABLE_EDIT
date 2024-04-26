@@ -1206,6 +1206,12 @@
       <INT_NOTE>Many dynamic buttons on toolbar</INT_NOTE>
      </RSMPE_ATRT>
     </DOC>
+    <TIT>
+     <RSMPE_TITT>
+      <CODE>HEADER</CODE>
+      <TEXT>&amp;</TEXT>
+     </RSMPE_TITT>
+    </TIT>
    </CUA>
   </asx:values>
  </asx:abap>
