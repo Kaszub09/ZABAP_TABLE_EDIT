@@ -139,15 +139,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     table_fields->get_table_with_add_fields( EXPORTING additional_fields = additional_fields IMPORTING table = DATA(table) ).
     CREATE DATA modified_data_ext TYPE HANDLE table.
 
-    "---EXTENSION CALL---
-    DATA replace_select TYPE abap_bool.
-    extension->replace_initial_data_select( CHANGING replace_select = replace_select
-                                                     initial_data   = initial_data ).
-
     FIELD-SYMBOLS <initial_data> TYPE table.
     ASSIGN initial_data->* TO <initial_data>.
 
-    IF replace_select = abap_false.
+    "---EXTENSION CALL---
+    IF NOT extension->disable_default_select( ).
       SELECT * FROM (table_name) INTO TABLE @<initial_data>
       ORDER BY PRIMARY KEY.
     ENDIF.

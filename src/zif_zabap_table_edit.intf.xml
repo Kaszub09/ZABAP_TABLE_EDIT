@@ -47,6 +47,11 @@
      <DESCRIPT>Called after setting up the screen - edit class...</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
+     <CMPNAME>DISABLE_DEFAULT_SELECT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>disable default select</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
      <CMPNAME>GRID_SETUP</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Called once, e.g. modify commands / hook up other events</DESCRIPT>
@@ -70,11 +75,6 @@
      <CMPNAME>REFRESH_GRID</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Called whenever display mode is changed/refreshed, ...</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Display / table edit will be based on this data.</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>SET_EDIT_MODE</CMPNAME>
@@ -120,6 +120,12 @@
      <DESCRIPT>If called in edit mode</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
+     <CMPNAME>DISABLE_DEFAULT_SELECT</CMPNAME>
+     <SCONAME>DISABLE_DEFAULT_SELECT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>if set to abap_true default select will not be executed</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
      <CMPNAME>INITIAL_DATA</CMPNAME>
      <SCONAME>INITIAL_DATA</SCONAME>
      <LANGU>E</LANGU>
@@ -136,18 +142,6 @@
      <SCONAME>IN_EDIT_MODE</SCONAME>
      <LANGU>E</LANGU>
      <DESCRIPT>If called in edit mode</DESCRIPT>
-    </SEOSUBCOTX>
-    <SEOSUBCOTX>
-     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
-     <SCONAME>INITIAL_DATA</SCONAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Ref to table of given type with all data from table...</DESCRIPT>
-    </SEOSUBCOTX>
-    <SEOSUBCOTX>
-     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
-     <SCONAME>REPLACE_SELECT</SCONAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>if &lt;&gt; abap_true default select will be executed</DESCRIPT>
     </SEOSUBCOTX>
    </DESCRIPTIONS_SUB>
   </asx:values>

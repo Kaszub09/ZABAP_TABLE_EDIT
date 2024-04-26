@@ -111,7 +111,7 @@ CLASS zcl_zabap_tab_ed_ex1 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_zabap_table_edit~replace_initial_data_select.
+  METHOD zif_zabap_table_edit~disable_default_select.
 
   ENDMETHOD.
 
