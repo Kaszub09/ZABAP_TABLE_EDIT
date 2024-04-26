@@ -116,4 +116,10 @@ CLASS zcl_zabap_table_edit_if_chain IMPLEMENTATION.
       interface->*->set_edit_mode( CHANGING editable = editable ).
     ENDLOOP.
   ENDMETHOD.
+
+
+  METHOD zif_zabap_table_edit~replace_initial_data_select.
+
+  ENDMETHOD.
+
 ENDCLASS.
