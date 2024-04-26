@@ -6,7 +6,7 @@ CLASS zcl_zabap_table_edit DEFINITION
   PUBLIC SECTION.
     METHODS:
       "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC transparent table</p>
-      "! @parameter class_name | <p class="shorttext synchronized">Must implement ZIF_ZABAP_TABLE_EDIT interface or left empty</p>
+      "! @parameter extension_inst | <p class="shorttext synchronized">instance of a class implementing ZIF_ZABAP_TABLE_EDIT</p>
       "! @raising cx_sy_create_object_error | <p class="shorttext synchronized">If there is error when creating class of supplied name </p>
       constructor IMPORTING table_name TYPE string extension_inst TYPE REF TO zif_zabap_table_edit OPTIONAL header_text TYPE string DEFAULT '' RAISING cx_sy_create_object_error,
       set_change_doc_type IMPORTING change_doc_type TYPE zabap_change_doc_type,
