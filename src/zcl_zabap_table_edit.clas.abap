@@ -140,12 +140,14 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     CREATE DATA modified_data_ext TYPE HANDLE table.
 
     "---EXTENSION CALL---
-    extension->replace_initial_data_select( CHANGING initial_data = initial_data ).
+    DATA replace_select TYPE abap_bool.
+    extension->replace_initial_data_select( CHANGING replace_select = replace_select
+                                                     initial_data   = initial_data ).
 
     FIELD-SYMBOLS <initial_data> TYPE table.
     ASSIGN initial_data->* TO <initial_data>.
 
-    IF <initial_data> IS INITIAL.
+    IF replace_select = abap_false.
       SELECT * FROM (table_name) INTO TABLE @<initial_data>
       ORDER BY PRIMARY KEY.
     ENDIF.
@@ -171,8 +173,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     DATA(fc) = table_fields->get_fc_with_add_fields( additional_fields ).
 
     "---EXTENSION CALL---
-    extension->refresh_grid( EXPORTING in_edit_mode = in_edit_mode CHANGING field_catalogue = fc header_text = me->header_text
-        initial_data = initial_data modified_data_ext = modified_data_ext ).
+    extension->refresh_grid( EXPORTING in_edit_mode      = in_edit_mode
+                             CHANGING  field_catalogue   = fc
+                                       header_text       = me->header_text
+                                       initial_data      = initial_data
+                                       modified_data_ext = modified_data_ext ).
 
     DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
     grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = table_name handle = 'BASE' username = sy-uname )
@@ -189,8 +194,13 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
     comparator->update_mandant( modified_data_ext ).
     DATA(modified_data) = get_modified_data_no_ext( ).
-    comparator->compare_tables( EXPORTING initial_data = initial_data modified_data = modified_data
-       IMPORTING duplicates = duplicates inserted = inserted deleted = deleted before_modified = before_modified modified = modified ).
+    comparator->compare_tables( EXPORTING initial_data    = initial_data
+                                          modified_data   = modified_data
+                                IMPORTING duplicates      = duplicates
+                                          inserted        = inserted
+                                          deleted         = deleted
+                                          before_modified = before_modified
+                                          modified        = modified ).
 
     FIELD-SYMBOLS <duplicates>      TYPE table.
     ASSIGN duplicates->* TO <duplicates>.
@@ -202,15 +212,23 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     result = c_validation-ok.
 
     "---EXTENSION CALL---
-    extension->additional_validation( CHANGING result = result all_modified_data = modified_data
-                                               duplicates = duplicates inserted = inserted deleted = deleted
-                                               before_modified = before_modified modified = modified ).
+    extension->additional_validation( CHANGING result            = result
+                                               all_modified_data = modified_data
+                                               duplicates        = duplicates
+                                               inserted          = inserted
+                                               deleted           = deleted
+                                               before_modified   = before_modified
+                                               modified          = modified ).
   ENDMETHOD.
 
   METHOD command_save.
     TRY.
-        validate( IMPORTING result = DATA(result) duplicates = DATA(duplicates) inserted = DATA(inserted)
-                            deleted = DATA(deleted) before_modified = DATA(before_modified) modified = DATA(modified) ).
+        validate( IMPORTING result          = DATA(result)
+                            duplicates      = DATA(duplicates)
+                            inserted        = DATA(inserted)
+                            deleted         = DATA(deleted)
+                            before_modified = DATA(before_modified)
+                            modified        = DATA(modified) ).
 
         "Abort with message if data is invalid
         IF result = c_validation-incorrect_values.

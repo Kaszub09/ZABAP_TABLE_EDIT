@@ -10,10 +10,12 @@ interface ZIF_ZABAP_TABLE_EDIT
 
   METHODS:
       "! <p class="shorttext synchronized">Display / table edit will be based on this data.</p>
+      "! @parameter replace_select | <p class="shorttext synchronized">if <> abap_true default select will be executed</p>
       "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with all data from table...</p>
-      "! All insert/deletion/modify will be executed in according to changes compared to this table
+      "! All insert/deletion/modify will be executed in according to changes compared to this table<br>
       "! can be used to replace the default db selection, similar to initial_data
-      replace_initial_data_select CHANGING initial_data TYPE REF TO data,
+      replace_initial_data_select CHANGING replace_select TYPE abap_bool DEFAULT abap_true
+                                           initial_data TYPE REF TO data,
       "! <p class="shorttext synchronized">Display / table edit will be based on this data.</p>
       "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with all data from table...</p>
       "! All insert/deletion/modify will be executed in according to changes compared to this table

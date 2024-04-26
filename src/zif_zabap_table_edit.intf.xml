@@ -129,7 +129,7 @@
      <CMPNAME>REFRESH_GRID</CMPNAME>
      <SCONAME>INITIAL_DATA</SCONAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Ref to table of given type with all data from table...</DESCRIPT>
+     <DESCRIPT>Ref to table of given type with non-modified data</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
      <CMPNAME>REFRESH_GRID</CMPNAME>
@@ -142,6 +142,12 @@
      <SCONAME>INITIAL_DATA</SCONAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Ref to table of given type with all data from table...</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>REPLACE_INITIAL_DATA_SELECT</CMPNAME>
+     <SCONAME>REPLACE_SELECT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>if &lt;&gt; abap_true default select will be executed</DESCRIPT>
     </SEOSUBCOTX>
    </DESCRIPTIONS_SUB>
   </asx:values>
