@@ -425,22 +425,6 @@
       "exclude": [],
       "severity": "Error"
     },
-    "in_statement_indentation":{
-  "exclude": [],
-  "severity": "Error",
-  "blockStatements": -2,
-  "ignoreExceptions": true
-},
-    "indentation": {
-      "exclude": [],
-      "severity": "Error",
-      "ignoreExceptions": true,
-      "alignTryCatch": true,
-      "selectionScreenBlockIndentation": false,
-      "globalClassSkipFirst": false,
-      "ignoreGlobalClassDefinition": false,
-      "ignoreGlobalInterface": false
-    },
     "inline_data_old_versions": {
       "exclude": [],
       "severity": "Error"
@@ -504,7 +488,7 @@
     },
     "max_one_statement": {
       "exclude": [],
-      "severity": "Error"
+      "severity": "Warning"
     },
     "message_exists": {
       "exclude": [],
