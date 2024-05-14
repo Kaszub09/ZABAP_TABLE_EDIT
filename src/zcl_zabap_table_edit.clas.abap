@@ -55,12 +55,14 @@ CLASS zcl_zabap_table_edit DEFINITION
       table_locker    TYPE REF TO zcl_zabap_table_edit_lock,
       comparator      TYPE REF TO zcl_zabap_table_comparator,
       grid            TYPE REF TO cl_gui_alv_grid,
-      extension       TYPE REF TO zif_zabap_table_edit.
+      extension       TYPE REF TO zif_zabap_table_edit,
+      text_table      TYPE REF TO zcl_zabap_table_edit_text_tab.
     DATA:
       in_edit_mode    TYPE abap_bool VALUE abap_false,
       table_name      TYPE string,
       change_doc_type TYPE zabap_change_doc_type,
       header_text     TYPE string.
+
     DATA:
       additional_fields TYPE cl_abap_structdescr=>component_table,
       initial_data      TYPE REF TO data,
@@ -87,11 +89,17 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     "Hook up event handlers
     SET HANDLER me->on_user_command.
     SET HANDLER on_data_changed FOR grid.
+    "---TEXT TABLE---
+    text_table = NEW zcl_zabap_table_edit_text_tab( original_table = table_name change_doc_type = change_doc_type ).
+    text_table->append_additional_fields( CHANGING additional_fields = additional_fields ).
+
 
     setup_extension( extension_inst ).
     "---EXTENSION CALL---
     extension->grid_setup( CHANGING grid = grid ).
     extension->additional_fields( CHANGING additional_fields = additional_fields ).
+
+
 
     prepare_initial_data( ).
 
@@ -117,6 +125,13 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         MESSAGE msg TYPE 'E'.
         RETURN.
       ENDIF.
+      IF text_table->set_edit_mode( EXPORTING edit_mode = is_editable IMPORTING error_message = msg ) = abap_false.
+        table_locker->unlock_table( ).
+        MESSAGE msg TYPE 'E'.
+        RETURN.
+      ENDIF.
+
+
     ELSE.
       table_locker->unlock_table( ).
     ENDIF.
@@ -144,8 +159,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
     "---EXTENSION CALL---
     IF NOT extension->disable_default_select( ).
-      SELECT * FROM (table_name) INTO TABLE @<initial_data>
-      ORDER BY PRIMARY KEY.
+      SELECT * FROM (table_name) INTO TABLE @<initial_data> ORDER BY PRIMARY KEY.
     ENDIF.
 
     "---EXTENSION CALL---
@@ -162,6 +176,12 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ASSIGN modified_data_ext->* TO <modified_data_ext>.
 
     <modified_data_ext> = CORRESPONDING #( <initial_data> ).
+    "---TEXT TABLE---
+    LOOP AT <modified_data_ext> ASSIGNING FIELD-SYMBOL(<modified_row>).
+      text_table->update_row( CHANGING row = <modified_row> ).
+    ENDLOOP.
+
+
 
     was_data_changed = abap_false.
 
@@ -271,6 +291,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         IF sy-subrc <> 0.
           RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |SAP LUW commit returned { sy-subrc }|.
         ENDIF.
+
+        "---TEXT TABLE---
+        text_table->save( initial = initial_data extended = modified_data_ext ).
 
         "---EXTENSION CALL---
         extension->after_save( CHANGING inserted = inserted deleted = deleted before_modified = before_modified modified = modified ).
@@ -418,6 +441,10 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
   METHOD on_data_changed.
     was_data_changed = abap_true.
+
+
+
+text_table->data_changed( er_data_changed ).
   ENDMETHOD.
 
   METHOD get_modified_data_no_ext.

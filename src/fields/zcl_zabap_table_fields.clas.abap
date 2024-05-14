@@ -20,7 +20,8 @@ CLASS zcl_zabap_table_fields DEFINITION
         get_table_with_add_fields IMPORTING additional_fields TYPE cl_abap_structdescr=>component_table
                                   EXPORTING struct TYPE REF TO cl_abap_structdescr table TYPE REF TO cl_abap_tabledescr,
         get_fc_with_add_fields IMPORTING additional_fields TYPE cl_abap_structdescr=>component_table
-                               RETURNING VALUE(field_catalogue) TYPE zcl_zabap_field_catalogue=>tt_field_cat.
+                               RETURNING VALUE(field_catalogue) TYPE zcl_zabap_field_catalogue=>tt_field_cat,
+                               get_non_keys_structure EXPORTING struct TYPE REF TO cl_abap_structdescr table TYPE REF TO cl_abap_tabledescr.
 
     DATA :
       has_mandant     TYPE abap_bool READ-ONLY,
@@ -34,7 +35,8 @@ CLASS zcl_zabap_table_fields DEFINITION
 
     DATA:
       table_name      TYPE string,
-      field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat.
+      field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat,
+      is_edit_mode type abap_bool.
 ENDCLASS.
 
 
@@ -89,6 +91,7 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
       field-fieldname = additional_field->name.
       field-tabname  = 1.
       field-col_pos = index.
+      field-edit = is_edit_mode.
       APPEND field TO field_catalogue.
 
       index = index + 1.
@@ -139,5 +142,18 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
     LOOP AT field_catalogue REFERENCE INTO DATA(field).
       field->edit = editable.
     ENDLOOP.
+    is_edit_mode = editable.
   ENDMETHOD.
+  METHOD get_non_keys_structure.
+    DATA(components) = VALUE cl_abap_structdescr=>component_table(  ).
+    " Don't use secondary keys because they don't preserve field order
+    LOOP AT field_catalogue REFERENCE INTO DATA(field) WHERE key = abap_false.
+      DATA(name) = COND #( WHEN field->dd_roll IS INITIAL THEN |{ table_name }-{ field->fieldname }| ELSE |{ field->dd_roll }| ).
+      APPEND VALUE #( name = field->fieldname type = CAST #( cl_abap_structdescr=>describe_by_name( name ) ) ) TO components.
+    ENDLOOP.
+
+    struct = cl_abap_structdescr=>get( p_components = components ).
+    table = cl_abap_tabledescr=>get( p_line_type = struct p_key_kind = cl_abap_tabledescr=>keydefkind_default ).
+  ENDMETHOD.
+
 ENDCLASS.
