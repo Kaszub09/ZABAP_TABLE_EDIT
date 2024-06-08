@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_EMPTY_IF</CLSNAME>
+    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_GLOBALS</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Empty interface implementation for easy call in table edit</DESCRIPT>
+    <DESCRIPT>Global data used both by interfaces and internal classes</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

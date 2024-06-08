@@ -1,329 +1,165 @@
-CLASS zcl_zabap_table_edit DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC.
+CLASS zcl_zabap_table_edit DEFINITION PUBLIC FINAL CREATE PUBLIC.
 
   PUBLIC SECTION.
+    TYPES:
+      BEGIN OF t_config,
+        display_text       TYPE string,
+        table_name         TYPE  string, "TODO tabname
+        change_doc_type    TYPE zabap_change_doc_type,
+        disable_cd_view    TYPE abap_bool,
+        disable_editing    TYPE abap_bool,
+        disable_text_table TYPE abap_bool,
+        BEGIN OF ext,
+          commands TYPE REF TO zif_zabap_table_edit_commands,
+          config   TYPE REF TO zif_zabap_table_edit_config,
+          data     TYPE REF TO zif_zabap_table_edit_data,
+        END OF ext,
+      END OF t_config.
+
     METHODS:
-      "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC transparent table</p>
-      "! @parameter extension_inst | <p class="shorttext synchronized">instance of a class implementing ZIF_ZABAP_TABLE_EDIT</p>
-      "! @raising cx_sy_create_object_error | <p class="shorttext synchronized">If there is error when creating class of supplied name </p>
-      constructor IMPORTING table_name TYPE string extension_inst TYPE REF TO zif_zabap_table_edit OPTIONAL header_text TYPE string DEFAULT '' RAISING cx_sy_create_object_error,
-      set_change_doc_type IMPORTING change_doc_type TYPE zabap_change_doc_type,
-      set_edit_mode IMPORTING editable TYPE abap_bool,
+      constructor IMPORTING configuration TYPE t_config,
+      set_edit_mode IMPORTING editable TYPE abap_bool RETURNING VALUE(success) TYPE abap_bool,
       display.
 
   PRIVATE SECTION.
-    CONSTANTS:
-      BEGIN OF c_validation,
-        incorrect_values TYPE i VALUE 0,
-        duplicates       TYPE i VALUE 1,
-        ok               TYPE i VALUE 2,
-      END OF c_validation.
-
     METHODS:
-      "! <p class="shorttext synchronized">Create object and hook up grid events</p>
-      setup_extension IMPORTING extension_inst TYPE REF TO zif_zabap_table_edit,
-      "! <p class="shorttext synchronized">Initial query from specified table</p>
-      prepare_initial_data,
-      "! <p class="shorttext synchronized">Recreate table and field catalogue for grid</p>
-      reset_grid,
-      "! <p class="shorttext synchronized">Compare table and check fields with checktables</p>
-      "! @parameter result |<p class="shorttext synchronized">Of type <em>c_validation</em></p>
-      validate EXPORTING result TYPE i duplicates TYPE REF TO data inserted TYPE REF TO data deleted TYPE REF TO data
-                               before_modified TYPE REF TO data modified TYPE REF TO data,
-      create_change_doc IMPORTING inserted TYPE REF TO data deleted TYPE REF TO data
-                               before_modified TYPE REF TO data modified TYPE REF TO data
-                        RAISING zcx_zabap_table_edit,
-      "! <p class="shorttext synchronized">Display table to original tab - needed if fields were added</p>
-      get_modified_data_no_ext RETURNING VALUE(modified_data) TYPE REF TO data,
-      get_selected_row_index RETURNING VALUE(index) TYPE i.
-
-    METHODS:
+      initialize_extensions,
       command_validate,
       command_save,
-      commad_toggle_display,
-      commad_change_document.
+      command_toggle_display,
+      commad_change_document,
+      command_cancel,
+      command_exit,
+      command_reset.
+
     METHODS:
-      on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command,
-      on_data_changed FOR EVENT data_changed OF cl_gui_alv_grid IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
+      on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
 
     DATA:
-      messages        TYPE REF TO zcl_zabap_table_edit_messages,
-      table_fields    TYPE REF TO zcl_zabap_table_fields,
-      screen_controls TYPE REF TO zcl_zabap_table_edit_screen,
-      table_locker    TYPE REF TO zcl_zabap_table_edit_lock,
-      comparator      TYPE REF TO zcl_zabap_table_comparator,
-      grid            TYPE REF TO cl_gui_alv_grid,
-      extension       TYPE REF TO zif_zabap_table_edit,
-      text_table      TYPE REF TO zcl_zabap_table_edit_text_tab.
+      config     TYPE t_config.
+
     DATA:
       in_edit_mode    TYPE abap_bool VALUE abap_false,
-      table_name      TYPE string,
-      change_doc_type TYPE zabap_change_doc_type,
-      header_text     TYPE string.
-
-    DATA:
-      additional_fields TYPE cl_abap_structdescr=>component_table,
-      initial_data      TYPE REF TO data,
-      "! <p class="shorttext synchronized">Original tab + add. fields. Displayed on screen in grid.</p>
-      modified_data_ext TYPE REF TO data,
-      was_data_changed  TYPE abap_bool VALUE abap_false.
-
+      messages        TYPE REF TO zcl_zabap_table_edit_messages,
+      screen_controls TYPE REF TO zcl_zabap_table_edit_screen,
+      table_data      TYPE REF TO zcl_zabap_table_edit_tab_data.
 ENDCLASS.
 
 
 CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD constructor.
-    "Initialise variables/classes
-    me->table_name = table_name.
-    messages = NEW #( ).
-    table_fields = NEW #( table_name = table_name editable = in_edit_mode ).
-    screen_controls = NEW #( ).
-    table_locker = NEW #( table_name = table_name ).
-    comparator = NEW #( table_name = table_name ).
-    "Setup grid
-    grid = NEW cl_gui_alv_grid( zcl_zabap_screen_with_containe=>get_container( ) ).
-    grid->register_edit_event( cl_gui_alv_grid=>mc_evt_modified ). "Allows to catch edit events
-    grid->register_edit_event( cl_gui_alv_grid=>mc_evt_enter ). "Allows also to catch Enter
-    "Hook up event handlers
-    SET HANDLER me->on_user_command.
-    SET HANDLER on_data_changed FOR grid.
-    "---TEXT TABLE---
-    text_table = NEW zcl_zabap_table_edit_text_tab( original_table = table_name change_doc_type = change_doc_type ).
-    text_table->append_additional_fields( CHANGING additional_fields = additional_fields ).
-
-
-    setup_extension( extension_inst ).
+    config = configuration.
+    initialize_extensions( ).
     "---EXTENSION CALL---
-    extension->grid_setup( CHANGING grid = grid ).
-    extension->additional_fields( CHANGING additional_fields = additional_fields ).
+    config-ext-config->change_config( CHANGING config = config ).
 
+    messages = NEW #( ). "TODO as interface
+    screen_controls = NEW #( CORRESPONDING #( config ) ). "TODO as interface
 
+    SET HANDLER me->on_user_command.
 
-    prepare_initial_data( ).
-
-    "Header text
-    me->header_text = header_text.
-    IF me->header_text = ||.
-      me->header_text = table_name.
-    ENDIF.
+    table_data = NEW #( CORRESPONDING #( config ) ).
   ENDMETHOD.
 
-  METHOD set_change_doc_type.
-    me->change_doc_type = change_doc_type.
+  METHOD initialize_extensions.
+    DATA(empty_extension) = NEW zcl_zabap_table_edit_empty_ext( ).
+    IF NOT config-ext-commands IS BOUND.
+      config-ext-commands = empty_extension.
+    ENDIF.
+    IF NOT config-ext-data IS BOUND.
+      config-ext-data = empty_extension.
+    ENDIF.
+    IF NOT config-ext-config IS BOUND.
+      config-ext-config = empty_extension.
+    ENDIF.
   ENDMETHOD.
 
   METHOD set_edit_mode.
+    DATA(new_edit_mode) = COND #( WHEN config-disable_editing = abap_true THEN abap_false ELSE editable ).
     "---EXTENSION CALL---
-    DATA(is_editable) = editable.
-    extension->set_edit_mode( CHANGING editable = is_editable ).
+    config-ext-commands->set_edit_mode( CHANGING editable = new_edit_mode ).
 
-    IF is_editable = abap_true.
+    "Unlock table first in case of errors or some remaining locks
+    table_data->unlock_table( ).
+
+    IF new_edit_mode = abap_true.
       DATA msg TYPE string.
-      IF table_locker->lock_table( IMPORTING error_message = msg ) = abap_false.
-        MESSAGE msg TYPE 'E'.
-        RETURN.
+      IF table_data->lock_table( IMPORTING error_message = msg ) = abap_false.
+        new_edit_mode = abap_false.
+        messages->display_error( msg ).
       ENDIF.
-      IF text_table->set_edit_mode( EXPORTING edit_mode = is_editable IMPORTING error_message = msg ) = abap_false.
-        table_locker->unlock_table( ).
-        MESSAGE msg TYPE 'E'.
-        RETURN.
-      ENDIF.
-
-
-    ELSE.
-      table_locker->unlock_table( ).
     ENDIF.
 
-    in_edit_mode = is_editable.
+    in_edit_mode = new_edit_mode.
+    success = xsdbool( in_edit_mode = editable ).
   ENDMETHOD.
 
   METHOD display.
     screen_controls->update_screen_controls( in_edit_mode ).
+    table_data->reset_grid( in_edit_mode ).
     "---EXTENSION CALL---
-    extension->change_commands( in_edit_mode = in_edit_mode ).
-
-    reset_grid( ).
-
-    zcl_zabap_screen_with_containe=>display( header_text = me->header_text ).
+    config-ext-data->change_display_text( CHANGING display_text = config-display_text ).
+    zcl_zabap_screen_with_containe=>display( header_text = config-display_text ).
   ENDMETHOD.
 
-  METHOD prepare_initial_data.
-    CREATE DATA initial_data TYPE TABLE OF (table_name).
-    table_fields->get_table_with_add_fields( EXPORTING additional_fields = additional_fields IMPORTING table = DATA(table) ).
-    CREATE DATA modified_data_ext TYPE HANDLE table.
-
-    FIELD-SYMBOLS <initial_data> TYPE table.
-    ASSIGN initial_data->* TO <initial_data>.
-
+  METHOD on_user_command.
+    DATA(cancel_command) = abap_false.
     "---EXTENSION CALL---
-    IF NOT extension->disable_default_select( ).
-      SELECT * FROM (table_name) INTO TABLE @<initial_data> ORDER BY PRIMARY KEY.
-    ENDIF.
+    config-ext-commands->before_command( CHANGING command = command cancel_command = cancel_command ).
 
-    "---EXTENSION CALL---
-    extension->initial_data( CHANGING initial_data = initial_data ).
-  ENDMETHOD.
-
-  METHOD reset_grid.
-    "You have declare <fs> type table, and assign dynamic table
-    "Because you can't just e.g append lines to modified_data->*.
-    FIELD-SYMBOLS <initial_data> TYPE table.
-    FIELD-SYMBOLS <modified_data_ext> TYPE table.
-
-    ASSIGN initial_data->* TO <initial_data>.
-    ASSIGN modified_data_ext->* TO <modified_data_ext>.
-
-    <modified_data_ext> = CORRESPONDING #( <initial_data> ).
-    "---TEXT TABLE---
-    LOOP AT <modified_data_ext> ASSIGNING FIELD-SYMBOL(<modified_row>).
-      text_table->update_row( CHANGING row = <modified_row> ).
-    ENDLOOP.
-
-
-
-    was_data_changed = abap_false.
-
-    table_fields->set_edit_mode( in_edit_mode ).
-    DATA(fc) = table_fields->get_fc_with_add_fields( additional_fields ).
-
-    "---EXTENSION CALL---
-    extension->refresh_grid( EXPORTING in_edit_mode      = in_edit_mode
-                             CHANGING  field_catalogue   = fc
-                                       header_text       = me->header_text
-                                       initial_data      = initial_data
-                                       modified_data_ext = modified_data_ext ).
-
-    DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
-    grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = table_name handle = 'BASE' username = sy-uname )
-                                                 is_layout = VALUE #( sel_mode = 'A' ) i_save = 'A'
-                                       CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
-  ENDMETHOD.
-
-  METHOD validate.
-    grid->check_changed_data( IMPORTING e_valid = DATA(valid) ).
-    IF valid = abap_false.
-      result = c_validation-incorrect_values.
+    IF cancel_command = abap_true.
       RETURN.
     ENDIF.
 
-    comparator->update_mandant( modified_data_ext ).
-    DATA(modified_data) = get_modified_data_no_ext( ).
-    comparator->compare_tables( EXPORTING initial_data    = initial_data
-                                          modified_data   = modified_data
-                                IMPORTING duplicates      = duplicates
-                                          inserted        = inserted
-                                          deleted         = deleted
-                                          before_modified = before_modified
-                                          modified        = modified ).
-
-    FIELD-SYMBOLS <duplicates>      TYPE table.
-    ASSIGN duplicates->* TO <duplicates>.
-    IF lines( <duplicates> ) > 0.
-      result = c_validation-duplicates.
-      RETURN.
-    ENDIF.
-
-    result = c_validation-ok.
+    CASE command.
+      WHEN 'SAVE'. command_save( ).
+      WHEN 'TOGGLE_DISPLAY'. command_toggle_display( ).
+      WHEN 'VALIDATE'. command_validate( ).
+      WHEN 'CHANGE_DOCUMENT'. commad_change_document( ).
+      WHEN 'RESET'. command_reset( ).
+      WHEN 'BACK' OR 'EXIT'. command_exit( ).
+      WHEN 'CANCEL'. command_cancel( ).
+    ENDCASE.
 
     "---EXTENSION CALL---
-    extension->additional_validation( CHANGING result            = result
-                                               all_modified_data = modified_data
-                                               duplicates        = duplicates
-                                               inserted          = inserted
-                                               deleted           = deleted
-                                               before_modified   = before_modified
-                                               modified          = modified ).
+    config-ext-commands->after_command( CHANGING command = command ).
   ENDMETHOD.
 
   METHOD command_save.
-    TRY.
-        validate( IMPORTING result          = DATA(result)
-                            duplicates      = DATA(duplicates)
-                            inserted        = DATA(inserted)
-                            deleted         = DATA(deleted)
-                            before_modified = DATA(before_modified)
-                            modified        = DATA(modified) ).
+    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
 
-        "Abort with message if data is invalid
-        IF result = c_validation-incorrect_values.
-          "^Message already displayed by ALV GRID
-          RETURN.
-        ELSEIF result = c_validation-duplicates.
-          messages->show_duplicates( table_name = table_name duplicates = duplicates mandant_col_name = table_fields->mandant_field ).
-          RETURN.
-        ENDIF.
-
-        IF messages->confirm_save( ) = abap_false.
-          RETURN.
-        ENDIF.
-
-        "---EXTENSION CALL---
-        extension->before_save( CHANGING inserted = inserted deleted = deleted before_modified = before_modified modified = modified ).
-
-        "Again with unnecessary "FieLDs-sYmBOls"
-        FIELD-SYMBOLS <modified>        TYPE table.
-        FIELD-SYMBOLS <inserted>        TYPE table.
-        FIELD-SYMBOLS <deleted>         TYPE table.
-        ASSIGN modified->* TO <modified>.
-        ASSIGN inserted->* TO <inserted>.
-        ASSIGN deleted->* TO <deleted>.
-        "Actual db changes
-        DELETE (table_name) FROM TABLE @<deleted>.
-        IF table_fields->key_fields_only = abap_true.
-          "^Can't use modify if all fields are key fields. Also in this case it's impossible to have modified entries.
-          INSERT (table_name) FROM TABLE @<inserted> ACCEPTING DUPLICATE KEYS.
-
-        ELSE.
-          MODIFY (table_name) FROM TABLE @<modified>.
-          MODIFY (table_name) FROM TABLE @<inserted>.
-
-        ENDIF.
-
-        "Change doc creation
-        IF change_doc_type <> space.
-          create_change_doc( inserted = inserted deleted = deleted before_modified = before_modified modified = modified ).
-        ENDIF.
-
-        "Commmit all and check for errors
-        COMMIT WORK AND WAIT.
-        IF sy-subrc <> 0.
-          RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |SAP LUW commit returned { sy-subrc }|.
-        ENDIF.
-
-        "---TEXT TABLE---
-        text_table->save( initial = initial_data extended = modified_data_ext ).
-
-        "---EXTENSION CALL---
-        extension->after_save( CHANGING inserted = inserted deleted = deleted before_modified = before_modified modified = modified ).
-
-        messages->save_ok( ).
-        prepare_initial_data( ).
-        reset_grid( ).
-        in_edit_mode = abap_false.
-        display( ).
-
-      CATCH zcx_zabap_table_edit INTO DATA(zcx).
-        ROLLBACK WORK.
-        messages->save_error( zcx->get_text( ) ).
-
-    ENDTRY.
-
-  ENDMETHOD.
-
-  METHOD command_validate.
-    validate( IMPORTING result = DATA(result) duplicates = DATA(duplicates) ).
     CASE result.
-      WHEN c_validation-incorrect_values. "Nothing - message was already displayed by ALV GRID
-      WHEN c_validation-duplicates. messages->show_duplicates( table_name = table_name duplicates = duplicates mandant_col_name = table_fields->mandant_field ).
-      WHEN c_validation-ok. messages->validation_ok( ).
+      WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
+        "^Nothing to do - message was already displayed by ALV GRID or by extension
+        RETURN.
+      WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
+        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+        RETURN.
+      WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
+      WHEN OTHERS.
+        messages->unexpected_validation_result( ).
+        RETURN.
     ENDCASE.
+
+    IF messages->confirm_save( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    DATA msg TYPE string.
+    IF table_data->save_data( IMPORTING erorr_message = msg CHANGING compared = compared ) = abap_true.
+      messages->save_ok( ).
+      set_edit_mode( abap_false ).
+      table_data->reset_grid( in_edit_mode ).
+      display( ).
+    ELSE.
+      messages->display_error( msg ).
+    ENDIF.
+
   ENDMETHOD.
 
-  METHOD commad_toggle_display.
+  METHOD command_toggle_display.
     IF in_edit_mode = abap_true.
-      IF messages->confirm_data_loss( was_data_changed ) = abap_false.
+      IF messages->confirm_data_loss( table_data->was_data_changed ) = abap_false.
         RETURN.
       ENDIF.
     ENDIF.
@@ -331,147 +167,60 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     display( ).
   ENDMETHOD.
 
+  METHOD command_validate.
+    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
+    CASE result.
+      WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
+        "^Nothing to do - message was already displayed by ALV GRID or by extension
+      WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
+        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+      WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
+        messages->validation_ok( ).
+      WHEN OTHERS.
+        messages->unexpected_validation_result( ).
+    ENDCASE.
+  ENDMETHOD.
+
   METHOD commad_change_document.
-    DATA(selected_row) = get_selected_row_index( ).
     DATA batch_input TYPE TABLE OF bdcdata.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME'  ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKT' fval = '' ) TO batch_input.
-    APPEND VALUE #( fnam = 'OBJEKTID' fval = table_name ) TO batch_input.
-    APPEND VALUE #( fnam = 'TABNAME' fval = table_name ) TO batch_input.
-    IF selected_row > 0.
-      "Build and fill tabkey of selected record
-      FIELD-SYMBOLS <modified_data_ext> TYPE table.
-      ASSIGN modified_data_ext->* TO <modified_data_ext>.
+    APPEND VALUE #( fnam = 'OBJEKTID' fval = config-table_name ) TO batch_input.
+    APPEND VALUE #( fnam = 'TABNAME' fval = config-table_name ) TO batch_input.
 
-      "Create key struct to cast to cdtabkey - needed to extract just key fields
-      table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(key_struct) ).
-      DATA key_line TYPE REF TO data.
-      CREATE DATA key_line TYPE HANDLE key_struct.
-      FIELD-SYMBOLS <key_line> TYPE any.
-      ASSIGN key_line->* TO <key_line>.
+    "Clear in case of leftovers from previous call
+    APPEND VALUE #( fnam = 'TABKEY' fval = '' ) TO batch_input.
+    APPEND VALUE #( fnam = 'TABKEYLO' fval = '' ) TO batch_input.
 
-      <key_line> = CORRESPONDING #( <modified_data_ext>[ selected_row  ] ).
-      DATA tabkey TYPE cdtabkey.
-      tabkey = <key_line>.
-
-      APPEND VALUE #( fnam = 'TABKEY' fval = tabkey ) TO batch_input.
-
+    DATA(selected_row_key) = table_data->get_selected_row_key( ).
+    IF strlen( selected_row_key ) <= 70.
+      APPEND VALUE #( fnam = 'TABKEY' fval = selected_row_key ) TO batch_input.
     ELSE.
-      "Clear in case of leftovers from previous call
-      APPEND VALUE #( fnam = 'TABKEY' fval = '' ) TO batch_input.
-
+      APPEND VALUE #( fnam = 'TABKEYLO' fval = selected_row_key ) TO batch_input.
     ENDIF.
 
     CALL TRANSACTION 'RSSCD100' USING batch_input MODE 'E' UPDATE 'S'.
   ENDMETHOD.
 
-  METHOD on_user_command.
-    "---EXTENSION CALL---
-    DATA(cancel_command) = abap_false.
-    extension->before_command( CHANGING command = command cancel_command = cancel_command ).
-    IF cancel_command = abap_true. RETURN. ENDIF.
-
-    CASE command.
-      WHEN 'SAVE'.
-        command_save( ).
-
-      WHEN 'TOGGLE_DISPLAY'.
-        commad_toggle_display( ).
-
-      WHEN 'VALIDATE'.
-        command_validate( ).
-
-      WHEN 'CHANGE_DOCUMENT'.
-        commad_change_document( ).
-
-      WHEN 'RESET'.
-        IF messages->confirm_data_loss( was_data_changed ) = abap_false.
-          RETURN.
-        ENDIF.
-        reset_grid( ).
-
-      WHEN 'BACK' OR 'EXIT'.
-        IF messages->confirm_data_loss( was_data_changed ) = abap_false.
-          RETURN.
-        ENDIF.
-        LEAVE TO SCREEN 0.
-
-      WHEN 'CANCEL'.
-        IF messages->confirm_data_loss( was_data_changed ) = abap_false.
-          RETURN.
-        ENDIF.
-        LEAVE PROGRAM.
-
-    ENDCASE.
-
-    "---EXTENSION CALL---
-    extension->after_command( CHANGING command = command ).
-  ENDMETHOD.
-
-
-
-  METHOD create_change_doc.
-    DATA(cd) = NEW zcl_zabap_change_document( objectclass = CONV #( table_name ) objectid = CONV #( table_name ) ).
-
-    cd->open( ).
-    cd->change_multi( EXPORTING force_cd_on_all_fields = COND #( WHEN change_doc_type = 'F' THEN abap_true ELSE abap_false )
-                                 table_name = table_name
-                                 deleted = cd->create_table_with_indicator( table_name = table_name original_table = deleted indicator = 'D' )
-                                 inserted = cd->create_table_with_indicator( table_name = table_name original_table = inserted indicator = 'I' )
-                                 before_modified = cd->create_table_with_indicator( table_name = table_name original_table = before_modified indicator = 'U' )
-                                 modified = cd->create_table_with_indicator( table_name = table_name original_table = modified  ) ).
-    "Some SAP magic to get initial t-code
-    DATA: original_tcode TYPE sytcode.
-    CALL 'GET_PARAM_TCOD' ID 'PTCOD' FIELD original_tcode.
-    cd->close( tcode = original_tcode ).
-  ENDMETHOD.
-
-
-  METHOD setup_extension.
-    IF extension_inst IS BOUND.
-      extension = extension_inst.
-    ELSE.
-      extension = NEW zcl_zabap_table_edit_empty_if(  ).
-    ENDIF.
-
-    SET HANDLER extension->on_data_changed FOR grid.
-    SET HANDLER extension->on_data_changed_finished FOR grid.
-  ENDMETHOD.
-
-  METHOD on_data_changed.
-    was_data_changed = abap_true.
-
-
-
-text_table->data_changed( er_data_changed ).
-  ENDMETHOD.
-
-  METHOD get_modified_data_no_ext.
-    CREATE DATA modified_data TYPE TABLE OF (table_name).
-
-    FIELD-SYMBOLS <modified_data> TYPE table.
-    FIELD-SYMBOLS <modified_data_ext> TYPE table.
-
-    ASSIGN modified_data->* TO <modified_data>.
-    ASSIGN modified_data_ext->* TO <modified_data_ext>.
-
-    <modified_data> = CORRESPONDING #( <modified_data_ext> ).
-  ENDMETHOD.
-
-
-
-  METHOD get_selected_row_index.
-    grid->get_selected_rows( IMPORTING et_index_rows = DATA(selected_rows) ).
-    IF lines( selected_rows ) = 1.
-      index = selected_rows[ 1 ]-index.
+  METHOD command_cancel.
+    IF messages->confirm_data_loss( table_data->was_data_changed ) = abap_false.
       RETURN.
     ENDIF.
+    LEAVE PROGRAM.
+  ENDMETHOD.
 
-    grid->get_selected_cells( IMPORTING et_cell = DATA(selected_cells) ).
-    IF lines( selected_cells ) = 1.
-      index = selected_cells[ 1 ]-row_id.
+  METHOD command_exit.
+    IF messages->confirm_data_loss( table_data->was_data_changed ) = abap_false.
       RETURN.
     ENDIF.
+    LEAVE TO SCREEN 0.
+  ENDMETHOD.
+
+  METHOD command_reset.
+    IF messages->confirm_data_loss( table_data->was_data_changed ) = abap_false.
+      RETURN.
+    ENDIF.
+    table_data->reset_grid( in_edit_mode ).
   ENDMETHOD.
 ENDCLASS.

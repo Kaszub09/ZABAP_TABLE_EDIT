@@ -5,14 +5,18 @@
 *&---------------------------------------------------------------------*
 REPORT zabap_table_edit.
 
-PARAMETERS: p_tabnam TYPE string DEFAULT ''.
-PARAMETERS: p_cd TYPE ZABAP_CHANGE_DOC_TYPE DEFAULT 'X'.
-PARAMETERS: p_class TYPE string DEFAULT ''.
+PARAMETERS:
+  p_tabnam TYPE string,
+  p_cd     TYPE zabap_change_doc_type DEFAULT 'X',
+  p_class  TYPE string,
+  p_discdv AS CHECKBOX,
+  p_disedi AS CHECKBOX,
+  p_distt  AS CHECKBOX.
 
 START-OF-SELECTION.
   "Check if it's correct table
-  SELECT SINGLE tabclass  FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tabclass).
-  IF tabclass  <> 'TRANSP'.
+  SELECT SINGLE tabclass FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tabclass).
+  IF tabclass <> 'TRANSP'.
     MESSAGE TEXT-001 TYPE 'S' DISPLAY LIKE 'E'.
     LEAVE LIST-PROCESSING.
   ENDIF.
@@ -22,16 +26,27 @@ START-OF-SELECTION.
   CALL 'GET_PARAM_TCOD' ID 'PTCOD' FIELD original_tcode.
   SELECT SINGLE ttext FROM tstct WHERE sprsl = @sy-langu AND tcode = @original_tcode INTO @DATA(description).
 
-  DATA extension_inst TYPE REF TO zif_zabap_table_edit.
+  "Create extensions
+  DATA extensions TYPE zcl_zabap_table_edit=>t_config-ext.
   IF p_class IS NOT INITIAL.
     TRY.
+        DATA extension_inst TYPE REF TO object.
         CREATE OBJECT extension_inst TYPE (p_class).
+        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_commands.
+          extensions-commands = CAST #( extension_inst ).
+        ENDIF.
+        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_config.
+          extensions-config = CAST #( extension_inst ).
+        ENDIF.
+        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_data.
+          extensions-data = CAST #( extension_inst ).
+        ENDIF.
       CATCH cx_sy_create_object_error INTO DATA(create_object_error).
         MESSAGE create_object_error TYPE 'S' DISPLAY LIKE 'E'.
         RETURN.
     ENDTRY.
   ENDIF.
 
-  DATA(table_edit) = NEW zcl_zabap_table_edit( table_name = p_tabnam extension_inst = extension_inst header_text = CONV #( description ) ).
-  table_edit->set_change_doc_type( p_cd ).
+  DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
+    disable_cd_view = p_discdv disable_editing = p_disedi disable_text_table = p_distt ext = extensions ) ).
   table_edit->display( ).

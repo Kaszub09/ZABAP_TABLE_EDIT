@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_INTF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOINTERF>
+    <CLSNAME>ZIF_ZABAP_TABLE_EDIT_COMMANDS</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Commands extension</DESCRIPT>
+    <EXPOSURE>2</EXPOSURE>
+    <STATE>1</STATE>
+    <UNICODE>X</UNICODE>
+   </VSEOINTERF>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>AFTER_COMMAND</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Not called if command was cancelled</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>BEFORE_COMMAND</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Can execute custom command and alter default behavior</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>CHANGE_COMMANDS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Called after setting up the screen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_EDIT_MODE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Called whenever edit mode is changed</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>BEFORE_COMMAND</CMPNAME>
+     <SCONAME>CANCEL_COMMAND</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Doesn&apos;t execute command</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>BEFORE_COMMAND</CMPNAME>
+     <SCONAME>COMMAND</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Can be modified to alter called command</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_COMMANDS</CMPNAME>
+     <SCONAME>COMMANDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Can be modified to alter displayed commands</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

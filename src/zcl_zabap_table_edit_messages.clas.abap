@@ -10,7 +10,8 @@ CLASS zcl_zabap_table_edit_messages DEFINITION
       confirm_data_loss IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
       validation_ok,
       save_ok,
-      save_error IMPORTING error TYPE string.
+      save_error IMPORTING error TYPE string,
+      display_error IMPORTING error_message TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -22,7 +23,11 @@ CLASS zcl_zabap_table_edit_messages DEFINITION
                                RETURNING VALUE(result) TYPE string .
 ENDCLASS.
 
-CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
+
+
+CLASS ZCL_ZABAP_TABLE_EDIT_MESSAGES IMPLEMENTATION.
+
+
   METHOD confirm_data_loss.
     continue = abap_true.
     IF was_data_changed = abap_true.
@@ -30,9 +35,26 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD confirm_save.
     continue = yes_no( CONV #( TEXT-002 ) ).
   ENDMETHOD.
+
+
+  METHOD display_error.
+    MESSAGE error_message TYPE 'E'.
+  ENDMETHOD.
+
+
+  METHOD save_error.
+    MESSAGE replace( val = TEXT-006 sub = '&1' with = error ) TYPE 'E'.
+  ENDMETHOD.
+
+
+  METHOD save_ok.
+    MESSAGE TEXT-005 TYPE 'S'.
+  ENDMETHOD.
+
 
   METHOD show_duplicates.
     FIELD-SYMBOLS <duplicates> TYPE table.
@@ -41,7 +63,7 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     DATA(popup_table) = NEW zcl_zabap_salv_report(  report_id = CONV #( table_name ) handle = 'DUPL' ).
     popup_table->alv_table->set_screen_popup( start_column = 1  end_column = 100  start_line = 1 end_line = 15 ).
     popup_table->set_header( CONV #( TEXT-003 ) ).
-    popup_table->set_data( exporting create_table_copy = abap_false CHANGING data_table = <duplicates> ).
+    popup_table->set_data( EXPORTING create_table_copy = abap_false CHANGING data_table = <duplicates> ).
     IF strlen( mandant_col_name ) > 0.
       popup_table->hide_column( CONV #( mandant_col_name ) ).
     ENDIF.
@@ -49,17 +71,16 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     popup_table->display_data( ).
   ENDMETHOD.
 
+
+  METHOD unexpected_validation_result.
+
+  ENDMETHOD.
+
+
   METHOD validation_ok.
     MESSAGE TEXT-004 TYPE 'S'.
   ENDMETHOD.
 
-  METHOD save_ok.
-    MESSAGE TEXT-005 TYPE 'S'.
-  ENDMETHOD.
-
-  METHOD save_error.
-    MESSAGE replace( val = TEXT-006 sub = '&1' with = error ) TYPE 'E'.
-  ENDMETHOD.
 
   METHOD yes_no.
     DATA answer TYPE c LENGTH 1.
@@ -68,9 +89,9 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
       EXPORTING
         titlebar              = title
         text_question         = question
-        text_button_1         = TEXT-Q01
+        text_button_1         = TEXT-q01
         icon_button_1         = '@0V@'  " Okay icon
-        text_button_2         = TEXT-Q02
+        text_button_2         = TEXT-q02
         icon_button_2         = '@0W@' " No icon
         default_button        = '1'
         display_cancel_button = ||
@@ -87,6 +108,7 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     confirmed = COND #( WHEN answer = '1' THEN abap_true ELSE abap_false ).
   ENDMETHOD.
 
+
   METHOD yes_no_cancel.
     DATA answer TYPE c LENGTH 1.
 
@@ -94,9 +116,9 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
       EXPORTING
         titlebar              = title
         text_question         = question
-        text_button_1         = TEXT-Q01
+        text_button_1         = TEXT-q01
         icon_button_1         = '@0V@'  " Okay icon
-        text_button_2         = TEXT-Q02
+        text_button_2         = TEXT-q02
         icon_button_2         = '@2O@' " Cancel icon
         default_button        = '1'
         display_cancel_button = |X|

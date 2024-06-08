@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_TAB_DATA</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Helper for table edit to take care of data</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_MODIFIED_DATA_NO_EXT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Display table to original tab - needed if fields were added</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>PREPARE_INITIAL_DATA</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Initial query from specified table</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>RESET_GRID</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Recreate table and field catalogue for grid</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>VALIDATE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Compare table and check fields with checktables</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>VALIDATE</CMPNAME>
+     <SCONAME>RESULT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Of type &lt;em&gt;c_validation&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>
