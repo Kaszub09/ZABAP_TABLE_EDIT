@@ -165,11 +165,11 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
             ENDIF.
           ENDIF.
         ENDIF.
-        clear_force_cd( force_marker = force_cd_on_all_fields table_name = table_name  ).
+        clear_force_cd( force_marker = force_cd_on_all_fields table_name = table_name ).
 
       CATCH cx_root INTO DATA(cx_root).
         "^Try to at least restore CD function-group if messed with earlier
-        clear_force_cd( force_marker = force_cd_on_all_fields table_name = table_name  ).
+        clear_force_cd( force_marker = force_cd_on_all_fields table_name = table_name ).
         RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = cx_root->get_longtext( ).
 
     ENDTRY.
@@ -177,7 +177,7 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
 
   METHOD zif_zabap_change_document~change_single.
     TRY.
-        set_force_cd( force_marker = force_cd_on_all_fields table_name = table_name  ).
+        set_force_cd( force_marker = force_cd_on_all_fields table_name = table_name ).
 
         "NEW ENTRY
         IF inserted IS BOUND.
@@ -263,7 +263,7 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
     table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = indicator_field_name struct = DATA(key_struct) ).
     table_fields->get_table_with_add_fields(
         EXPORTING additional_fields = VALUE #( ( name = indicator_field_name type = CAST #( cl_abap_structdescr=>describe_by_name( 'CDCHNGINDH' ) ) ) )
-        IMPORTING struct = DATA(struct) table = DATA(table) ).
+        IMPORTING table = DATA(table) ).
 
     CREATE DATA table_with_indicator TYPE HANDLE table.
 

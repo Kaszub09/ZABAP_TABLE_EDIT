@@ -91,7 +91,7 @@ CLASS tcl_non_db_methods IMPLEMENTATION.
     ASSIGN COMPONENT 'DEC_WITH_SIGN' OF STRUCTURE <table_with_indicator>[ 1 ] TO FIELD-SYMBOL(<dec_with_sign>).
     cl_abap_unit_assert=>assert_equals( exp = '-10' act = <dec_with_sign> ).
     ASSIGN COMPONENT 'DEC_WITH_SIGN' OF STRUCTURE <table_with_indicator>[ 2 ] TO <dec_with_sign>.
-    cl_abap_unit_assert=>assert_equals( exp = '-1' act = <dec_with_sign>  ).
+    cl_abap_unit_assert=>assert_equals( exp = '-1' act = <dec_with_sign> ).
     ASSIGN COMPONENT 'DEC_WITH_SIGN' OF STRUCTURE <table_with_indicator>[ 3 ] TO <dec_with_sign>.
     cl_abap_unit_assert=>assert_equals( exp = '1' act = <dec_with_sign> ).
   ENDMETHOD.
@@ -168,9 +168,7 @@ CLASS tcl_db_methods DEFINITION FINAL FOR TESTING RISK LEVEL HARMLESS DURATION S
       save_multi              FOR TESTING.
 
     CONSTANTS:
-      c_table_name  TYPE string VALUE 'ZABAP_TE_CD_TEST',
-      c_objectclass TYPE cdobjectcl VALUE 'OBJECTCLASS',
-      c_objectid    TYPE cdobjectv  VALUE 'CDOBJECTV'.
+      c_objectclass TYPE cdobjectcl VALUE 'OBJECTCLASS'.
 
     CLASS-DATA:
       table_name             TYPE string VALUE 'ZABAP_TE_CD_TEST',

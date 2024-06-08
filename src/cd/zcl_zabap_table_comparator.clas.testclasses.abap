@@ -38,8 +38,8 @@ CLASS tcl_zabap_table_comparator IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD update_mandant.
-    DATA(initial) = VALUE tt_zabap_te_cp_test( ( key1 = 'K1' ) ( mandt = sy-mandt key1 = 'K2' ) ( key1 = 'K3' )  ).
-    DATA(expected) = VALUE tt_zabap_te_cp_test( ( mandt = sy-mandt key1 = 'K1' ) ( mandt = sy-mandt key1 = 'K2' ) ( mandt = sy-mandt key1 = 'K3' )  ).
+    DATA(initial) = VALUE tt_zabap_te_cp_test( ( key1 = 'K1' ) ( mandt = sy-mandt key1 = 'K2' ) ( key1 = 'K3' ) ).
+    DATA(expected) = VALUE tt_zabap_te_cp_test( ( mandt = sy-mandt key1 = 'K1' ) ( mandt = sy-mandt key1 = 'K2' ) ( mandt = sy-mandt key1 = 'K3' ) ).
 
     cut->update_mandant( REF #( initial ) ).
 
@@ -66,7 +66,7 @@ CLASS tcl_zabap_table_comparator IMPLEMENTATION.
 
   METHOD detect_deleted.
     "Given entries were deleted
-    initial_data = VALUE #( ( key1 = 'K1' ) ( key1 = 'K2' ) ( key1 = 'K3' )  ).
+    initial_data = VALUE #( ( key1 = 'K1' ) ( key1 = 'K2' ) ( key1 = 'K3' ) ).
     modified_data = VALUE #( ( initial_data[ 2 ] ) ).
 
     when_tables_are_compared( ).
@@ -82,7 +82,7 @@ CLASS tcl_zabap_table_comparator IMPLEMENTATION.
   METHOD detect_duplicates.
     "Given duplicate entries were inserted
     initial_data = VALUE #( ( key1 = 'K2' ) ( key1 = 'K3' ) ).
-    modified_data = VALUE #( ( key1 = 'K3' ) ( key1 = 'K2' ) ( key1 = 'K2' val1 = 'VAL1'  ) ( key1 = 'K2' ) ).
+    modified_data = VALUE #( ( key1 = 'K3' ) ( key1 = 'K2' ) ( key1 = 'K2' val1 = 'VAL1' ) ( key1 = 'K2' ) ).
 
     when_tables_are_compared( ).
 
@@ -126,7 +126,7 @@ CLASS tcl_zabap_table_comparator IMPLEMENTATION.
 
   METHOD detect_changes_to_empty.
     "Given table was initially empty
-    initial_data = VALUE #(  ).
+    initial_data = VALUE #( ).
     modified_data = VALUE #( ( key1 = 'K2' ) ( key1 = 'K2' val1 = 'VAL1' ) ( key1 = 'K3' val1 = 'VAL' ) ).
 
     when_tables_are_compared( ).
@@ -142,7 +142,7 @@ CLASS tcl_zabap_table_comparator IMPLEMENTATION.
   METHOD detect_all_deleted.
     "Given everything was deleted
     initial_data = VALUE #( ( key1 = 'K1' ) ( key1 = 'K2' val1 = 'VAL1' ) ( key1 = 'K3' val1 = 'VAL' ) ).
-    modified_data = VALUE #(  ).
+    modified_data = VALUE #( ).
 
     when_tables_are_compared( ).
 

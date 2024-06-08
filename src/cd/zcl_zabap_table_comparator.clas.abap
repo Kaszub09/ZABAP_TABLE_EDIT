@@ -81,7 +81,7 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
       "Remember indexes and remove them from key tabs, because they will interfere with comparison
       ASSIGN COMPONENT index_field OF STRUCTURE <modified_keys>[ i_modified ] TO <modified_data_index>.
       ASSIGN COMPONENT index_field OF STRUCTURE <initial_keys>[ i_initial ] TO <initial_data_index>.
-      modified_data_index = COND #(  WHEN <modified_data_index> = 0 THEN modified_data_index ELSE <modified_data_index> ).
+      modified_data_index = COND #( WHEN <modified_data_index> = 0 THEN modified_data_index ELSE <modified_data_index> ).
       initial_data_index = COND #( WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
       CLEAR: <modified_data_index>, <initial_data_index>.
 
@@ -119,14 +119,14 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
     "Add skipped records
     WHILE i_initial <= i_max_initial.
       ASSIGN COMPONENT index_field OF STRUCTURE <initial_keys>[ i_initial ] TO <initial_data_index>.
-      initial_data_index = COND #(  WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
+      initial_data_index = COND #( WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
       APPEND <initial_data>[ initial_data_index ] TO <deleted>.
       i_initial = i_initial + 1.
     ENDWHILE.
 
     WHILE i_modified <= i_max_modified.
       ASSIGN COMPONENT index_field OF STRUCTURE <modified_keys>[ i_modified ] TO <modified_data_index>.
-      modified_data_index = COND #(  WHEN <modified_data_index> = 0 THEN modified_data_index ELSE <modified_data_index> ).
+      modified_data_index = COND #( WHEN <modified_data_index> = 0 THEN modified_data_index ELSE <modified_data_index> ).
       CLEAR: <modified_data_index>.
 
       "Check for key duplicates with previous record (not next since index is not yet removed)
@@ -164,7 +164,7 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
 
     "Create sort condition
     DATA sort_order TYPE abap_sortorder_tab.
-    table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(struct)  ).
+    table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(struct) ).
     LOOP AT struct->components REFERENCE INTO DATA(component).
       APPEND VALUE #( name = component->name descending = abap_false ) TO sort_order.
     ENDLOOP.
