@@ -17,12 +17,6 @@
      <LENGTH>27</LENGTH>
     </item>
     <item>
-     <ID>I</ID>
-     <KEY>001</KEY>
-     <ENTRY>Table doesn&apos;t exist</ENTRY>
-     <LENGTH>29</LENGTH>
-    </item>
-    <item>
      <ID>S</ID>
      <KEY>P_CD</KEY>
      <ENTRY>.</ENTRY>
@@ -37,11 +31,78 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_DISCDV</KEY>
+     <ENTRY>Disable CD button</ENTRY>
+     <LENGTH>25</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_DISEDI</KEY>
+     <ENTRY>Disable editing</ENTRY>
+     <LENGTH>23</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_DISTT</KEY>
+     <ENTRY>Disable text table if exists</ENTRY>
+     <LENGTH>36</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_TABNAM</KEY>
      <ENTRY>Table</ENTRY>
      <LENGTH>13</LENGTH>
     </item>
    </TPOOL>
+   <I18N_TPOOL>
+    <item>
+     <LANGUAGE>L</LANGUAGE>
+     <TEXTPOOL>
+      <item>
+       <ID>R</ID>
+       <ENTRY>Główny program do edycji tabel</ENTRY>
+       <LENGTH>70</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS</KEY>
+       <ENTRY>Klasa rozszerzająca program</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DISCDV</KEY>
+       <ENTRY>Wyłącz przycisk dok. zmian</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DISEDI</KEY>
+       <ENTRY>Wyłącz edycję</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DISTT</KEY>
+       <ENTRY>Wyłącz tabelę tekstową</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_TABNAM</KEY>
+       <ENTRY>Tabela</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CD</KEY>
+       <ENTRY>.</ENTRY>
+       <LENGTH>9</LENGTH>
+       <SPLIT>D</SPLIT>
+      </item>
+     </TEXTPOOL>
+    </item>
+   </I18N_TPOOL>
   </asx:values>
  </asx:abap>
 </abapGit>

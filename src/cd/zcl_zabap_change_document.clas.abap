@@ -1,58 +1,21 @@
-CLASS zcl_zabap_change_document DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_change_document DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
-    CONSTANTS:
-             c_change_doc_force_log_all_fie TYPE c LENGTH 40 VALUE 'ZABAP_CHANGE_DOC_FORCE_LOG_ALL_FIELDS'.
+    INTERFACES:
+      zif_zabap_change_document.
+
+    ALIASES:
+        create_table_with_indicator FOR zif_zabap_change_document~create_table_with_indicator.
 
     METHODS:
       "! @parameter objectclass | <p class="shorttext synchronized">Name of CD object (e.g. from SCDO)</p>
       "! @parameter objectid |  <p class="shorttext synchronized">Object ID inside CD object, e.g. matnr for MATERIAL class...</p>
-      "! Something that ties records from all tables in SCDO, like common doregin key, e.g. vbeln for ekko/ekpo
-      constructor IMPORTING objectclass TYPE cdobjectcl objectid TYPE cdobjectv,
-      "! Must be called first, before any changes
-      open RAISING zcx_zabap_table_edit,
-      "! <p class="shorttext synchronized">CD must be opened first</p>
-      "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC table</p>
-      "! @parameter table_name | <p class="shorttext synchronized">Create CD even on Data Elements without CD logflag</p>
-      "! @parameter inserted | <p class="shorttext synchronized">Must be ref to structure of type <em>table_name</em></p>
-      "! @parameter deleted | <p class="shorttext synchronized">Must be ref to structure of type <em>table_name</em></p>
-      "! @parameter before_modified | <p class="shorttext synchronized">Must be ref to structure of type <em>table_name</em></p>
-      "! @parameter modified | <p class="shorttext synchronized">Must be ref to structure of type <em>table_name</em></p>
-      change_single IMPORTING table_name TYPE string force_cd_on_all_fields TYPE abap_bool DEFAULT abap_false
-                              inserted TYPE REF TO data OPTIONAL deleted TYPE REF TO data OPTIONAL
-                              before_modified TYPE REF TO data OPTIONAL modified TYPE REF TO data OPTIONAL
-                              RAISING zcx_zabap_table_edit,
-      "! <p class="shorttext synchronized">CD must be opened first. All tables must be sorted.</p>
-      "! @parameter table_name | <p class="shorttext synchronized">Create CD even on Data Elements without CD logflag</p>
-      "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC table</p>
-      "! @parameter inserted | <p class="shorttext synchronized">Must be ref to table <em>table_name</em> with c field</p>
-      "! @parameter deleted | <p class="shorttext synchronized">Must be ref to table <em>table_name</em> with c field</p>
-      "! @parameter before_modified | <p class="shorttext synchronized">Must be ref to table <em>table_name</em> with c field</p>
-      "! @parameter modified | <p class="shorttext synchronized">Must be ref to table <em>table_name</em> with c field</p>
-      change_multi IMPORTING table_name TYPE string force_cd_on_all_fields TYPE abap_bool DEFAULT abap_false
-                             inserted TYPE REF TO data OPTIONAL deleted TYPE REF TO data OPTIONAL
-                             before_modified TYPE REF TO data OPTIONAL modified TYPE REF TO data OPTIONAL
-                             RAISING zcx_zabap_table_edit,
-      "! <p class="shorttext synchronized">Converts table to be used with <em>change_multi</em></p>
-      "! @parameter table_name | <p class="shorttext synchronized">Must be valid DDIC table</p>
-      "! @parameter original_table | <p class="shorttext synchronized">Must be ref to table <em>table_name</em></p>
-      "! @parameter indicator | <p class="shorttext synchronized">Value of added c field (D, I, U or space)</p>
-      "! @parameter sort | <p class="shorttext synchronized">Sort table by key fields</p>
-      "! @parameter table_with_indicator | <p class="shorttext synchronized">Ref to table <em>table_name</em> with added c field</p>
-      create_table_with_indicator IMPORTING table_name TYPE string original_table TYPE REF TO data indicator TYPE c DEFAULT space
-                                            sort TYPE abap_bool DEFAULT abap_false
-                                  RETURNING VALUE(table_with_indicator) TYPE REF TO data,
-      "! <p class="shorttext synchronized">CD must be opened first</p>
-      "! @parameter object_change_indicator | <p class="shorttext synchronized">For header entry only</p>
-      close IMPORTING date_of_change TYPE d DEFAULT sy-datum tcode TYPE syst_tcode DEFAULT sy-tcode time_of_change TYPE t DEFAULT sy-uzeit
-                      username TYPE syst_uname DEFAULT sy-uname object_change_indicator TYPE cdchngindh DEFAULT 'U'
-            EXPORTING changenumber TYPE cdchangenr
-            RAISING zcx_zabap_table_edit .
+      "! Something that ties records from all tables in SCDO, like common foreign key, e.g. vbeln for ekko/ekpo
+      constructor IMPORTING objectclass TYPE cdobjectcl objectid TYPE cdobjectv.
 
-  PROTECTED SECTION.
+    CONSTANTS:
+        c_change_doc_force_log_all_fie TYPE c LENGTH 40 VALUE 'ZABAP_CHANGE_DOC_FORCE_LOG_ALL_FIELDS'.
+
   PRIVATE SECTION.
     TYPES:
       BEGIN OF t_table_fields,
@@ -74,14 +37,12 @@ CLASS zcl_zabap_change_document DEFINITION
 ENDCLASS.
 
 CLASS zcl_zabap_change_document IMPLEMENTATION.
-
   METHOD constructor.
     me->objectclass = objectclass.
-    me->objectid = objectid.
+    me->objectid    = objectid.
   ENDMETHOD.
 
-
-  METHOD open.
+  METHOD zif_zabap_change_document~open.
     CALL FUNCTION 'CHANGEDOCUMENT_OPEN'
       EXPORTING
         objectclass      = objectclass
@@ -91,11 +52,12 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
         OTHERS           = 2.
 
     IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |CD open error { sy-subrc }|.
+      MESSAGE e001(zabap_change_doc) WITH sy-subrc INTO DATA(error_message).
+      RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_message.
     ENDIF.
   ENDMETHOD.
 
-  METHOD close.
+  METHOD zif_zabap_change_document~close.
     CALL FUNCTION 'CHANGEDOCUMENT_CLOSE'
       EXPORTING
         date_of_change          = date_of_change
@@ -114,38 +76,33 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
         open_missing            = 4                " No OPEN was performed
         position_insert_failed  = 5                " G/L account number
         OTHERS                  = 6.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Close CD error - { sy-subrc }|.
+
+    IF sy-subrc <> 0 AND ( sy-subrc <> 2 OR skip_exception_if_no_changes = abap_false ).
+      MESSAGE e002(zabap_change_doc) WITH sy-subrc INTO DATA(error_message).
+      RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_message.
     ENDIF.
   ENDMETHOD.
 
-  METHOD change_multi.
+  METHOD zif_zabap_change_document~change_multi.
     TRY.
         set_force_cd( force_marker = force_cd_on_all_fields table_name = table_name ).
 
-        FIELD-SYMBOLS:
-          <inserted>        TYPE table,
-          <deleted>         TYPE table,
-          <before_modified> TYPE table,
-          <modified>        TYPE table,
-          <empty>           TYPE table.
-
         "Empty since you always must pass both tables
         DATA(empty_table) = create_table_with_indicator( table_name = table_name original_table = create_empty_table( table_name ) ).
-        ASSIGN empty_table->* TO <empty>.
+        assign_to_table_fs empty_table->* <empty>.
 
         "NEW ENTRY
         IF inserted IS BOUND.
-          ASSIGN inserted->* TO <inserted>.
+          assign_to_table_fs inserted->* <inserted>.
           IF lines( <inserted> ) > 0.
             CALL FUNCTION 'CHANGEDOCUMENT_MULTIPLE_CASE2'
               EXPORTING
                 change_indicator       = 'I'             " Change flag
-                docu_insert            = abap_true
+                docu_insert            = save_fields-docu_insert
                 tablename              = CONV tabname( table_name )                 " Name of the table structure of object class
                 table_old              = <empty>
                 table_new              = <inserted>
-                docu_insert_if         = abap_true
+                docu_insert_if         = save_fields-docu_insert_if
               EXCEPTIONS
                 nametab_error          = 1
                 open_missing           = 2
@@ -153,23 +110,25 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
                 OTHERS                 = 4.
 
             IF sy-subrc <> 0.
-              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Insert multi CD error - { sy-subrc }|.
+
+              MESSAGE e003(zabap_change_doc) WITH sy-subrc INTO DATA(error_insert).
+              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_insert.
             ENDIF.
           ENDIF.
         ENDIF.
 
         "DELETED ENTRY
         IF deleted IS BOUND.
-          ASSIGN deleted->* TO <deleted>.
+          assign_to_table_fs deleted->* <deleted>.
           IF lines( <deleted> ) > 0.
             CALL FUNCTION 'CHANGEDOCUMENT_MULTIPLE_CASE2'
               EXPORTING
                 change_indicator       = 'D'             " Change flag
-                docu_delete            = abap_true
+                docu_delete            = save_fields-docu_delete
                 tablename              = CONV tabname( table_name )                  " Name of the table structure of object class
                 table_old              = <deleted>
                 table_new              = <empty>
-                docu_delete_if         = abap_true
+                docu_delete_if         = save_fields-docu_delete_if
               EXCEPTIONS
                 nametab_error          = 1
                 open_missing           = 2
@@ -177,15 +136,16 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
                 OTHERS                 = 4.
 
             IF sy-subrc <> 0.
-              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Delete multi CD error - { sy-subrc }|.
+              MESSAGE e004(zabap_change_doc) WITH sy-subrc INTO DATA(error_delete).
+              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_delete.
             ENDIF.
           ENDIF.
         ENDIF.
 
         "MODIFIED ENTRY
         IF modified IS BOUND AND before_modified IS BOUND.
-          ASSIGN modified->* TO <modified>.
-          ASSIGN before_modified->* TO <before_modified>.
+          assign_to_table_fs modified->* <modified>.
+          assign_to_table_fs before_modified->* <before_modified>.
           IF lines( <modified> ) > 0.
             CALL FUNCTION 'CHANGEDOCUMENT_MULTIPLE_CASE2'
               EXPORTING
@@ -200,7 +160,8 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
                 OTHERS                 = 4.
 
             IF sy-subrc <> 0.
-              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Change multi CD error - { sy-subrc }|.
+              MESSAGE e005(zabap_change_doc) WITH sy-subrc INTO DATA(error_change).
+              RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_change.
             ENDIF.
           ENDIF.
         ENDIF.
@@ -214,26 +175,20 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD change_single.
+  METHOD zif_zabap_change_document~change_single.
     TRY.
         set_force_cd( force_marker = force_cd_on_all_fields table_name = table_name  ).
 
-        FIELD-SYMBOLS:
-          <inserted>        TYPE any,
-          <deleted>         TYPE any,
-          <before_modified> TYPE any,
-          <modified>        TYPE any.
-
         "NEW ENTRY
         IF inserted IS BOUND.
-          ASSIGN inserted->* TO <inserted>.
-
+          assign_to_any_fs inserted->* <inserted>.
           CALL FUNCTION 'CHANGEDOCUMENT_SINGLE_CASE'
             EXPORTING
               change_indicator       = 'I'             " Change flag
-              docu_insert            = 'X'
+              docu_insert            = save_fields-docu_insert
               tablename              = CONV tabname( table_name )                  " Name of the table structure of object class
               workarea_new           = <inserted>
+              docu_insert_if         = save_fields-docu_insert_if
             EXCEPTIONS
               nametab_error          = 1                " Error when calling NAMETAB_GET
               open_missing           = 2                " No OPEN was performed
@@ -241,21 +196,22 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
               OTHERS                 = 4.
 
           IF sy-subrc <> 0.
-            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Insert single CD error - { sy-subrc }|.
+            MESSAGE e006(zabap_change_doc) WITH sy-subrc INTO DATA(error_insert).
+            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_insert.
           ENDIF.
 
         ENDIF.
 
         "DELETED ENTRY
         IF deleted IS BOUND.
-          ASSIGN deleted->* TO <deleted>.
-
+          assign_to_any_fs deleted->* <deleted>.
           CALL FUNCTION 'CHANGEDOCUMENT_SINGLE_CASE'
             EXPORTING
               change_indicator       = 'D'             " Change flag
-              docu_delete            = 'X'
+              docu_delete            = save_fields-docu_delete
               tablename              = CONV tabname( table_name )                 " Name of the table structure of object class
               workarea_old           = <deleted>
+              docu_delete_if         = save_fields-docu_delete_if
             EXCEPTIONS
               nametab_error          = 1                " Error when calling NAMETAB_GET
               open_missing           = 2                " No OPEN was performed
@@ -263,15 +219,16 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
               OTHERS                 = 4.
 
           IF sy-subrc <> 0.
-            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Delete single CD error - { sy-subrc }|.
+            MESSAGE e007(zabap_change_doc) WITH sy-subrc INTO DATA(error_delete).
+            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_delete.
           ENDIF.
 
         ENDIF.
 
         "MODIFIED ENTRY
         IF modified IS BOUND AND before_modified IS BOUND.
-          ASSIGN modified->* TO <modified>.
-          ASSIGN before_modified->* TO <before_modified>.
+          assign_to_any_fs modified->* <modified>.
+          assign_to_any_fs before_modified->* <before_modified>.
 
           CALL FUNCTION 'CHANGEDOCUMENT_SINGLE_CASE'
             EXPORTING
@@ -286,7 +243,8 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
               OTHERS                 = 4.
 
           IF sy-subrc <> 0.
-            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |Change single CD error - { sy-subrc }|.
+            MESSAGE e008(zabap_change_doc) WITH sy-subrc INTO DATA(error_change).
+            RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = error_change.
           ENDIF.
         ENDIF.
 
@@ -302,29 +260,25 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
 
   METHOD create_table_with_indicator.
     DATA(table_fields) = get_table_fields( table_name = table_name ).
-    table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = DATA(available_field_name) struct = data(key_struct) ).
+    table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = indicator_field_name struct = DATA(key_struct) ).
     table_fields->get_table_with_add_fields(
-        EXPORTING additional_fields = VALUE #( ( name = available_field_name type = CAST #( cl_abap_structdescr=>describe_by_name( 'CDCHNGINDH' ) ) ) )
+        EXPORTING additional_fields = VALUE #( ( name = indicator_field_name type = CAST #( cl_abap_structdescr=>describe_by_name( 'CDCHNGINDH' ) ) ) )
         IMPORTING struct = DATA(struct) table = DATA(table) ).
 
     CREATE DATA table_with_indicator TYPE HANDLE table.
 
-    FIELD-SYMBOLS:
-      <table_with_indicator> TYPE table,
-      <original_table>       TYPE table.
-    ASSIGN table_with_indicator->* TO <table_with_indicator>.
-    ASSIGN original_table->* TO <original_table>.
-
+    assign_to_table_fs table_with_indicator->* <table_with_indicator>.
+    assign_to_table_fs original_table->* <original_table>.
     <table_with_indicator> = CORRESPONDING #( <original_table> ).
 
     LOOP AT <table_with_indicator> ASSIGNING FIELD-SYMBOL(<row>).
-      ASSIGN COMPONENT available_field_name OF STRUCTURE <row> TO FIELD-SYMBOL(<change_indicator>).
+      ASSIGN COMPONENT indicator_field_name OF STRUCTURE <row> TO FIELD-SYMBOL(<change_indicator>).
       <change_indicator> = indicator.
     ENDLOOP.
 
     IF sort = abap_true.
-      "Create sort condition
-      DATA sort_order TYPE abap_sortorder_tab .
+      "Create sort condition - had problems with just 'SORT <> DESCSENDING.' and decimals key fields
+      DATA sort_order TYPE abap_sortorder_tab.
       LOOP AT key_struct->components REFERENCE INTO DATA(component).
         APPEND VALUE #( name = component->name descending = abap_false ) TO sort_order.
       ENDLOOP.
@@ -348,37 +302,38 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD clear_force_cd.
-    IF force_marker = abap_true.
-      FIELD-SYMBOLS: <tabinfo> TYPE table.
-      ASSIGN ('(SAPLSCD0)TABINFO') TO <tabinfo>.
-
-      IF <tabinfo> IS ASSIGNED.
-        DATA(where_clause) = |tabname = '{ table_name }' AND logflag = 'F'|.
-        LOOP AT <tabinfo> ASSIGNING FIELD-SYMBOL(<tabinfo_row>) WHERE (where_clause).
-          ASSIGN COMPONENT 'LOGFLAG' OF STRUCTURE <tabinfo_row> TO FIELD-SYMBOL(<logflag>).
-          CLEAR: <logflag>.
-        ENDLOOP.
-      ENDIF.
-
-      EXPORT zabap_force_logging = abap_false zabap_table_name = table_name TO MEMORY ID c_change_doc_force_log_all_fie.
+    IF force_marker = abap_false.
+      RETURN.
     ENDIF.
+
+    assign_to_table_fs ('(SAPLSCD0)TABINFO') <tabinfo>.
+
+    IF <tabinfo> IS ASSIGNED.
+      DATA(where_clause) = |tabname = '{ table_name }' AND logflag = 'F'|.
+      LOOP AT <tabinfo> ASSIGNING FIELD-SYMBOL(<tabinfo_row>) WHERE (where_clause).
+        ASSIGN COMPONENT 'LOGFLAG' OF STRUCTURE <tabinfo_row> TO FIELD-SYMBOL(<logflag>).
+        CLEAR: <logflag>.
+      ENDLOOP.
+    ENDIF.
+
+    EXPORT zabap_force_logging = abap_false zabap_table_name = table_name TO MEMORY ID c_change_doc_force_log_all_fie.
   ENDMETHOD.
 
   METHOD set_force_cd.
-    IF force_marker = abap_true.
-      FIELD-SYMBOLS: <tabinfo> TYPE table.
-      ASSIGN ('(SAPLSCD0)TABINFO') TO <tabinfo>.
-
-      IF <tabinfo> IS ASSIGNED.
-        DATA(where_clause) = |tabname = '{ table_name }' AND logflag = space|.
-        LOOP AT <tabinfo> ASSIGNING FIELD-SYMBOL(<tabinfo_row>) WHERE (where_clause).
-          ASSIGN COMPONENT 'LOGFLAG' OF STRUCTURE <tabinfo_row> TO FIELD-SYMBOL(<logflag>).
-          <logflag> = 'F'.
-        ENDLOOP.
-      ENDIF.
-
-      EXPORT zabap_force_logging = abap_true zabap_table_name = table_name TO MEMORY ID c_change_doc_force_log_all_fie.
+    IF force_marker = abap_false.
+      RETURN.
     ENDIF.
-  ENDMETHOD.
 
+    assign_to_table_fs ('(SAPLSCD0)TABINFO') <tabinfo>.
+
+    IF <tabinfo> IS ASSIGNED.
+      DATA(where_clause) = |tabname = '{ table_name }' AND logflag = space|.
+      LOOP AT <tabinfo> ASSIGNING FIELD-SYMBOL(<tabinfo_row>) WHERE (where_clause).
+        ASSIGN COMPONENT 'LOGFLAG' OF STRUCTURE <tabinfo_row> TO FIELD-SYMBOL(<logflag>).
+        <logflag> = 'F'.
+      ENDLOOP.
+    ENDIF.
+
+    EXPORT zabap_force_logging = abap_true zabap_table_name = table_name TO MEMORY ID c_change_doc_force_log_all_fie.
+  ENDMETHOD.
 ENDCLASS.

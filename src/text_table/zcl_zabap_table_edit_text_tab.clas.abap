@@ -48,6 +48,8 @@ CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE
           mandant TYPE forfield,
         END OF field,
         key_fields_only TYPE abap_bool,
+
+        db              TYPE REF TO zif_zabap_table_edit_db,
       END OF t_text_table.
 
     METHODS:
@@ -60,7 +62,7 @@ CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE
                           RAISING zcx_zabap_table_edit.
 
     DATA:
-      ttable_data TYPE t_text_table,
+      ttable TYPE t_text_table,
       config      TYPE zif_zabap_table_edit_text_tab=>t_config.
 ENDCLASS.
 
@@ -71,39 +73,40 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
 
     get_ttable_info_from_db( ).
 
-    ttable_data-locker = NEW #( ttable_data-name ).
+    ttable-locker = NEW #( ttable-name ).
 
-    DATA(table_fields) = NEW zcl_zabap_table_fields( ttable_data-name ).
-    ttable_data-field-mandant = table_fields->mandant_field.
-    ttable_data-key_fields_only = table_fields->key_fields_only.
+    DATA(table_fields) = NEW zcl_zabap_table_fields( ttable-name ).
+    ttable-field-mandant = table_fields->mandant_field.
+    ttable-key_fields_only = table_fields->key_fields_only.
 
-    LOOP AT ttable_data-fields REFERENCE INTO DATA(field_lang) WHERE keyflag = abap_true AND domname = 'SPRAS'.
-      ttable_data-field-lang = field_lang->fieldname.
+    LOOP AT ttable-fields REFERENCE INTO DATA(field_lang) WHERE keyflag = abap_true AND domname = 'SPRAS'.
+      ttable-field-lang = field_lang->fieldname.
       EXIT.
     ENDLOOP.
 
-    ttable_data-mapping_table = VALUE #( FOR key IN ttable_data-key_mapping ( kind = 1 srcname = key-original dstname = key-text ) ).
+    ttable-mapping_table = VALUE #( FOR key IN ttable-key_mapping ( kind = 1 srcname = key-original dstname = key-text ) ).
+    ttable-db = zcl_zabap_table_edit_factory=>get_db( ).
   ENDMETHOD.
 
   METHOD get_ttable_info_from_db.
     SELECT SINGLE tabname, fieldname FROM dd08l
       WHERE checktable = @config-table_name AND frkart = 'TEXT'
-      INTO ( @ttable_data-name, @DATA(fieldname) ).
+      INTO ( @ttable-name, @DATA(fieldname) ).
 
     SELECT * FROM dd03l
-      WHERE tabname = @ttable_data-name
-      INTO CORRESPONDING FIELDS OF TABLE @ttable_data-fields.
+      WHERE tabname = @ttable-name
+      INTO CORRESPONDING FIELDS OF TABLE @ttable-fields.
 
     SELECT checkfield AS original, forkey AS text
       FROM dd05p
-      WHERE tabname = @ttable_data-name AND fieldname = @fieldname
-      INTO CORRESPONDING FIELDS OF TABLE @ttable_data-key_mapping.
+      WHERE tabname = @ttable-name AND fieldname = @fieldname
+      INTO CORRESPONDING FIELDS OF TABLE @ttable-key_mapping.
   ENDMETHOD.
 
   METHOD append_additional_fields.
-    LOOP AT ttable_data-fields REFERENCE INTO DATA(field) WHERE keyflag IS INITIAL.
+    LOOP AT ttable-fields REFERENCE INTO DATA(field) WHERE keyflag IS INITIAL.
       APPEND VALUE #( name = field->fieldname type = CAST #( cl_abap_datadescr=>describe_by_name(
-        |{ ttable_data-name }-{ field->fieldname }| ) ) ) TO additional_fields.
+        |{ ttable-name }-{ field->fieldname }| ) ) ) TO additional_fields.
     ENDLOOP.
   ENDMETHOD.
 
@@ -126,23 +129,23 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   METHOD get_text_elements_cache.
     assign_to_table_fs extended->* <extended>.
     "Build where clause
-    DATA(where) = |{ ttable_data-field-lang } = @SY-LANGU|.
-    LOOP AT ttable_data-key_mapping REFERENCE INTO DATA(key) WHERE NOT text = ttable_data-field-mandant.
-      where = |{ where } AND { ttable_data-name }~{ key->text } = @<extended>-{ key->original }|. "<extended> must be the same as in extended assignment name
+    DATA(where) = |{ ttable-field-lang } = @SY-LANGU|.
+    LOOP AT ttable-key_mapping REFERENCE INTO DATA(key) WHERE NOT text = ttable-field-mandant.
+      where = |{ where } AND { ttable-name }~{ key->text } = @<extended>-{ key->original }|. "<extended> must be the same as in extended assignment name
     ENDLOOP.
 
     "Create text table to store data
     DATA text_table TYPE REF TO data.
-    CREATE DATA text_table TYPE TABLE OF (ttable_data-name).
+    CREATE DATA text_table TYPE TABLE OF (ttable-name).
     assign_to_table_fs text_table->* <text_table>.
 
-    SELECT * FROM (ttable_data-name)
+    SELECT * FROM (ttable-name)
       FOR ALL ENTRIES IN @<extended>
       WHERE (where)
       INTO CORRESPONDING FIELDS OF TABLE @<text_table>.
 
     "Get structs needed for cache
-    DATA(table_fields) = NEW zcl_zabap_table_fields( ttable_data-name ).
+    DATA(table_fields) = NEW zcl_zabap_table_fields( ttable-name ).
     table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(key_struct) ).
     table_fields->get_non_keys_structure(  IMPORTING struct = DATA(non_key_struct) ).
 
@@ -161,7 +164,7 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD map_original_key_to_string.
-    LOOP AT ttable_data-key_mapping REFERENCE INTO DATA(key_mapping).
+    LOOP AT ttable-key_mapping REFERENCE INTO DATA(key_mapping).
       ASSIGN COMPONENT key_mapping->original OF STRUCTURE row TO FIELD-SYMBOL(<component_value>).
       string_key = |{ string_key }{ <component_value> }|.
     ENDLOOP.
@@ -173,7 +176,7 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
     assign_to_table_fs initial_text->* <initial_text>.
     assign_to_table_fs extended_text->* <extended_text>.
 
-    DATA(comparator) = NEW zcl_zabap_table_comparator( ttable_data-name ).
+    DATA(comparator) = NEW zcl_zabap_table_comparator( ttable-name ).
     comparator->compare_tables( EXPORTING initial_data = initial_text modified_data = extended_text
         IMPORTING inserted = DATA(inserted) deleted = DATA(deleted)
                   before_modified = DATA(before_modified) modified = DATA(modified) ).
@@ -183,24 +186,22 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
 
     "Build where clause for deletion - we need to delete all languages
     DATA(where) = ||.
-    LOOP AT ttable_data-fields REFERENCE INTO DATA(key) WHERE fieldname = ttable_data-field-mandant.
-      where = |{ where } AND { ttable_data-name }~{ key->fieldname } = @<extended>-{ key->fieldname }|.
+    LOOP AT ttable-fields REFERENCE INTO DATA(key) WHERE fieldname = ttable-field-mandant.
+      where = |{ where } AND { ttable-name }~{ key->fieldname } = @<extended>-{ key->fieldname }|.
     ENDLOOP.
     where = substring( val = where off =  5 len = strlen( where ) - 5 ). "remove initial AND
 
     "Actual db changes
     LOOP AT <deleted> ASSIGNING FIELD-SYMBOL(<row_to_delete>).
-      DELETE FROM (ttable_data-name) WHERE (where).
+      ttable-db->delete_data_where( table = ttable-name where = where ).
     ENDLOOP.
 
-    IF ttable_data-key_fields_only = abap_true.
+    IF ttable-key_fields_only = abap_true.
       "^Can't use modify if all fields are key fields. Also in this case it's impossible to have modified entries.
-      INSERT (ttable_data-name) FROM TABLE @<inserted> ACCEPTING DUPLICATE KEYS.
-
+      ttable-db->insert_data( table = ttable-name table_data = <inserted> ).
     ELSE.
-      MODIFY (ttable_data-name) FROM TABLE @<modified>.
-      MODIFY (ttable_data-name) FROM TABLE @<inserted>.
-
+      ttable-db->modify_data( table = ttable-name table_data = <modified> ).
+      ttable-db->modify_data( table = ttable-name table_data = <inserted> ).
     ENDIF.
 
     "Change doc creation
@@ -210,29 +211,29 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD map_to_text_table.
-    CREATE DATA text_table TYPE TABLE OF (ttable_data-name).
+    CREATE DATA text_table TYPE TABLE OF (ttable-name).
     assign_to_table_fs table->* <table>.
     assign_to_table_fs text_table->* <text_table>.
 
-    cl_abap_corresponding=>create( source = <table> destination = <text_table> mapping = ttable_data-mapping_table
+    cl_abap_corresponding=>create( source = <table> destination = <text_table> mapping = ttable-mapping_table
        )->execute( EXPORTING source = <table> CHANGING destination = <text_table> ).
 
     LOOP AT <text_table> ASSIGNING FIELD-SYMBOL(<row>).
-      ASSIGN COMPONENT ttable_data-field-lang OF STRUCTURE <row> TO FIELD-SYMBOL(<language>).
+      ASSIGN COMPONENT ttable-field-lang OF STRUCTURE <row> TO FIELD-SYMBOL(<language>).
       <language> = sy-langu.
     ENDLOOP.
   ENDMETHOD.
 
   METHOD create_change_doc.
-    DATA(cd) = NEW zcl_zabap_change_document( objectclass = CONV #( config-table_name ) objectid = CONV #( ttable_data-name ) ).
+    DATA(cd) = ZCL_ZABAP_TABLE_EDIT_FACTORY=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( ttable-name ) ).
 
     cd->open( ).
     cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )
-                       table_name = ttable_data-name
-                       deleted = cd->create_table_with_indicator( table_name = ttable_data-name original_table = deleted indicator = 'D' )
-                       inserted = cd->create_table_with_indicator( table_name = ttable_data-name original_table = inserted indicator = 'I' )
-                       before_modified = cd->create_table_with_indicator( table_name = ttable_data-name original_table = before_modified indicator = 'U' )
-                       modified = cd->create_table_with_indicator( table_name = ttable_data-name original_table = modified  ) ).
+                       table_name = ttable-name
+                       deleted = cd->create_table_with_indicator( table_name = ttable-name original_table = deleted indicator = 'D' )
+                       inserted = cd->create_table_with_indicator( table_name = ttable-name original_table = inserted indicator = 'I' )
+                       before_modified = cd->create_table_with_indicator( table_name = ttable-name original_table = before_modified indicator = 'U' )
+                       modified = cd->create_table_with_indicator( table_name = ttable-name original_table = modified  ) ).
 
     "Some SAP magic to get initial t-code
     DATA: original_tcode TYPE sytcode.
@@ -241,10 +242,10 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_text_tab~lock_table.
-    locked = ttable_data-locker->lock_table( IMPORTING error_message  = error_message  ).
+    locked = ttable-locker->lock_table( IMPORTING error_message = error_message ).
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_text_tab~unlock_table.
-    ttable_data-locker->unlock_table( ).
+    ttable-locker->unlock_table( ).
   ENDMETHOD.
 ENDCLASS.

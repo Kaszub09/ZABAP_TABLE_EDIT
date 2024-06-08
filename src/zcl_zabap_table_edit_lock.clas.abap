@@ -1,7 +1,4 @@
-CLASS zcl_zabap_table_edit_lock DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_table_edit_lock DEFINITION PUBLIC FINAL CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS:
@@ -9,14 +6,10 @@ CLASS zcl_zabap_table_edit_lock DEFINITION
       lock_table EXPORTING error_message TYPE string RETURNING VALUE(locked) TYPE abap_bool,
       unlock_table.
 
-  PROTECTED SECTION.
   PRIVATE SECTION.
     DATA:
-      table_name      TYPE tabname .
-
+      table_name TYPE tabname.
 ENDCLASS.
-
-
 
 CLASS zcl_zabap_table_edit_lock IMPLEMENTATION.
   METHOD constructor.
@@ -42,20 +35,17 @@ CLASS zcl_zabap_table_edit_lock IMPLEMENTATION.
     IF sy-subrc <> 0.
       MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO error_message.
     ENDIF.
-
   ENDMETHOD.
 
   METHOD unlock_table.
     CALL FUNCTION 'DEQUEUE_E_TABLE'
       EXPORTING
-       mode_rstable = 'E'
-        tabname = table_name
-       x_tabname    = space
-       x_varkey     = space
-       _scope  = '2'
-       _synchron    = space
-       _collect     = ' '
-      .
+        mode_rstable = 'E'
+        tabname      = table_name
+        x_tabname    = space
+        x_varkey     = space
+        _scope       = '2'
+        _synchron    = space
+        _collect     = ' '.
   ENDMETHOD.
-
 ENDCLASS.

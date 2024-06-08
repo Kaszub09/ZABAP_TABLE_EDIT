@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_IF_CHAIN</CLSNAME>
+    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_DB</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Class to extend for easy chaining of interfaces</DESCRIPT>
+    <DESCRIPT>Database interaction</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

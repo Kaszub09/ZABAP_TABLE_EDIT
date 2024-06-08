@@ -43,6 +43,8 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PUBLIC.
         comparator        TYPE REF TO zcl_zabap_table_comparator,
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
         maintenance_view  TYPE REF TO zif_zabap_table_edit_text_tab,
+
+        db                TYPE REF TO zif_zabap_table_edit_db,
       END OF t_table.
 
     METHODS:
@@ -89,6 +91,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
 
     prepare_initial_data( ).
+    table-db = zcl_zabap_table_edit_factory=>get_db( ).
   ENDMETHOD.
   METHOD setup_grid.
     grid = NEW cl_gui_alv_grid( zcl_zabap_screen_with_containe=>get_container( ) ).
@@ -211,15 +214,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
         assign_to_table_fs compared-deleted->* <deleted>.
 
         "Actual db changes
-        DELETE (config-table_name) FROM TABLE @<deleted>.
+        table-db->delete_data( table = config-table_name table_data = <deleted> ).
         IF table-fields->key_fields_only = abap_true.
           "^Can't use modify if all fields are key fields. Also in this case it's impossible to have modified entries.
-          INSERT (config-table_name) FROM TABLE @<inserted> ACCEPTING DUPLICATE KEYS.
-
+          table-db->insert_data( table = config-table_name table_data = <inserted> ).
         ELSE.
-          MODIFY (config-table_name) FROM TABLE @<modified>.
-          MODIFY (config-table_name) FROM TABLE @<inserted>.
-
+          table-db->modify_data( table = config-table_name table_data = <modified> ).
+          table-db->modify_data( table = config-table_name table_data = <inserted> ).
         ENDIF.
 
         "Change doc creation
@@ -250,7 +251,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD create_change_doc.
-    DATA(cd) = NEW zcl_zabap_change_document( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
+    DATA(cd) = ZCL_ZABAP_TABLE_EDIT_FACTORY=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
 
     cd->open( ).
     cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )

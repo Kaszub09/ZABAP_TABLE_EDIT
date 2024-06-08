@@ -17,7 +17,7 @@ START-OF-SELECTION.
   "Check if it's correct table
   SELECT SINGLE tabclass FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tabclass).
   IF tabclass <> 'TRANSP'.
-    MESSAGE TEXT-001 TYPE 'S' DISPLAY LIKE 'E'.
+    MESSAGE s001(zabap_table_edit) DISPLAY LIKE 'E'.
     LEAVE LIST-PROCESSING.
   ENDIF.
 

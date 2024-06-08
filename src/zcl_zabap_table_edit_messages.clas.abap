@@ -9,6 +9,7 @@ CLASS zcl_zabap_table_edit_messages DEFINITION
       confirm_save RETURNING VALUE(continue) TYPE abap_bool,
       confirm_data_loss IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
       validation_ok,
+      unexpected_validation_result,
       save_ok,
       save_error IMPORTING error TYPE string,
       display_error IMPORTING error_message TYPE string.

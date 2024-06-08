@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Messages for Table edit package</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Table or maintenance view doesn&apos;t exist</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Open Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Close Change Document error &amp;1</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

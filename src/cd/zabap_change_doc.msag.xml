@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Messages for change document class</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Open Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Close Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Insert multi Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Delete multi Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Change multi Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Insert single Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Delete single Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Change single Change Document error &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
+     <MSGNR>009</MSGNR>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

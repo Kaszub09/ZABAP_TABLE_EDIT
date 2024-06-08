@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD04V>
+    <ROLLNAME>ZABAP_TABLE_EDIT_CD_TRACK</ROLLNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <LOGFLAG>X</LOGFLAG>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>20</SCRLEN2>
+    <SCRLEN3>40</SCRLEN3>
+    <DDTEXT>Data element with change tracking</DDTEXT>
+    <REPTEXT>Data element with change tracking</REPTEXT>
+    <SCRTEXT_S>Data eleme</SCRTEXT_S>
+    <SCRTEXT_M>Data element with ch</SCRTEXT_M>
+    <SCRTEXT_L>Data element with change tracking</SCRTEXT_L>
+    <DTELMASTER>E</DTELMASTER>
+    <DATATYPE>CHAR</DATATYPE>
+    <LENG>000006</LENG>
+    <OUTPUTLEN>000006</OUTPUTLEN>
+   </DD04V>
+  </asx:values>
+ </asx:abap>
+</abapGit>

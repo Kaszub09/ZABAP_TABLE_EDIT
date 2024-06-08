@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_INTF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOINTERF>
+    <CLSNAME>ZIF_ZABAP_CHANGE_DOCUMENT</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Interface for change document</DESCRIPT>
+    <EXPOSURE>2</EXPOSURE>
+    <STATE>1</STATE>
+    <UNICODE>X</UNICODE>
+   </VSEOINTERF>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>CD must be opened first. All tables must be sorted.</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>CD must be opened first</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>CLOSE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>CD must be opened first</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Converts table to be used with &lt;em&gt;change_multi&lt;/em&gt;</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>BEFORE_MODIFIED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to table &lt;em&gt;table_name&lt;/em&gt; with c field</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>DELETED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to table &lt;em&gt;table_name&lt;/em&gt; with c field</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>FORCE_CD_ON_ALL_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create CD even on Data Elements without CD logflag</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>INSERTED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to table &lt;em&gt;table_name&lt;/em&gt; with c field</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>MODIFIED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to table &lt;em&gt;table_name&lt;/em&gt; with c field</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>SAVE_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Whether to save individual fields on deletion or insertion</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_MULTI</CMPNAME>
+     <SCONAME>TABLE_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be valid DDIC table</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>BEFORE_MODIFIED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to structure of type &lt;em&gt;table_name&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>DELETED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to structure of type &lt;em&gt;table_name&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>FORCE_CD_ON_ALL_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Create CD even on Data Elements without CD logflag</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>INSERTED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to structure of type &lt;em&gt;table_name&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>MODIFIED</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to structure of type &lt;em&gt;table_name&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>SAVE_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Whether to save individual fields on deletion or insertion</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CHANGE_SINGLE</CMPNAME>
+     <SCONAME>TABLE_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be valid DDIC table</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CLOSE</CMPNAME>
+     <SCONAME>OBJECT_CHANGE_INDICATOR</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>For header entry only</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CLOSE</CMPNAME>
+     <SCONAME>SKIP_EXCEPTION_IF_NO_CHANGES</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Don&apos;t raise exception if no position inserted</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>INDICATOR</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Value of added c field (D, I, U or space)</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>INDICATOR_FIELD_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Name of added c field</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>ORIGINAL_TABLE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be ref to table &lt;em&gt;table_name&lt;/em&gt;</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>SORT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Sort table by key fields</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>TABLE_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Must be valid DDIC table</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CREATE_TABLE_WITH_INDICATOR</CMPNAME>
+     <SCONAME>TABLE_WITH_INDICATOR</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Ref to table &lt;em&gt;table_name&lt;/em&gt; with added c field</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

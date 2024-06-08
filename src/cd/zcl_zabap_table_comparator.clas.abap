@@ -1,7 +1,4 @@
-CLASS zcl_zabap_table_comparator DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC.
+CLASS zcl_zabap_table_comparator DEFINITION PUBLIC FINAL CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS:
@@ -10,7 +7,7 @@ CLASS zcl_zabap_table_comparator DEFINITION
       constructor IMPORTING table_name TYPE string table_fields TYPE REF TO zcl_zabap_table_fields OPTIONAL,
       "! <p class="shorttext synchronized">All tables must be of type table_name used in constructor</p>
       "! @parameter duplicates | <p class="shorttext synchronized">Record is added per detected duplicate with previous. So...</p>
-      "! [number of duplicates] = [number of same recods] - 1.
+      "! [number of duplicates] = [number of same records] - 1.
       compare_tables IMPORTING initial_data TYPE REF TO data modified_data TYPE REF TO data
                      EXPORTING duplicates TYPE REF TO data inserted TYPE REF TO data deleted TYPE REF TO data
                                before_modified TYPE REF TO data modified TYPE REF TO data,
@@ -20,18 +17,16 @@ CLASS zcl_zabap_table_comparator DEFINITION
   PRIVATE SECTION.
     METHODS:
       prepare_key_tables IMPORTING index_field TYPE string initial_data TYPE table modified_data TYPE table
-                        CHANGING initial_keys TYPE table modified_keys TYPE table .
+                        CHANGING initial_keys TYPE table modified_keys TYPE table.
 
     DATA:
       table_fields TYPE REF TO zcl_zabap_table_fields,
       table_name   TYPE string.
-
 ENDCLASS.
-
 
 CLASS zcl_zabap_table_comparator IMPLEMENTATION.
   METHOD constructor.
-    me->table_name = table_name.
+    me->table_name   = table_name.
     me->table_fields = COND #( WHEN table_fields IS SUPPLIED THEN table_fields ELSE NEW zcl_zabap_table_fields( table_name ) ).
   ENDMETHOD.
 
@@ -40,31 +35,22 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
     " Data ref, field-symbols declaration/creation/assignment
     "-----------------------------------------------------------------
 
-    "Tables for records. Amount of unnecessary typing is ridiculous.
+    "Tables for records. Amount of unnecessary typing is ridiculous. => got some help from macro
     CREATE DATA before_modified TYPE TABLE OF (table_name).
     CREATE DATA modified TYPE TABLE OF (table_name).
     CREATE DATA inserted TYPE TABLE OF (table_name).
     CREATE DATA deleted TYPE TABLE OF (table_name).
     CREATE DATA duplicates TYPE TABLE OF (table_name).
-    FIELD-SYMBOLS <before_modified> TYPE table.
-    FIELD-SYMBOLS <modified>        TYPE table.
-    FIELD-SYMBOLS <inserted>        TYPE table.
-    FIELD-SYMBOLS <deleted>         TYPE table.
-    FIELD-SYMBOLS <duplicates>      TYPE table.
-    ASSIGN before_modified->* TO <before_modified>.
-    ASSIGN modified->* TO <modified>.
-    ASSIGN inserted->* TO <inserted>.
-    ASSIGN deleted->* TO <deleted>.
-    ASSIGN duplicates->* TO <duplicates>.
+    assign_to_table_fs before_modified->* <before_modified>.
+    assign_to_table_fs modified->* <modified>.
+    assign_to_table_fs inserted->* <inserted>.
+    assign_to_table_fs deleted->* <deleted>.
+    assign_to_table_fs duplicates->* <duplicates>.
     "--------------------------------------------------
-
     "All records tables.
-    FIELD-SYMBOLS <initial_data> TYPE table.
-    FIELD-SYMBOLS <modified_data> TYPE table.
-    ASSIGN modified_data->* TO <modified_data>.
-    ASSIGN initial_data->* TO <initial_data>.
+    assign_to_table_fs modified_data->* <modified_data>.
+    assign_to_table_fs initial_data->* <initial_data>.
     "--------------------------------------------------
-
     "Create key tables. Again, ridiculous.
     table_fields->get_keys_structure( EXPORTING include_index_field = abap_true
         IMPORTING struct = DATA(struct) table = DATA(table) index_field_name = DATA(index_field) ).
@@ -73,13 +59,9 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
     DATA modified_keys TYPE REF TO data.
     CREATE DATA initial_keys TYPE HANDLE table.
     CREATE DATA modified_keys TYPE HANDLE table.
-    FIELD-SYMBOLS <initial_keys> TYPE table.
-    FIELD-SYMBOLS <modified_keys> TYPE table.
-    ASSIGN initial_keys->* TO <modified_keys>.
-    ASSIGN modified_keys->* TO <initial_keys>.
+    assign_to_table_fs initial_keys->* <initial_keys>.
+    assign_to_table_fs modified_keys->* <modified_keys>.
     "--------------------------------------------------
-    "=================================================================
-
     prepare_key_tables( EXPORTING index_field = index_field modified_data = <modified_data> initial_data = <initial_data>
                              CHANGING modified_keys = <modified_keys> initial_keys = <initial_keys> ).
 
@@ -100,7 +82,7 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
       ASSIGN COMPONENT index_field OF STRUCTURE <modified_keys>[ i_modified ] TO <modified_data_index>.
       ASSIGN COMPONENT index_field OF STRUCTURE <initial_keys>[ i_initial ] TO <initial_data_index>.
       modified_data_index = COND #(  WHEN <modified_data_index> = 0 THEN modified_data_index ELSE <modified_data_index> ).
-      initial_data_index = COND #(  WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
+      initial_data_index = COND #( WHEN <initial_data_index> = 0 THEN initial_data_index ELSE <initial_data_index> ).
       CLEAR: <modified_data_index>, <initial_data_index>.
 
       "Check for key duplicates with previous record (not next since index is not yet removed)
@@ -157,7 +139,6 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
       APPEND <modified_data>[ modified_data_index ] TO <inserted>.
       i_modified = i_modified + 1.
     ENDWHILE.
-    "--------------------------------------------------
   ENDMETHOD.
 
   METHOD prepare_key_tables.
@@ -182,7 +163,7 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
     ENDLOOP.
 
     "Create sort condition
-    DATA sort_order TYPE abap_sortorder_tab .
+    DATA sort_order TYPE abap_sortorder_tab.
     table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(struct)  ).
     LOOP AT struct->components REFERENCE INTO DATA(component).
       APPEND VALUE #( name = component->name descending = abap_false ) TO sort_order.
@@ -194,16 +175,12 @@ CLASS zcl_zabap_table_comparator IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD update_mandant.
-    FIELD-SYMBOLS <table> TYPE table.
-    ASSIGN table->* TO <table>.
-
-    "Update mandant if exists
     IF table_fields->has_mandant = abap_true.
+      assign_to_table_fs table->* <table>.
       LOOP AT <table> ASSIGNING FIELD-SYMBOL(<row>).
         ASSIGN COMPONENT table_fields->mandant_field OF STRUCTURE <row> TO FIELD-SYMBOL(<mandt>).
         <mandt> = sy-mandt.
       ENDLOOP.
     ENDIF.
   ENDMETHOD.
-
 ENDCLASS.
