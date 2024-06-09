@@ -29,7 +29,7 @@ With ZSM30
 See examples package. Either call transaction ZABAP_TABLE_EDIT only with table name, or with name of class implementing interface ZIF_ZABAP_TABLE_EDIT.
 
 ## CHANGELOG
-##### v1.0.0
+##### v1.0.0 (9.06.2024)
 - Refactoring plus new extension
 - Support for text tables
 - Unit tests
