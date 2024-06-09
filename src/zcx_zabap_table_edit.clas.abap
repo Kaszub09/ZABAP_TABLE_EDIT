@@ -1,4 +1,4 @@
-CLASS zcx_zabap_table_edit DEFINITION  INHERITING FROM cx_static_check PUBLIC .
+CLASS zcx_zabap_table_edit DEFINITION INHERITING FROM cx_static_check PUBLIC .
    PUBLIC SECTION.
      METHODS:
        constructor IMPORTING custom_message TYPE string optional,
@@ -15,7 +15,7 @@ CLASS zcx_zabap_table_edit DEFINITION  INHERITING FROM cx_static_check PUBLIC .
      me->custom_message = custom_message.
    ENDMETHOD.
    METHOD get_text.
-     result = me->custom_message .
+     result = me->custom_message.
    ENDMETHOD.
 
  ENDCLASS.

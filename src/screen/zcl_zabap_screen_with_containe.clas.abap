@@ -1,6 +1,4 @@
-CLASS zcl_zabap_screen_with_containe DEFINITION PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_screen_with_containe DEFINITION PUBLIC FINAL CREATE PRIVATE.
 
   PUBLIC SECTION.
     CLASS-EVENTS:
@@ -18,22 +16,16 @@ CLASS zcl_zabap_screen_with_containe DEFINITION PUBLIC
     CLASS-DATA:
       top_commands     TYPE REF TO zcl_zabap_swc_top_commands  READ-ONLY,
       dynamic_commands TYPE REF TO zcl_zabap_swc_dynamic_commands READ-ONLY.
-
-  PROTECTED SECTION.
-  PRIVATE SECTION.
-
 ENDCLASS.
 
-
-
 CLASS zcl_zabap_screen_with_containe IMPLEMENTATION.
-  METHOD  class_constructor.
+  METHOD class_constructor.
     top_commands = NEW #( ).
     dynamic_commands = NEW #( ).
   ENDMETHOD.
 
   METHOD get_container.
-    CALL FUNCTION 'ZABAP_SCREEN_GET_CONTAINER' IMPORTING container = container .
+    CALL FUNCTION 'ZABAP_SCREEN_GET_CONTAINER' IMPORTING container = container.
   ENDMETHOD.
 
   METHOD display.
@@ -44,15 +36,13 @@ CLASS zcl_zabap_screen_with_containe IMPLEMENTATION.
         dynamic_commands        = dynamic_commands->get_commands( ).
   ENDMETHOD.
 
-
   METHOD raise_on_user_command_event.
     DATA(command_converted) = command.
     IF command CP 'DYNAMIC_*'.
       DATA(added_dynamic_commands) = dynamic_commands->get_commands( ).
-      command_converted = added_dynamic_commands[ position =  CONV i( replace( val = command_converted sub = 'DYNAMIC_' with = ||  ) ) ]-command.
+      command_converted = added_dynamic_commands[ position = CONV i( replace( val = command_converted sub = 'DYNAMIC_' with = || ) ) ]-command.
     ENDIF.
 
     RAISE EVENT on_user_command EXPORTING command = command_converted.
   ENDMETHOD.
-
 ENDCLASS.

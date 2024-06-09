@@ -1,4 +1,4 @@
-CLASS zcl_zabap_table_comparator DEFINITION PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_zabap_table_comparator DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS:

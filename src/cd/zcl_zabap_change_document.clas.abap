@@ -261,7 +261,7 @@ CLASS zcl_zabap_change_document IMPLEMENTATION.
   METHOD create_table_with_indicator.
     DATA(table_fields) = get_table_fields( table_name = table_name ).
     table_fields->get_keys_structure( EXPORTING include_index_field = abap_true IMPORTING index_field_name = indicator_field_name struct = DATA(key_struct) ).
-    table_fields->get_table_with_add_fields(
+    table_fields->get_base_with_add_fields(
         EXPORTING additional_fields = VALUE #( ( name = indicator_field_name type = CAST #( cl_abap_structdescr=>describe_by_name( 'CDCHNGINDH' ) ) ) )
         IMPORTING table = DATA(table) ).
 

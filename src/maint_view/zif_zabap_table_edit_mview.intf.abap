@@ -1,4 +1,3 @@
-interface ZIF_ZABAP_TABLE_EDIT_MVIEW
-  public .
+INTERFACE zif_zabap_table_edit_mview PUBLIC.
 
-endinterface.
+ENDINTERFACE.

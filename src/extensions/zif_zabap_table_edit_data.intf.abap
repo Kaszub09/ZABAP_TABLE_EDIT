@@ -10,46 +10,30 @@ INTERFACE zif_zabap_table_edit_data PUBLIC.
     initial_data CHANGING initial_data TYPE REF TO data,
     "! <p class="shorttext synchronized">Allows to extend displayed table - fill fields manually... </p>
     "! E.g. with MAKTX for material description - must be filled later on e.g. in change events
-    "! @parameter additional_fields | <p class="shorttext synchronized">Names must be unique and different from 'CHANGE_INDICATOR'</p>
+    "! @parameter additional_fields | <p class="shorttext synchronized">Names must be unique compared to table</p>
     additional_fields CHANGING additional_fields TYPE cl_abap_structdescr=>component_table,
     "! <p class="shorttext synchronized">Called whenever display mode is changed/refreshed, ...</p>
     "! before setting grid. Not called when user edits data.
     "! @parameter in_edit_mode | <p class="shorttext synchronized">If called in edit mode</p>
-    "! @parameter field_catalogue | <p class="shorttext synchronized"></p>
     "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with non-modified data</p>
-    "! @parameter modified_data_ext | <p class="shorttext synchronized"></p>
     refresh_grid IMPORTING in_edit_mode TYPE abap_bool
                  CHANGING field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat
                           initial_data TYPE REF TO data modified_data_ext TYPE REF TO data,
     "! <p class="shorttext synchronized">After internal validation. Tables are base, not extended</p>
-    "! @parameter result | <p class="shorttext synchronized">Of type c_validation in this interface</p>
-    "! @parameter all_modified_data | <p class="shorttext synchronized"></p>
-    "! @parameter duplicates | <p class="shorttext synchronized"></p>
-    "! @parameter inserted | <p class="shorttext synchronized"></p>
-    "! @parameter deleted | <p class="shorttext synchronized"></p>
-    "! @parameter before_modified | <p class="shorttext synchronized"></p>
-    "! @parameter modified | <p class="shorttext synchronized"></p>
-    additional_validation CHANGING result TYPE i all_modified_data TYPE REF TO data compared type zcl_zabap_table_edit_globals=>t_data_comparision,
+    "! @parameter result | <p class="shorttext synchronized">Of type zcl_zabap_table_edit_globals-c_validation</p>
+    additional_validation CHANGING result TYPE i all_modified_data TYPE REF TO data compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
     "! <p class="shorttext synchronized">After validation, before save. Base tables, not extended...</p>
     "! Can be used to further modify data or cancel with MESSAGE 'E'. Can be used to insert additional data to other tables,
     "! since COMMIT is called after this function and before <em>after_save</em> function
-    "! @parameter inserted | <p class="shorttext synchronized"></p>
-    "! @parameter deleted | <p class="shorttext synchronized"></p>
-    "! @parameter before_modified | <p class="shorttext synchronized"></p>
-    "! @parameter modified | <p class="shorttext synchronized"></p>
-    before_save CHANGING compared type zcl_zabap_table_edit_globals=>t_data_comparision,
+    before_save CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
     "! <p class="shorttext synchronized">After save and COMMIT. Tables are base, not extended</p>
-    "! @parameter inserted | <p class="shorttext synchronized"></p>
-    "! @parameter deleted | <p class="shorttext synchronized"></p>
-    "! @parameter before_modified | <p class="shorttext synchronized"></p>
-    "! @parameter modified | <p class="shorttext synchronized"></p>
-    after_save CHANGING compared type zcl_zabap_table_edit_globals=>t_data_comparision,
-    "! <p class="shorttext synchronized" lang="en">Called before display, after grid refresh</p>
-    change_display_text changing display_text TYPE string.
+    after_save CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
+    "! <p class="shorttext synchronized" lang="en">Called before display, after <em>refresh_grid</em></p>
+    change_display_text CHANGING display_text TYPE string.
 
   METHODS:
-    "! <p class="shorttext synchronized">CL_GUI_ALV_GRID event - hooked up automatically</p>
-    on_data_changed FOR EVENT data_changed OF cl_gui_alv_grid IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender,
-    "! <p class="shorttext synchronized">CL_GUI_ALV_GRID event - hooked up automatically</p>
-    on_data_changed_finished FOR EVENT data_changed_finished OF cl_gui_alv_grid IMPORTING e_modified et_good_cells sender.
+    "! <p class="shorttext synchronized">CL_GUI_ALV_GRID event - hooked up to grid automatically</p>
+    on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender,
+    "! <p class="shorttext synchronized">CL_GUI_ALV_GRID event - hooked up to grid automatically</p>
+    on_data_changed_finished FOR EVENT data_changed_finished OF zif_zabap_table_edit_grid_if IMPORTING e_modified et_good_cells sender.
 ENDINTERFACE.

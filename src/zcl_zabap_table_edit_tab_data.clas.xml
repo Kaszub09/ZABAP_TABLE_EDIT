@@ -10,6 +10,7 @@
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
+    <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
    <DESCRIPTIONS>
     <SEOCOMPOTX>
@@ -22,25 +23,7 @@
      <LANGU>E</LANGU>
      <DESCRIPT>Initial query from specified table</DESCRIPT>
     </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CMPNAME>RESET_GRID</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Recreate table and field catalogue for grid</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CMPNAME>VALIDATE</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Compare table and check fields with checktables</DESCRIPT>
-    </SEOCOMPOTX>
    </DESCRIPTIONS>
-   <DESCRIPTIONS_SUB>
-    <SEOSUBCOTX>
-     <CMPNAME>VALIDATE</CMPNAME>
-     <SCONAME>RESULT</SCONAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Of type &lt;em&gt;c_validation&lt;/em&gt;</DESCRIPT>
-    </SEOSUBCOTX>
-   </DESCRIPTIONS_SUB>
   </asx:values>
  </asx:abap>
 </abapGit>

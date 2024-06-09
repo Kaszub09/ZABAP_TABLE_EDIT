@@ -1,4 +1,4 @@
-CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PUBLIC GLOBAL FRIENDS zcl_zabap_table_edit_fact_inj.
+CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_fact_inj.
 
   PUBLIC SECTION.
     CLASS-METHODS:
@@ -10,10 +10,15 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PUBLIC GLOBAL FRIEND
       "! @parameter objectid |  <p class="shorttext synchronized">Object ID inside CD object, e.g. matnr for MATERIAL class...</p>
       "! Something that ties records from all tables in SCDO, like common foreign key, e.g. vbeln for ekko/ekpo
       get_change_doc IMPORTING objectclass TYPE cdobjectcl objectid TYPE cdobjectv
-                     RETURNING VALUE(change_doc) TYPE REF TO zif_zabap_change_document.
+                     RETURNING VALUE(change_doc) TYPE REF TO zif_zabap_change_document,
+      get_table_data IMPORTING config TYPE zif_zabap_table_edit_tab_data=>t_config grid TYPE REF TO zif_zabap_table_edit_grid_if
+                     RETURNING VALUE(table_data) TYPE REF TO zif_zabap_table_edit_tab_data,
+      get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if.
 
   PRIVATE SECTION.
     CLASS-DATA:
+      mock_grid       TYPE REF TO zif_zabap_table_edit_grid_if,
+      mock_table_data TYPE REF TO zif_zabap_table_edit_tab_data,
       mock_text_table TYPE REF TO zif_zabap_table_edit_text_tab,
       mock_change_doc TYPE REF TO zif_zabap_change_document,
       db              TYPE REF TO zif_zabap_table_edit_db.
@@ -39,8 +44,6 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_maintanance_view.
-    " TODO: parameter VIEW is never used (ABAP cleaner)
-
     maintanance_view = NEW zcl_zabap_table_edit_mview_e( ).
   ENDMETHOD.
 
@@ -60,4 +63,24 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
     "--------------------------------------------------
     change_doc = NEW zcl_zabap_change_document( objectclass = objectclass objectid = objectid ).
   ENDMETHOD.
+
+  METHOD get_table_data.
+    "To avoid doing too many levels of abstraction for the sole purpose of testing
+    IF mock_table_data IS BOUND.
+      table_data = mock_table_data.
+      RETURN.
+    ENDIF.
+    "--------------------------------------------------
+    table_data = NEW zcl_zabap_table_edit_tab_data( configuration = config grid = grid ).
+  ENDMETHOD.
+  METHOD get_grid.
+    "To avoid doing too many levels of abstraction for the sole purpose of testing
+    IF mock_grid IS BOUND.
+      grid = mock_grid.
+      RETURN.
+    ENDIF.
+    "--------------------------------------------------
+    grid = NEW zcl_zabap_table_edit_grid( container ).
+  ENDMETHOD.
+
 ENDCLASS.

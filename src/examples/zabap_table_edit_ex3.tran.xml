@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TRAN" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TSTC>
+    <TCODE>ZABAP_TABLE_EDIT_EX3</TCODE>
+    <CINFO>Ag==</CINFO>
+   </TSTC>
+   <TSTCC>
+    <TCODE>ZABAP_TABLE_EDIT_EX3</TCODE>
+    <S_WEBGUI>1</S_WEBGUI>
+    <S_WIN32>X</S_WIN32>
+    <S_PLATIN>X</S_PLATIN>
+   </TSTCC>
+   <TSTCT>
+    <SPRSL>E</SPRSL>
+    <TCODE>ZABAP_TABLE_EDIT_EX3</TCODE>
+    <TTEXT>Ex 3 - disable cd for user</TTEXT>
+   </TSTCT>
+   <TSTCP>
+    <TCODE>ZABAP_TABLE_EDIT_EX3</TCODE>
+    <PARAM>/*ZABAP_TABLE_EDIT P_TABNAM=ZABAP_TAB_ED_EX1;P_CD=F;P_CLASS=ZCL_ZABAP_TABLE_EDIT_EX3;</PARAM>
+   </TSTCP>
+   <I18N_TPOOL>
+    <TSTCT>
+     <SPRSL>L</SPRSL>
+     <TTEXT>Example 1 for table edit</TTEXT>
+    </TSTCT>
+   </I18N_TPOOL>
+  </asx:values>
+ </asx:abap>
+</abapGit>

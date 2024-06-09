@@ -77,7 +77,7 @@ INTERFACE zif_zabap_change_document PUBLIC.
     "! @parameter skip_exception_if_no_changes | <p class="shorttext synchronized">Don't raise exception if no position inserted</p>
     close IMPORTING date_of_change TYPE d DEFAULT sy-datum tcode TYPE syst_tcode DEFAULT sy-tcode time_of_change TYPE t DEFAULT sy-uzeit
                     username TYPE syst_uname DEFAULT sy-uname object_change_indicator TYPE cdchngindh DEFAULT 'U'
-                    skip_exception_if_no_changes TYPE abap_bool DEFAULT abap_false
+                    skip_exception_if_no_changes TYPE abap_bool DEFAULT abap_true
           RETURNING VALUE(changenumber) TYPE cdchangenr
           RAISING zcx_zabap_table_edit.
 ENDINTERFACE.

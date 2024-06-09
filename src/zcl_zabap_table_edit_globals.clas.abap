@@ -1,7 +1,4 @@
-CLASS zcl_zabap_table_edit_globals DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_table_edit_globals DEFINITION PUBLIC CREATE PRIVATE.
 
   PUBLIC SECTION.
     TYPES:
@@ -12,6 +9,7 @@ CLASS zcl_zabap_table_edit_globals DEFINITION
         before_modified TYPE REF TO data,
         modified        TYPE REF TO data,
       END OF t_data_comparision.
+
     CONSTANTS:
       BEGIN OF c_validation,
         incorrect_values  TYPE i VALUE 0,
@@ -19,11 +17,7 @@ CLASS zcl_zabap_table_edit_globals DEFINITION
         ok                TYPE i VALUE 2,
         extension_invalid TYPE i VALUE 3,
       END OF c_validation.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
 ENDCLASS.
-
-
 
 CLASS zcl_zabap_table_edit_globals IMPLEMENTATION.
 ENDCLASS.

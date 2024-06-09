@@ -48,7 +48,7 @@ CLASS tcl_non_db_methods IMPLEMENTATION.
   METHOD empty_cd_throw_error.
     cut->zif_zabap_change_document~open( ).
     TRY.
-        cut->zif_zabap_change_document~close( ).
+        cut->zif_zabap_change_document~close( skip_exception_if_no_changes = abap_false ).
         cl_abap_unit_assert=>fail( 'Exception not thrown' ).
       CATCH zcx_zabap_table_edit.
     ENDTRY.
@@ -64,10 +64,10 @@ CLASS tcl_non_db_methods IMPLEMENTATION.
       tt_zabap_te_cd_test TYPE STANDARD TABLE OF zabap_te_cd_test WITH EMPTY KEY,
       BEGIN OF t_zabap_te_cd_test_ext.
         INCLUDE TYPE zabap_te_cd_test.
-    TYPES:
-      indicator TYPE c LENGTH 1,
-    END OF t_zabap_te_cd_test_ext,
-    tt_zabap_te_cd_test_ext TYPE STANDARD TABLE OF t_zabap_te_cd_test_ext WITH EMPTY KEY.
+      TYPES:
+        indicator TYPE c LENGTH 1,
+      END OF t_zabap_te_cd_test_ext,
+      tt_zabap_te_cd_test_ext TYPE STANDARD TABLE OF t_zabap_te_cd_test_ext WITH EMPTY KEY.
 
     DATA(original_table) = VALUE tt_zabap_te_cd_test( ( key_track = '2' ) ( key_track = '1' ) ).
 
@@ -217,7 +217,8 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND ( ( fname = 'NON_KEY_NO_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' )
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_NON_TRACKED_FIELDS'
+        AND ( ( fname = 'NON_KEY_NO_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' )
                        OR ( fname = 'NON_KEY_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' ) )
       INTO TABLE @DATA(cdpos).
 
@@ -233,7 +234,8 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND ( ( fname = 'NON_KEY_NO_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' )
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_TRACKED_FIELDS'
+        AND ( ( fname = 'NON_KEY_NO_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' )
                        OR ( fname = 'NON_KEY_TRACK' AND value_old = 'OLD' AND value_new = 'NEW' ) )
       INTO TABLE @DATA(cdpos).
 
@@ -249,7 +251,8 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname = 'KEY'
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_KEY_ONLY'
+        AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname = 'KEY'
       INTO TABLE @DATA(cdpos).
 
     cl_abap_unit_assert=>assert_equals( exp = 2 act = lines( cdpos ) ).
@@ -264,7 +267,8 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname = 'NON_KEY_NO_TRACK'
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_NON_INITIAL'
+        AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname = 'NON_KEY_NO_TRACK'
       INTO TABLE @DATA(cdpos).
 
     cl_abap_unit_assert=>assert_equals( exp = 2 act = lines( cdpos ) ).
@@ -279,7 +283,8 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname IN ( 'NON_KEY_TRACK', 'NON_KEY_NO_TRACK' )
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_ALL_FIELDS'
+        AND ( tabkey LIKE '%DKNT%' OR tabkey LIKE '%IKNT%' ) AND fname IN ( 'NON_KEY_TRACK', 'NON_KEY_NO_TRACK' )
       INTO TABLE @DATA(cdpos).
 
     cl_abap_unit_assert=>assert_equals( exp = 4 act = lines( cdpos ) ).
@@ -297,7 +302,7 @@ CLASS tcl_db_methods IMPLEMENTATION.
 
     "Check result
     SELECT * FROM cdpos
-      WHERE changenr = @change_nr AND tabkey <> @space
+      WHERE changenr = @change_nr AND objectclas = @c_objectclass AND objectid = 'SAVE_MULTI' AND tabkey <> @space
       INTO TABLE @DATA(cdpos).
 
     cl_abap_unit_assert=>assert_equals( exp = 5 act = lines( cdpos ) ).

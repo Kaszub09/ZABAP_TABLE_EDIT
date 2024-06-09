@@ -1,11 +1,9 @@
-CLASS zcl_zabap_table_edit_txt_tab_e DEFINITION PUBLIC CREATE PRIVATE
-  GLOBAL FRIENDS zcl_zabap_table_edit_factory.
+CLASS zcl_zabap_table_edit_txt_tab_e DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
     INTERFACES:
       zif_zabap_table_edit_text_tab.
 ENDCLASS.
-
 
 CLASS zcl_zabap_table_edit_txt_tab_e IMPLEMENTATION.
   METHOD zif_zabap_table_edit_text_tab~append_additional_fields.

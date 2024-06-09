@@ -1,5 +1,4 @@
-CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE
-  GLOBAL FRIENDS zcl_zabap_table_edit_factory.
+CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
     INTERFACES:
@@ -47,15 +46,18 @@ CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE
           lang    TYPE forfield,
           mandant TYPE forfield,
         END OF field,
+        BEGIN OF struct,
+          key     TYPE REF TO cl_abap_structdescr,
+          non_key TYPE REF TO cl_abap_structdescr,
+        END OF struct,
         key_fields_only TYPE abap_bool,
-
         db              TYPE REF TO zif_zabap_table_edit_db,
       END OF t_text_table.
 
     METHODS:
       get_ttable_info_from_db,
       get_text_elements_cache IMPORTING extended TYPE REF TO data RETURNING VALUE(cache) TYPE tt_text_cache,
-      map_original_key_to_string IMPORTING row TYPE any RETURNING VALUE(string_key) TYPE string,
+      map_original_to_text_key_strin IMPORTING row TYPE any RETURNING VALUE(string_key) TYPE string,
       map_to_text_table IMPORTING table TYPE REF TO data  RETURNING VALUE(text_table) TYPE REF TO data,
       create_change_doc IMPORTING inserted TYPE REF TO data deleted TYPE REF TO data
                                   before_modified TYPE REF TO data modified TYPE REF TO data
@@ -63,9 +65,8 @@ CLASS zcl_zabap_table_edit_text_tab DEFINITION PUBLIC CREATE PRIVATE
 
     DATA:
       ttable TYPE t_text_table,
-      config      TYPE zif_zabap_table_edit_text_tab=>t_config.
+      config TYPE zif_zabap_table_edit_text_tab=>t_config.
 ENDCLASS.
-
 
 CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   METHOD constructor.
@@ -85,7 +86,11 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
     ENDLOOP.
 
     ttable-mapping_table = VALUE #( FOR key IN ttable-key_mapping ( kind = 1 srcname = key-original dstname = key-text ) ).
-    ttable-db = zcl_zabap_table_edit_factory=>get_db( ).
+    ttable-db            = zcl_zabap_table_edit_factory=>get_db( ).
+
+    DATA(text_table_fields) = NEW zcl_zabap_table_fields( ttable-name ).
+    text_table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = ttable-struct-key ).
+    text_table_fields->get_non_keys_structure( IMPORTING struct = ttable-struct-non_key ).
   ENDMETHOD.
 
   METHOD get_ttable_info_from_db.
@@ -118,7 +123,7 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
     DATA(cache) = get_text_elements_cache( extended ).
 
     LOOP AT <extended> ASSIGNING FIELD-SYMBOL(<original_row>).
-      DATA(cache_ref) = REF #( cache[ k = map_original_key_to_string( <original_row> ) ] OPTIONAL ).
+      DATA(cache_ref) = REF #( cache[ k = map_original_to_text_key_strin( <original_row> ) ] OPTIONAL ).
       IF cache_ref IS BOUND.
         ASSIGN cache_ref->val->* TO FIELD-SYMBOL(<text_non_key>).
         <original_row> = CORRESPONDING #( BASE ( <original_row> ) <text_non_key> ).
@@ -144,15 +149,10 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
       WHERE (where)
       INTO CORRESPONDING FIELDS OF TABLE @<text_table>.
 
-    "Get structs needed for cache
-    DATA(table_fields) = NEW zcl_zabap_table_fields( ttable-name ).
-    table_fields->get_keys_structure( EXPORTING include_index_field = abap_false IMPORTING struct = DATA(key_struct) ).
-    table_fields->get_non_keys_structure(  IMPORTING struct = DATA(non_key_struct) ).
-
     "Build cache
-    create_and_assign_data text_key key_struct <text_key>.
+    create_and_assign_data text_key ttable-struct-key <text_key>.
     LOOP AT <text_table> ASSIGNING FIELD-SYMBOL(<text_row>).
-      create_and_assign_data text_non_key non_key_struct <text_non_key>. "Must be recreated every time, since reference is stored
+      create_and_assign_data text_non_key ttable-struct-non_key <text_non_key>. "Must be recreated every time, since reference is stored
 
       <text_key> = CORRESPONDING #( <text_row> ).
       DATA(text_key_string) = ||.
@@ -163,11 +163,16 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD map_original_key_to_string.
-    LOOP AT ttable-key_mapping REFERENCE INTO DATA(key_mapping).
-      ASSIGN COMPONENT key_mapping->original OF STRUCTURE row TO FIELD-SYMBOL(<component_value>).
-      string_key = |{ string_key }{ <component_value> }|.
-    ENDLOOP.
+  METHOD map_original_to_text_key_strin.
+    create_and_assign_data text_key ttable-struct-key <text_key>.
+
+    cl_abap_corresponding=>create( source = row destination = <text_key> mapping = ttable-mapping_table
+       )->execute( EXPORTING source = row CHANGING destination = <text_key> ).
+
+    ASSIGN COMPONENT ttable-field-lang OF STRUCTURE <text_key> TO FIELD-SYMBOL(<language>).
+    <language> = sy-langu.
+
+    string_key = <text_key>.
   ENDMETHOD.
 
   METHOD save.
@@ -186,14 +191,15 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
 
     "Build where clause for deletion - we need to delete all languages
     DATA(where) = ||.
-    LOOP AT ttable-fields REFERENCE INTO DATA(key) WHERE fieldname = ttable-field-mandant.
-      where = |{ where } AND { ttable-name }~{ key->fieldname } = @<extended>-{ key->fieldname }|.
+    LOOP AT ttable-fields REFERENCE INTO DATA(key) WHERE keyflag = abap_true
+    AND fieldname <> ttable-field-mandant AND fieldname <> ttable-field-lang.
+      where = |{ where } AND { ttable-name }~{ key->fieldname } = @row-{ key->fieldname }|.
     ENDLOOP.
     where = substring( val = where off =  5 len = strlen( where ) - 5 ). "remove initial AND
 
     "Actual db changes
     LOOP AT <deleted> ASSIGNING FIELD-SYMBOL(<row_to_delete>).
-      ttable-db->delete_data_where( table = ttable-name where = where ).
+      ttable-db->delete_data_where( table = ttable-name where = where row = <row_to_delete> ).
     ENDLOOP.
 
     IF ttable-key_fields_only = abap_true.
@@ -225,7 +231,7 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD create_change_doc.
-    DATA(cd) = ZCL_ZABAP_TABLE_EDIT_FACTORY=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( ttable-name ) ).
+    DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( ttable-name ) ).
 
     cd->open( ).
     cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )

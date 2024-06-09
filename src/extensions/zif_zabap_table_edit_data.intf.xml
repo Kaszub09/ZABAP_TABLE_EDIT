@@ -34,7 +34,7 @@
     <SEOCOMPOTX>
      <CMPNAME>CHANGE_DISPLAY_TEXT</CMPNAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Called before display, after grid refresh</DESCRIPT>
+     <DESCRIPT>Called before display, after &lt;em&gt;refresh_grid&lt;/em&gt;</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>DEFAULT_SELECT</CMPNAME>
@@ -49,12 +49,12 @@
     <SEOCOMPOTX>
      <CMPNAME>ON_DATA_CHANGED</CMPNAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>CL_GUI_ALV_GRID event - hooked up automatically</DESCRIPT>
+     <DESCRIPT>CL_GUI_ALV_GRID event - hooked up to grid automatically</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>ON_DATA_CHANGED_FINISHED</CMPNAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>CL_GUI_ALV_GRID event - hooked up automatically</DESCRIPT>
+     <DESCRIPT>CL_GUI_ALV_GRID event - hooked up to grid automatically</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>REFRESH_GRID</CMPNAME>
@@ -67,13 +67,13 @@
      <CMPNAME>ADDITIONAL_FIELDS</CMPNAME>
      <SCONAME>ADDITIONAL_FIELDS</SCONAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Names must be unique and different from &apos;CHANGE_INDICATOR&apos;</DESCRIPT>
+     <DESCRIPT>Names must be unique compared to table</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
      <CMPNAME>ADDITIONAL_VALIDATION</CMPNAME>
      <SCONAME>RESULT</SCONAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Of type c_validation in this interface</DESCRIPT>
+     <DESCRIPT>Of type zcl_zabap_table_edit_globals-c_validation</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
      <CMPNAME>DEFAULT_SELECT</CMPNAME>

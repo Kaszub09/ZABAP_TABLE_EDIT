@@ -1,5 +1,4 @@
-INTERFACE zif_zabap_table_edit_commands
-  PUBLIC .
+INTERFACE zif_zabap_table_edit_commands PUBLIC.
   METHODS:
     "! <p class="shorttext synchronized">Called whenever edit mode is changed</p>
     set_edit_mode CHANGING editable TYPE abap_bool,

@@ -1,7 +1,4 @@
-CLASS zcl_zabap_swc_top_commands DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_swc_top_commands DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     CLASS-METHODS:
@@ -14,24 +11,21 @@ CLASS zcl_zabap_swc_top_commands DEFINITION
       include_only_commands IMPORTING functions TYPE ztt_zabap_commands.
 
     CLASS-DATA:
-        all_available_commands TYPE ztt_zabap_commands READ-ONLY .
+        all_available_commands TYPE ztt_zabap_commands READ-ONLY.
 
     DATA:
         commands_to_exclude TYPE ztt_zabap_commands READ-ONLY.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
 
 ENDCLASS.
 
-
 CLASS zcl_zabap_swc_top_commands IMPLEMENTATION.
-  METHOD  class_constructor.
-    all_available_commands = VALUE #( ( |OK| ) ( |SAVE| )  ( |BACK| )  ( |EXIT| )  ( |CANCEL| ) ( |PRINT| )
+  METHOD class_constructor.
+    all_available_commands = VALUE #( ( |OK| ) ( |SAVE| ) ( |BACK| ) ( |EXIT| ) ( |CANCEL| ) ( |PRINT| )
                                        ( |SEARCH| ) ( |SEARCH+| ) ( |P--| ) ( |P-| ) ( |P+| ) ( |P++| ) ).
   ENDMETHOD.
 
   METHOD set_navigation_only_commands.
-    include_only_commands( value #( ( |OK| ) ( |BACK| )  ( |EXIT| )  ( |CANCEL| ) ) ).
+    include_only_commands( VALUE #( ( |OK| ) ( |BACK| ) ( |EXIT| ) ( |CANCEL| ) ) ).
   ENDMETHOD.
 
   METHOD exclude_only_commands.
@@ -46,6 +40,4 @@ CLASS zcl_zabap_swc_top_commands IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
-
-
 ENDCLASS.

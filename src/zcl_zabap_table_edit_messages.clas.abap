@@ -1,7 +1,4 @@
-CLASS zcl_zabap_table_edit_messages DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+CLASS zcl_zabap_table_edit_messages DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS:
@@ -14,56 +11,50 @@ CLASS zcl_zabap_table_edit_messages DEFINITION
       save_error IMPORTING error TYPE string,
       display_error IMPORTING error_message TYPE string.
 
-  PROTECTED SECTION.
   PRIVATE SECTION.
     METHODS:
          yes_no IMPORTING title TYPE string DEFAULT space question TYPE string start_col TYPE i DEFAULT 25 start_row TYPE i DEFAULT 6
-                               RETURNING VALUE(confirmed) TYPE abap_bool ,
+                               RETURNING VALUE(confirmed) TYPE abap_bool,
        "! @parameter result | Y - Yes, N - No, C - Cancel
        yes_no_cancel IMPORTING title TYPE string DEFAULT space question TYPE string start_col TYPE i DEFAULT 25 start_row TYPE i DEFAULT 6
-                               RETURNING VALUE(result) TYPE string .
+                               RETURNING VALUE(result) TYPE string.
 ENDCLASS.
 
-
-
-CLASS ZCL_ZABAP_TABLE_EDIT_MESSAGES IMPLEMENTATION.
-
-
+CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
   METHOD confirm_data_loss.
     continue = abap_true.
     IF was_data_changed = abap_true.
-      continue = yes_no( CONV #( TEXT-001 ) ).
+      MESSAGE i005(zabap_table_edit) INTO DATA(msg).
+      continue = yes_no( msg ).
     ENDIF.
   ENDMETHOD.
 
-
   METHOD confirm_save.
-    continue = yes_no( CONV #( TEXT-002 ) ).
+    MESSAGE i006(zabap_table_edit) INTO DATA(msg).
+    continue = yes_no( msg ).
   ENDMETHOD.
-
 
   METHOD display_error.
     MESSAGE error_message TYPE 'E'.
   ENDMETHOD.
 
-
   METHOD save_error.
-    MESSAGE replace( val = TEXT-006 sub = '&1' with = error ) TYPE 'E'.
+    MESSAGE i010(zabap_table_edit) WITH error.
   ENDMETHOD.
-
 
   METHOD save_ok.
-    MESSAGE TEXT-005 TYPE 'S'.
+    MESSAGE s009(zabap_table_edit).
   ENDMETHOD.
-
 
   METHOD show_duplicates.
     FIELD-SYMBOLS <duplicates> TYPE table.
+
     ASSIGN duplicates->* TO <duplicates>.
 
-    DATA(popup_table) = NEW zcl_zabap_salv_report(  report_id = CONV #( table_name ) handle = 'DUPL' ).
+    DATA(popup_table) = NEW zcl_zabap_salv_report( report_id = CONV #( table_name ) handle = 'DUPL' ).
     popup_table->alv_table->set_screen_popup( start_column = 1  end_column = 100  start_line = 1 end_line = 15 ).
-    popup_table->set_header( CONV #( TEXT-003 ) ).
+    MESSAGE s007(zabap_table_edit) INTO DATA(msg).
+    popup_table->set_header( CONV #( msg ) ).
     popup_table->set_data( EXPORTING create_table_copy = abap_false CHANGING data_table = <duplicates> ).
     IF strlen( mandant_col_name ) > 0.
       popup_table->hide_column( CONV #( mandant_col_name ) ).
@@ -72,27 +63,27 @@ CLASS ZCL_ZABAP_TABLE_EDIT_MESSAGES IMPLEMENTATION.
     popup_table->display_data( ).
   ENDMETHOD.
 
-
   METHOD unexpected_validation_result.
-
+    MESSAGE e013(zabap_table_edit).
   ENDMETHOD.
-
 
   METHOD validation_ok.
-    MESSAGE TEXT-004 TYPE 'S'.
+    MESSAGE s008(zabap_table_edit).
   ENDMETHOD.
-
 
   METHOD yes_no.
     DATA answer TYPE c LENGTH 1.
+
+    MESSAGE i011(zabap_table_edit) INTO DATA(yes).
+    MESSAGE i012(zabap_table_edit) INTO DATA(no).
 
     CALL FUNCTION 'POPUP_TO_CONFIRM'
       EXPORTING
         titlebar              = title
         text_question         = question
-        text_button_1         = TEXT-q01
+        text_button_1         = yes
         icon_button_1         = '@0V@'  " Okay icon
-        text_button_2         = TEXT-q02
+        text_button_2         = no
         icon_button_2         = '@0W@' " No icon
         default_button        = '1'
         display_cancel_button = ||
@@ -105,21 +96,22 @@ CLASS ZCL_ZABAP_TABLE_EDIT_MESSAGES IMPLEMENTATION.
         text_not_found        = 1
         OTHERS                = 2.
 
-
     confirmed = COND #( WHEN answer = '1' THEN abap_true ELSE abap_false ).
   ENDMETHOD.
 
-
   METHOD yes_no_cancel.
     DATA answer TYPE c LENGTH 1.
+
+    MESSAGE i011(zabap_table_edit) INTO DATA(yes).
+    MESSAGE i012(zabap_table_edit) INTO DATA(no).
 
     CALL FUNCTION 'POPUP_TO_CONFIRM'
       EXPORTING
         titlebar              = title
         text_question         = question
-        text_button_1         = TEXT-q01
+        text_button_1         = yes
         icon_button_1         = '@0V@'  " Okay icon
-        text_button_2         = TEXT-q02
+        text_button_2         = no
         icon_button_2         = '@2O@' " Cancel icon
         default_button        = '1'
         display_cancel_button = |X|
@@ -131,7 +123,6 @@ CLASS ZCL_ZABAP_TABLE_EDIT_MESSAGES IMPLEMENTATION.
       EXCEPTIONS
         text_not_found        = 1
         OTHERS                = 2.
-
 
     result = COND #( WHEN answer = '1' THEN 'Y' WHEN answer = '2' THEN 'N' ELSE 'C' ).
   ENDMETHOD.

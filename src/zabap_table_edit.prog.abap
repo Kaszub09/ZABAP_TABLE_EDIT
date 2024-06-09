@@ -32,13 +32,13 @@ START-OF-SELECTION.
     TRY.
         DATA extension_inst TYPE REF TO object.
         CREATE OBJECT extension_inst TYPE (p_class).
-        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_commands.
+        IF extension_inst IS INSTANCE OF zif_zabap_table_edit_commands.
           extensions-commands = CAST #( extension_inst ).
         ENDIF.
-        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_config.
+        IF extension_inst IS INSTANCE OF zif_zabap_table_edit_config.
           extensions-config = CAST #( extension_inst ).
         ENDIF.
-        IF  extension_inst IS INSTANCE OF zif_zabap_table_edit_data.
+        IF extension_inst IS INSTANCE OF zif_zabap_table_edit_data.
           extensions-data = CAST #( extension_inst ).
         ENDIF.
       CATCH cx_sy_create_object_error INTO DATA(create_object_error).

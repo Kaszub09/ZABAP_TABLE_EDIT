@@ -1,8 +1,8 @@
-CLASS zcl_zabap_field_catalogue DEFINITION PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_zabap_field_catalogue DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     TYPES:
-        tt_field_cat TYPE STANDARD TABLE OF lvc_s_fcat WITH DEFAULT KEY
+        tt_field_cat TYPE STANDARD TABLE OF lvc_s_fcat WITH EMPTY KEY
         WITH NON-UNIQUE SORTED KEY name COMPONENTS fieldname
         WITH NON-UNIQUE SORTED KEY key_col COMPONENTS key
         WITH NON-UNIQUE SORTED KEY col_pos COMPONENTS col_pos.

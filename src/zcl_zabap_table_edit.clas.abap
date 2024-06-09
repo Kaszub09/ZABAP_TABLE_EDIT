@@ -1,10 +1,10 @@
-CLASS zcl_zabap_table_edit DEFINITION PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     TYPES:
       BEGIN OF t_config,
         display_text       TYPE string,
-        table_name         TYPE  string, "TODO tabname
+        table_name         TYPE string,
         change_doc_type    TYPE zabap_change_doc_type,
         disable_cd_view    TYPE abap_bool,
         disable_editing    TYPE abap_bool,
@@ -42,7 +42,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC FINAL CREATE PUBLIC.
       in_edit_mode    TYPE abap_bool VALUE abap_false,
       messages        TYPE REF TO zcl_zabap_table_edit_messages,
       screen_controls TYPE REF TO zcl_zabap_table_edit_screen,
-      table_data      TYPE REF TO zcl_zabap_table_edit_tab_data.
+      table_data      TYPE REF TO zif_zabap_table_edit_tab_data.
 ENDCLASS.
 
 
@@ -58,7 +58,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
     SET HANDLER me->on_user_command.
 
-    table_data = NEW #( CORRESPONDING #( config ) ).
+    table_data = zcl_zabap_table_edit_factory=>get_table_data( config = CORRESPONDING #( config )
+        grid = zcl_zabap_table_edit_factory=>get_grid( zcl_zabap_screen_with_containe=>get_container( ) ) ).
   ENDMETHOD.
 
   METHOD initialize_extensions.
@@ -99,7 +100,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     table_data->reset_grid( in_edit_mode ).
     "---EXTENSION CALL---
     config-ext-data->change_display_text( CHANGING display_text = config-display_text ).
-    zcl_zabap_screen_with_containe=>display( header_text = config-display_text ).
+    zcl_zabap_screen_with_containe=>display( config-display_text ).
   ENDMETHOD.
 
   METHOD on_user_command.
@@ -112,13 +113,13 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
 
     CASE command.
-      WHEN 'SAVE'. command_save( ).
-      WHEN 'TOGGLE_DISPLAY'. command_toggle_display( ).
-      WHEN 'VALIDATE'. command_validate( ).
-      WHEN 'CHANGE_DOCUMENT'. commad_change_document( ).
-      WHEN 'RESET'. command_reset( ).
-      WHEN 'BACK' OR 'EXIT'. command_exit( ).
-      WHEN 'CANCEL'. command_cancel( ).
+      WHEN screen_controls->c_commands-save. command_save( ).
+      WHEN screen_controls->c_commands-toggle_display. command_toggle_display( ).
+      WHEN screen_controls->c_commands-validate. command_validate( ).
+      WHEN screen_controls->c_commands-change_document. commad_change_document( ).
+      WHEN screen_controls->c_commands-reset. command_reset( ).
+      WHEN screen_controls->c_commands-back OR screen_controls->c_commands-exit. command_exit( ).
+      WHEN screen_controls->c_commands-cancel. command_cancel( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -184,7 +185,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD commad_change_document.
     DATA batch_input TYPE TABLE OF bdcdata.
 
-    APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME'  ) TO batch_input.
+    APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKT' fval = '' ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKTID' fval = config-table_name ) TO batch_input.
     APPEND VALUE #( fnam = 'TABNAME' fval = config-table_name ) TO batch_input.
@@ -194,7 +195,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     APPEND VALUE #( fnam = 'TABKEYLO' fval = '' ) TO batch_input.
 
     DATA(selected_row_key) = table_data->get_selected_row_key( ).
-    IF strlen( selected_row_key ) <= 70.
+    IF strlen( selected_row_key ) <= 70. "length of tabkey
       APPEND VALUE #( fnam = 'TABKEY' fval = selected_row_key ) TO batch_input.
     ELSE.
       APPEND VALUE #( fnam = 'TABKEYLO' fval = selected_row_key ) TO batch_input.

@@ -18,13 +18,79 @@
      <SPRSL>E</SPRSL>
      <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
      <MSGNR>002</MSGNR>
-     <TEXT>Open Change Document error &amp;1</TEXT>
+     <TEXT>Position must be between 0 (last) and &amp;1</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
      <MSGNR>003</MSGNR>
-     <TEXT>Close Change Document error &amp;1</TEXT>
+     <TEXT>All commands slots taken</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Position &amp;1 already taken</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Unsaved data will be lost. Do you want to continue?</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Do you want to save data?</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Duplicate keys detected - remove below entries</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Data is valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Data saved</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Unexpected error during save - &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Yes</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>No</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>unexpected validation result</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>SAP LUW commit returned &amp;1</TEXT>
     </T100>
    </T100>
   </asx:values>
