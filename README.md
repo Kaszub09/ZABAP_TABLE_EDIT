@@ -1,6 +1,5 @@
 # ZABAP_TABLE_EDIT
 Better SM30
-
 ## FEATURES
 Edit any table. Create change document automatically. Extend basic functionality if needed.
 ![obraz](https://github.com/Kaszub09/ZABAP_TABLE_EDIT/assets/34368953/14c40616-dbc4-48ae-88a5-4dc717ef263b)
@@ -28,6 +27,12 @@ With ZSM30
 
 ## USAGE
 See examples package. Either call transaction ZABAP_TABLE_EDIT only with table name, or with name of class implementing interface ZIF_ZABAP_TABLE_EDIT.
+
+## CHANGELOG
+##### v1.0.0
+- Refactoring plus new extension
+- Support for text tables
+- Unit tests
 
 ## Known issues
 - Some version of function module 'CHANGEDOCUMENT_MULTIPLE_CASE2' require change indicator field to be named 'KZ', causing shortdump otherwise - you can fix it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
