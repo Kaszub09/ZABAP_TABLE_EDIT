@@ -15,8 +15,8 @@ PARAMETERS:
 
 START-OF-SELECTION.
   "Check if it's correct table
-  SELECT SINGLE tabclass FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tabclass).
-  IF tabclass <> 'TRANSP'.
+  SELECT SINGLE tabclass, viewclass FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tab_info).
+  IF tab_info-tabclass <> 'TRANSP' AND ( tab_info-tabclass <> 'VIEW' OR tab_info-viewclass <> 'C' ).
     MESSAGE s001(zabap_table_edit) DISPLAY LIKE 'E'.
     LEAVE LIST-PROCESSING.
   ENDIF.
@@ -47,6 +47,6 @@ START-OF-SELECTION.
     ENDTRY.
   ENDIF.
 
-  DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
+  DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description view_name = p_tabnam change_doc_type = p_cd
     disable_cd_view = p_discdv disable_editing = p_disedi disable_text_table = p_distt ext = extensions ) ).
   table_edit->display( ).

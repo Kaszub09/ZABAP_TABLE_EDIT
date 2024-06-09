@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_MVIEW_E</CLSNAME>
+    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_MVIEW</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Empty implementation when view is actual transparent table</DESCRIPT>
+    <DESCRIPT>Empty implementation</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

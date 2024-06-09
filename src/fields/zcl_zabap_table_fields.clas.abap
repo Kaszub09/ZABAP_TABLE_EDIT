@@ -48,7 +48,7 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
 
     IF mandant IS BOUND.
       has_mandant = abap_true.
-      mandant->no_out = abap_true.
+      mandant->tech = abap_true.
       mandant_field = mandant->fieldname.
 
     ELSE.

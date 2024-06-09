@@ -1,11 +1,12 @@
 CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
-    INTERFACES zif_zabap_table_edit_tab_data.
+    INTERFACES:
+      zif_zabap_table_edit_tab_data.
 
     ALIASES:
      mandant_field FOR zif_zabap_table_edit_tab_data~mandant_field,
-     was_data_changed FOR zif_zabap_table_edit_tab_data~was_data_changed.
+     was_data_changed FOR zif_zabap_table_edit_tab_data~was_data_changed .
 
     METHODS:
       constructor IMPORTING configuration TYPE zif_zabap_table_edit_tab_data=>t_config grid TYPE REF TO zif_zabap_table_edit_grid_if.
@@ -13,6 +14,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
   PRIVATE SECTION.
     TYPES:
       BEGIN OF t_table,
+        name              TYPE string,
         initial_data      TYPE REF TO data,
         additional_fields TYPE cl_abap_structdescr=>component_table,
         "! <p class="shorttext synchronized">Original tab + add. fields. Displayed on screen in grid.</p>
@@ -21,7 +23,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         locker            TYPE REF TO zcl_zabap_table_edit_lock,
         comparator        TYPE REF TO zcl_zabap_table_comparator,
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
-        maintenance_view  TYPE REF TO zif_zabap_table_edit_text_tab,
+        view              TYPE REF TO zif_zabap_table_edit_mview,
         db                TYPE REF TO zif_zabap_table_edit_db,
       END OF t_table.
 
@@ -50,12 +52,16 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
 
-    table-fields     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-locker     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-comparator = NEW #( table_name = config-table_name ). "TODO as interface
+    "---MAINT VIEW---
+    table-view = zcl_zabap_table_edit_factory=>get_view( config-view_name ).
+    table-name = table-view->base_table.
+
+    table-fields     = NEW #( table_name = table-name ).
+    table-locker     = NEW #( table_name = table-name ).
+    table-comparator = NEW #( table_name = table-name ).
 
     "---TEXT TABLE---
-    table-text_table = zcl_zabap_table_edit_factory=>get_text_table( CORRESPONDING #( me->config ) ).
+    table-text_table = zcl_zabap_table_edit_factory=>get_text_table( VALUE #( BASE CORRESPONDING #( me->config ) table_name = table-name ) ).
     table-text_table->append_additional_fields( CHANGING additional_fields = table-additional_fields ).
 
     me->grid = grid.
@@ -69,15 +75,15 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD create_change_doc.
-    DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
+    DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( table-name ) objectid = CONV #( table-name ) ).
 
     cd->open( ).
     cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )
-                       table_name = config-table_name
-                       deleted = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-deleted indicator = 'D' )
-                       inserted = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-inserted  indicator = 'I' )
-                       before_modified = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-before_modified  indicator = 'U' )
-                       modified = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-modified  ) ).
+                       table_name = table-name
+                       deleted = cd->create_table_with_indicator( table_name = table-name original_table = compared-deleted indicator = 'D' )
+                       inserted = cd->create_table_with_indicator( table_name = table-name original_table = compared-inserted  indicator = 'I' )
+                       before_modified = cd->create_table_with_indicator( table_name = table-name original_table = compared-before_modified  indicator = 'U' )
+                       modified = cd->create_table_with_indicator( table_name = table-name original_table = compared-modified  ) ).
 
     "Some SAP magic to get initial t-code
     DATA: original_tcode TYPE sytcode.
@@ -86,12 +92,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_modified_data_no_ext.
-    CREATE DATA modified_data TYPE TABLE OF (config-table_name).
+    CREATE DATA modified_data TYPE TABLE OF (table-name).
 
     assign_to_table_fs modified_data->* <modified_data>.
     assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
 
-    <modified_data> = CORRESPONDING #( <modified_data_ext> ).
+    "---MAINT VIEW---
+    table-view->map_table_ext_view_to_base( CHANGING extended_view = <modified_data_ext> base = <modified_data> ).
   ENDMETHOD.
 
   METHOD get_selected_row_index.
@@ -110,23 +117,23 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
   METHOD on_data_changed.
     was_data_changed = abap_true.
+    table-view->update_view_values( er_data_changed ).
   ENDMETHOD.
 
   METHOD prepare_initial_data.
-    "TODO   maint view?
-    CREATE DATA table-initial_data TYPE TABLE OF (config-table_name).
+    CREATE DATA table-initial_data TYPE TABLE OF (table-name).
     assign_to_table_fs table-initial_data->* <initial_data>.
 
-    table-fields->get_base_with_add_fields( EXPORTING additional_fields = table-additional_fields IMPORTING table = DATA(table_descr) ).
-    CREATE DATA table-modified_data_ext TYPE HANDLE table_descr.
+    "---MAINT VIEW---
+    table-modified_data_ext = table-view->get_ext_view( table-additional_fields ).
 
     DATA(execute_default_select) = abap_true.
     "---EXTENSION CALL---
     config-ext-data->default_select( CHANGING execute = execute_default_select ).
 
     IF execute_default_select = abap_true.
-      SELECT * FROM (config-table_name) INTO TABLE @<initial_data> ORDER BY PRIMARY KEY.
-      "TODO maintenance view
+      "---MAINT VIEW---
+      table-view->run_initial_select( CHANGING initial_data = <initial_data> ).
     ENDIF.
 
     "---EXTENSION CALL---
@@ -150,8 +157,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     IF selected = 0.
       RETURN.
     ENDIF.
-
-    "Build and fill tabkey of selected record
     assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
 
     "Create key struct to cast to cdtabkey - needed to extract just key fields
@@ -161,7 +166,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     FIELD-SYMBOLS <key_line> TYPE any.
     ASSIGN key_line->* TO <key_line>.
 
-    <key_line> = CORRESPONDING #( <modified_data_ext>[ selected ] ).
+    "---MAINT VIEW---
+    table-view->map_struct_ext_view_to_base( CHANGING extended_view = <modified_data_ext>[ selected ] base = <key_line> ).
+
     tabkey = <key_line>.
   ENDMETHOD.
 
@@ -182,23 +189,28 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD zif_zabap_table_edit_tab_data~reset_grid.
     was_data_changed = abap_false.
 
-    "You have declare <fs> type table, and assign dynamic table, because you can't just use corresponding with table-initial_data->* :(
+    "You have to declare <fs> type table, and assign dynamic table, because you can't just use corresponding with table-initial_data->* :(
     assign_to_table_fs table-initial_data->* <initial_data>.
     assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
-    <modified_data_ext> = CORRESPONDING #( <initial_data> ).
+
+    "---MAINT VIEW---
+    table-view->map_table_base_to_ext_view( CHANGING base = <initial_data> extended_view = <modified_data_ext>  ).
+    table-view->update_non_base_fields( CHANGING extended_view = <modified_data_ext> ).
 
     "---TEXT TABLE---
+    "Can't have Text table for maintenance view, so even if data_ext doesn't have base table fields
+    "(because names are taken from view) the text table must be empty so call is safe
     table-text_table->update_text_elements( CHANGING extended = table-modified_data_ext ).
 
-    table-fields->set_edit_mode( in_edit_mode ).
-    DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
+    "---MAINT VIEW---
+    DATA(fc) = table-view->get_ext_view_fc_with_add_field( in_edit_mode = in_edit_mode additional_fields = table-additional_fields ).
 
     "---EXTENSION CALL---
     config-ext-data->refresh_grid( EXPORTING in_edit_mode = in_edit_mode
         CHANGING field_catalogue = fc initial_data = table-initial_data modified_data_ext = table-modified_data_ext ).
 
     DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
-    grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = config-table_name handle = 'BASE' username = sy-uname )
+    grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = table-name handle = 'BASE' username = sy-uname )
                                                  is_layout = VALUE #( sel_mode = 'A' ) i_save = 'A'
                                        CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
   ENDMETHOD.
@@ -213,13 +225,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
         assign_to_table_fs compared-deleted->* <deleted>.
 
         "Actual db changes
-        table-db->delete_data( table = config-table_name table_data = <deleted> ).
+        table-db->delete_data( table = table-name table_data = <deleted> ).
         IF table-fields->key_fields_only = abap_true.
           "^Can't use modify if all fields are key fields. Also in this case it's impossible to have modified entries.
-          table-db->insert_data( table = config-table_name table_data = <inserted> ).
+          table-db->insert_data( table = table-name table_data = <inserted> ).
         ELSE.
-          table-db->modify_data( table = config-table_name table_data = <modified> ).
-          table-db->modify_data( table = config-table_name table_data = <inserted> ).
+          table-db->modify_data( table = table-name table_data = <modified> ).
+          table-db->modify_data( table = table-name table_data = <inserted> ).
         ENDIF.
 
         "Change doc creation
@@ -262,8 +274,8 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    table-comparator->update_mandant( table-modified_data_ext ).
     DATA(modified_data) = get_modified_data_no_ext( ).
+    table-comparator->update_mandant( modified_data ).
     table-comparator->compare_tables( EXPORTING initial_data = table-initial_data modified_data = modified_data
         IMPORTING duplicates = compared-duplicates inserted = compared-inserted deleted = compared-deleted
                   before_modified = compared-before_modified modified = compared-modified ).
@@ -279,4 +291,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     "---EXTENSION CALL---
     config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~base_table_name.
+    name = table-name.
+  ENDMETHOD.
+
 ENDCLASS.

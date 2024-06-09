@@ -1,7 +1,7 @@
 INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
   TYPES:
     BEGIN OF t_config,
-      table_name         TYPE string,
+      view_name          TYPE string,
       change_doc_type    TYPE zabap_change_doc_type,
       disable_text_table TYPE abap_bool,
       BEGIN OF ext,
@@ -22,8 +22,8 @@ INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
     validate EXPORTING result TYPE i compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
     save_data EXPORTING erorr_message TYPE string CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision
               RETURNING VALUE(sucess) TYPE abap_bool,
-    get_selected_row_key RETURNING VALUE(tabkey) TYPE string.
-
+    get_selected_row_key RETURNING VALUE(tabkey) TYPE string,
+    base_table_name RETURNING VALUE(name) TYPE string.
 
   DATA:
     mandant_field    TYPE string READ-ONLY,

@@ -98,7 +98,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
   METHOD setup.
     DATA(empty) = NEW zcl_zabap_table_edit_empty_ext( ).
-    config = VALUE #( table_name = c_table ext-commands = empty ext-data = empty ext-config = empty ).
+    config = VALUE #( view_name = c_table ext-commands = empty ext-data = empty ext-config = empty ).
 
     zcl_zabap_table_edit_fact_inj=>clear_injected_cd( ).
     zcl_zabap_table_edit_fact_inj=>clear_injected_db( ).

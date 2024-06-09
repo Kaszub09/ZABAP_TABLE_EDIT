@@ -4,7 +4,6 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIEN
     CLASS-METHODS:
       get_text_table IMPORTING config            TYPE zif_zabap_table_edit_text_tab=>t_config
                      RETURNING VALUE(text_table) TYPE REF TO zif_zabap_table_edit_text_tab,
-      get_maintanance_view IMPORTING view TYPE string RETURNING VALUE(maintanance_view) TYPE REF TO zif_zabap_table_edit_mview,
       get_db RETURNING VALUE(db_interface) TYPE REF TO zif_zabap_table_edit_db,
       "! @parameter objectclass | <p class="shorttext synchronized">Name of CD object (e.g. from SCDO)</p>
       "! @parameter objectid |  <p class="shorttext synchronized">Object ID inside CD object, e.g. matnr for MATERIAL class...</p>
@@ -13,10 +12,14 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIEN
                      RETURNING VALUE(change_doc) TYPE REF TO zif_zabap_change_document,
       get_table_data IMPORTING config TYPE zif_zabap_table_edit_tab_data=>t_config grid TYPE REF TO zif_zabap_table_edit_grid_if
                      RETURNING VALUE(table_data) TYPE REF TO zif_zabap_table_edit_tab_data,
-      get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if.
+      get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if,
+      get_view IMPORTING view_name TYPE string RETURNING VALUE(view) TYPE REF TO zif_zabap_table_edit_mview.
 
   PRIVATE SECTION.
+    CONSTANTS:
+        c_maintenance_view_class TYPE viewclass VALUE 'C'.
     CLASS-DATA:
+      mock_view       TYPE REF TO zif_zabap_table_edit_mview,
       mock_grid       TYPE REF TO zif_zabap_table_edit_grid_if,
       mock_table_data TYPE REF TO zif_zabap_table_edit_tab_data,
       mock_text_table TYPE REF TO zif_zabap_table_edit_text_tab,
@@ -43,9 +46,6 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD get_maintanance_view.
-    maintanance_view = NEW zcl_zabap_table_edit_mview_e( ).
-  ENDMETHOD.
 
   METHOD get_db.
     IF NOT db IS BOUND.
@@ -81,6 +81,24 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
     ENDIF.
     "--------------------------------------------------
     grid = NEW zcl_zabap_table_edit_grid( container ).
+  ENDMETHOD.
+
+  METHOD get_view.
+    "To avoid doing too many levels of abstraction for the sole purpose of testing
+    IF mock_view IS BOUND.
+      view = mock_view.
+      RETURN.
+    ENDIF.
+    "--------------------------------------------------
+    SELECT SINGLE @abap_true AS exists FROM dd02l
+      WHERE tabname = @view_name AND viewclass = @c_maintenance_view_class
+      INTO @DATA(exists).
+
+    IF exists = abap_true .
+      view = NEW zcl_zabap_table_edit_mview(  ).
+    ELSE.
+      view = NEW zcl_zabap_table_edit_mview_e( view_name ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

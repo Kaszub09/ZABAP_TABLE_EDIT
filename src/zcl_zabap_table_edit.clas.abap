@@ -4,7 +4,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
     TYPES:
       BEGIN OF t_config,
         display_text       TYPE string,
-        table_name         TYPE string,
+        view_name          TYPE string,
         change_doc_type    TYPE zabap_change_doc_type,
         disable_cd_view    TYPE abap_bool,
         disable_editing    TYPE abap_bool,
@@ -134,7 +134,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
         RETURN.
       WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+        messages->show_duplicates( table_name = table_data->base_table_name( ) duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
         RETURN.
       WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
       WHEN OTHERS.
@@ -174,7 +174,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
       WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+        messages->show_duplicates( table_name = table_data->base_table_name( ) duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
       WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
         messages->validation_ok( ).
       WHEN OTHERS.
@@ -187,8 +187,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKT' fval = '' ) TO batch_input.
-    APPEND VALUE #( fnam = 'OBJEKTID' fval = config-table_name ) TO batch_input.
-    APPEND VALUE #( fnam = 'TABNAME' fval = config-table_name ) TO batch_input.
+    APPEND VALUE #( fnam = 'OBJEKTID' fval = table_data->base_table_name( ) ) TO batch_input.
+    APPEND VALUE #( fnam = 'TABNAME' fval = table_data->base_table_name( ) ) TO batch_input.
 
     "Clear in case of leftovers from previous call
     APPEND VALUE #( fnam = 'TABKEY' fval = '' ) TO batch_input.
