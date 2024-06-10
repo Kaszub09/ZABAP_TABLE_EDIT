@@ -95,7 +95,7 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
       INTO @DATA(exists).
 
     IF exists = abap_true .
-      view = NEW zcl_zabap_table_edit_mview(  ).
+      view = NEW zcl_zabap_table_edit_mview( view_name ).
     ELSE.
       view = NEW zcl_zabap_table_edit_mview_e( view_name ).
     ENDIF.
