@@ -95,4 +95,10 @@ CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
   METHOD on_data_changed_finished.
     RAISE EVENT zif_zabap_table_edit_grid_if~data_changed_finished EXPORTING e_modified = e_modified et_good_cells = et_good_cells.
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_grid_if~refresh_table_display.
+    refresh_table_display(
+        is_stable      = is_stable                 " With Stable Rows/Columns
+        i_soft_refresh = i_soft_refresh ). " Without Sort, Filter, etc.
+  ENDMETHOD.
 ENDCLASS.

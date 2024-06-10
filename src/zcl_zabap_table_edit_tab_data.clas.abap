@@ -32,7 +32,8 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       create_change_doc IMPORTING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision  RAISING zcx_zabap_table_edit,
       "! <p class="shorttext synchronized">Display table to original tab - needed if fields were added</p>
       get_modified_data_no_ext RETURNING VALUE(modified_data) TYPE REF TO data,
-      get_selected_row_index RETURNING VALUE(index) TYPE i.
+      get_selected_row_index RETURNING VALUE(index) TYPE i,
+      remove_empty_rows.
 
     METHODS:
       on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
@@ -262,8 +263,10 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    remove_empty_rows( ).
     table-comparator->update_mandant( table-modified_data_ext ).
     DATA(modified_data) = get_modified_data_no_ext( ).
+
     table-comparator->compare_tables( EXPORTING initial_data = table-initial_data modified_data = modified_data
         IMPORTING duplicates = compared-duplicates inserted = compared-inserted deleted = compared-deleted
                   before_modified = compared-before_modified modified = compared-modified ).
@@ -278,5 +281,23 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     "---EXTENSION CALL---
     config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
+  ENDMETHOD.
+
+  METHOD remove_empty_rows.
+    "Build where clause
+    DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
+    DATA(where) = ||.
+    LOOP AT fc REFERENCE INTO DATA(field).
+      where = |{ where } { field->fieldname  } IS INITIAL AND|.
+    ENDLOOP.
+    where = substring( val = where len = strlen( where ) - 4 ).
+    "Remove empty rows
+    assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
+    DATA(lines_before) = lines( <modified_data_ext> ).
+    DELETE <modified_data_ext> WHERE (where).
+
+    IF lines_before <> lines(  <modified_data_ext> ).
+      grid->refresh_table_display( ).
+    ENDIF.
   ENDMETHOD.
 ENDCLASS.

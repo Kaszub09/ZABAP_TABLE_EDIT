@@ -75,7 +75,8 @@ CLASS tcl_zabap_table_edit_tab_data DEFINITION FINAL FOR TESTING RISK LEVEL HARM
       invalid_data_check_table     FOR TESTING,
       configure_db_validation IMPORTING pass TYPE abap_bool,
       correct_saved                FOR TESTING,
-      cd_called_correctly          FOR TESTING.
+      cd_called_correctly          FOR TESTING,
+      empty_rows_removed           FOR TESTING.
 
     CLASS-DATA:
        mocked_db TYPE tt_zabap_te_td_test.
@@ -206,5 +207,17 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     cut->validate( IMPORTING compared = DATA(compared) ).
     cl_abap_unit_assert=>assert_true( cut->save_data( CHANGING compared = compared ) ).
+  ENDMETHOD.
+
+  METHOD empty_rows_removed.
+    configure_db_validation( abap_true ).
+
+    DATA(modified) = VALUE tt_zabap_te_td_test( BASE mocked_db ( ) ( key1 = 'XYZ' ) ( ) ( ) ).
+
+    DATA(cut_base) = CAST zcl_zabap_table_edit_tab_data( cut ).
+    cut_base->table-modified_data_ext = REF #( modified ).
+    cut->validate( ).
+
+    cl_abap_unit_assert=>assert_equals( exp = VALUE tt_zabap_te_td_test( BASE mocked_db ( mandt = sy-mandt key1 = 'XYZ' ) ) act = modified ).
   ENDMETHOD.
 ENDCLASS.

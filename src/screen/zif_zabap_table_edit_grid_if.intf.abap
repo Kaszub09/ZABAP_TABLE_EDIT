@@ -48,15 +48,20 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
       !e_valid   TYPE char01
     CHANGING
       !c_refresh TYPE char01 DEFAULT 'X' .
-  "=================================================================
-  "-----------------------------------------------------------------
-  EVENTS data_changed
-    EXPORTING
-      VALUE(er_data_changed) TYPE REF TO cl_alv_changed_data_protocol OPTIONAL
-      VALUE(e_onf4) TYPE char01 OPTIONAL
-      VALUE(e_onf4_before) TYPE char01 OPTIONAL
-      VALUE(e_onf4_after) TYPE char01 OPTIONAL
-      VALUE(e_ucomm) TYPE sy-ucomm OPTIONAL.
+  "--------------------------------------------------
+  METHODS refresh_table_display
+ IMPORTING
+   VALUE(is_stable) TYPE lvc_s_stbl OPTIONAL
+   VALUE(i_soft_refresh) TYPE char01 OPTIONAL.
+"=================================================================
+"-----------------------------------------------------------------
+events data_changed
+ EXPORTING
+   VALUE(er_data_changed) TYPE REF TO cl_alv_changed_data_protocol OPTIONAL
+   VALUE(e_onf4) TYPE char01 OPTIONAL
+   VALUE(e_onf4_before) TYPE char01 OPTIONAL
+   VALUE(e_onf4_after) TYPE char01 OPTIONAL
+   VALUE(e_ucomm) TYPE sy-ucomm OPTIONAL.
   "--------------------------------------------------
   EVENTS data_changed_finished
     EXPORTING
