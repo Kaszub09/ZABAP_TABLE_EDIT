@@ -48,5 +48,6 @@ START-OF-SELECTION.
   ENDIF.
 
   DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
-    disable_cd_view = p_discdv disable_editing = p_disedi disable_text_table = p_distt ext = extensions ) ).
+    disable_cd_view = p_discdv disable_editing = COND #( WHEN to_upper( p_tabnam(1) ) CA 'YZ' THEN p_disedi ELSE abap_true  )
+        disable_text_table = p_distt ext = extensions ) ).
   table_edit->display( ).
