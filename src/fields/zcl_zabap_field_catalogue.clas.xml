@@ -4,7 +4,7 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_ZABAP_FIELD_CATALOGUE</CLSNAME>
-    <LANGU>E</LANGU>
+    <LANGU>L</LANGU>
     <DESCRIPT>Field catalogue builder for CL_GUI_ALV_GRID</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>

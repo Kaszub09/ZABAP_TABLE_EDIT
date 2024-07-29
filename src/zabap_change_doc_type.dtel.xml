@@ -18,6 +18,19 @@
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
    </DD04V>
+   <I18N_LANGS>
+    <LANGU>L</LANGU>
+   </I18N_LANGS>
+   <DD04_TEXTS>
+    <item>
+     <DDLANGUAGE>L</DDLANGUAGE>
+     <DDTEXT>Typ dokumentu zmian</DDTEXT>
+     <REPTEXT>Typ dokumentu zmian</REPTEXT>
+     <SCRTEXT_S>Typ dok zm</SCRTEXT_S>
+     <SCRTEXT_M>Typ dokumentu zmian</SCRTEXT_M>
+     <SCRTEXT_L>Typ dokumentu zmian</SCRTEXT_L>
+    </item>
+   </DD04_TEXTS>
   </asx:values>
  </asx:abap>
 </abapGit>

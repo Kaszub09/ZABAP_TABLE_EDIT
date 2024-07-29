@@ -18,6 +18,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_ASKSEL</KEY>
+     <ENTRY>Show selection screen first</ENTRY>
+     <LENGTH>35</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_CD</KEY>
      <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
