@@ -4,6 +4,7 @@ CLASS zcl_zabap_table_edit_messages DEFINITION PUBLIC CREATE PUBLIC.
     METHODS:
       show_duplicates IMPORTING table_name TYPE string duplicates TYPE REF TO data mandant_col_name TYPE string DEFAULT '',
       confirm_save RETURNING VALUE(continue) TYPE abap_bool,
+      confirm_data_loss_on_selection IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
       confirm_data_loss IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
       validation_ok,
       unexpected_validation_result,
@@ -21,6 +22,14 @@ CLASS zcl_zabap_table_edit_messages DEFINITION PUBLIC CREATE PUBLIC.
 ENDCLASS.
 
 CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
+  METHOD confirm_data_loss_on_selection.
+    continue = abap_true.
+    IF was_data_changed = abap_true.
+      MESSAGE i015(zabap_table_edit) INTO DATA(msg).
+      continue = yes_no( msg ).
+    ENDIF.
+  ENDMETHOD.
+
   METHOD confirm_data_loss.
     continue = abap_true.
     IF was_data_changed = abap_true.
