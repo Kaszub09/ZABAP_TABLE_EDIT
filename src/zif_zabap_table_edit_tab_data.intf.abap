@@ -1,9 +1,10 @@
 INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
   TYPES:
     BEGIN OF t_config,
-      table_name         TYPE string,
-      change_doc_type    TYPE zabap_change_doc_type,
-      disable_text_table TYPE abap_bool,
+      table_name           TYPE string,
+      change_doc_type      TYPE zabap_change_doc_type,
+      disable_text_table   TYPE abap_bool,
+      show_selection_first TYPE abap_bool,
       BEGIN OF ext,
         commands TYPE REF TO zif_zabap_table_edit_commands,
         config   TYPE REF TO zif_zabap_table_edit_config,

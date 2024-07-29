@@ -112,7 +112,7 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     ENDIF.
 
 
-    IF where_clauses <> selection-where_clauses OR sy-subrc = 2.
+    IF where_clauses = selection-where_clauses OR sy-subrc = 2.
       "^Nothing to change
       RETURN.
     ENDIF.

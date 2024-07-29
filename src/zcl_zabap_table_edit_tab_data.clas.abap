@@ -65,9 +65,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     "---EXTENSION CALL---
     config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
 
+    "---SELECTION---
+    table-selection = NEW #( config-table_name ).
+    IF config-show_selection_first = abap_true.
+      table-selection->display( abap_false ).
+    ENDIF.
     prepare_initial_data( ).
     table-db = zcl_zabap_table_edit_factory=>get_db( ).
-    table-selection = NEW #( config-table_name ).
   ENDMETHOD.
 
   METHOD create_change_doc.

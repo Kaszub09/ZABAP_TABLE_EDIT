@@ -38,7 +38,6 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
       on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
 
     DATA:
-      first_time_display TYPE abap_bool VALUE abap_true,
       config             TYPE t_config.
 
     DATA:
@@ -99,11 +98,6 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD display.
-    IF first_time_display = abap_true.
-      first_time_display = abap_false.
-      table_data->restrict_selection( ).
-    ENDIF.
-
     screen_controls->update_screen_controls( in_edit_mode ).
     table_data->reset_grid( in_edit_mode ).
     "---EXTENSION CALL---
