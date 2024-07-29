@@ -3,7 +3,8 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
   PUBLIC SECTION.
     METHODS:
       constructor IMPORTING table_name TYPE string,
-      display IMPORTING will_data_be_lost_on_change TYPE abap_bool RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
+      display IMPORTING will_data_be_lost_on_change TYPE abap_bool RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit,
+      get_where_cond RETURNING VALUE(where) TYPE rsds_where_tab.
 
   PRIVATE SECTION.
     METHODS:
@@ -122,6 +123,10 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
 
     selection = VALUE #( where_clauses = where_clauses expressions = expressions field_ranges = field_ranges fields_tab = fields_tab ).
     changed = abap_true.
+  ENDMETHOD.
+
+  METHOD get_where_cond.
+    where = VALUE #( selection-where_clauses[ tablename = table_name ]-where_tab OPTIONAL ).
   ENDMETHOD.
 
 ENDCLASS.

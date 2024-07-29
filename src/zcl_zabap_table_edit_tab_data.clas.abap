@@ -127,8 +127,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->default_select( CHANGING execute = execute_default_select ).
 
     IF execute_default_select = abap_true.
-      "---SELECTION--- TODO
-      SELECT * FROM (config-table_name) INTO TABLE @<initial_data> ORDER BY PRIMARY KEY.
+      "---SELECTION---
+      DATA(where) = table-selection->get_where_cond( ).
+      SELECT * FROM (config-table_name) WHERE (where) ORDER BY PRIMARY KEY INTO TABLE @<initial_data> .
       "TODO maintenance view
     ENDIF.
 
