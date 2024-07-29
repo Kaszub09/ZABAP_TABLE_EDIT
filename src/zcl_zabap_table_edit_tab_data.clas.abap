@@ -41,8 +41,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
 
     DATA:
       table    TYPE t_table,
-      grid     TYPE REF TO zif_zabap_table_edit_grid_if,
-      messages TYPE REF TO zcl_zabap_table_edit_messages.
+      grid     TYPE REF TO zif_zabap_table_edit_grid_if.
 
     DATA:
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
