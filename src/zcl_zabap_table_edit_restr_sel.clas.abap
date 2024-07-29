@@ -9,7 +9,7 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
   PRIVATE SECTION.
     METHODS:
       init_selection RAISING zcx_zabap_table_edit,
-      selection_dialog IMPORTING will_data_be_lost_on_change TYPE abap_bool RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
+      selection_dialog RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
     DATA:
       selection_id TYPE dynselid,
       table_name   TYPE string,
@@ -31,10 +31,15 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     messages = NEW #( ).
   ENDMETHOD.
   METHOD display.
+    IF messages->confirm_data_loss( will_data_be_lost_on_change ) = abap_false.
+      RETURN.
+    ENDIF.
+
     IF selection_id IS INITIAL.
       init_selection( ).
     ENDIF.
-    changed = selection_dialog( will_data_be_lost_on_change ).
+
+    changed = selection_dialog( ).
   ENDMETHOD.
 
   METHOD init_selection.
@@ -114,10 +119,6 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
 
     IF where_clauses = selection-where_clauses OR sy-subrc = 2.
       "^Nothing to change
-      RETURN.
-    ENDIF.
-
-    IF messages->confirm_data_loss( will_data_be_lost_on_change ) = abap_false.
       RETURN.
     ENDIF.
 

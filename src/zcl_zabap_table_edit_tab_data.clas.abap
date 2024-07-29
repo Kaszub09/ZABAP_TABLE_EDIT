@@ -133,7 +133,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     IF execute_default_select = abap_true.
       "---SELECTION---
       DATA(where) = table-selection->get_where_cond( ).
-      SELECT * FROM (config-table_name) WHERE (where) ORDER BY PRIMARY KEY INTO TABLE @<initial_data> .
+      SELECT * FROM (config-table_name) WHERE (where) ORDER BY PRIMARY KEY INTO TABLE @<initial_data>.
       "TODO maintenance view
     ENDIF.
 
@@ -310,6 +310,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_tab_data~restrict_selection.
     changed = table-selection->display( was_data_changed ).
+    IF changed = abap_true.
+      prepare_initial_data( ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

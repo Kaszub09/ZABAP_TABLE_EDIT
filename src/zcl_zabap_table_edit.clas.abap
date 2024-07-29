@@ -122,7 +122,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-reset. command_reset( ).
       WHEN screen_controls->c_commands-back OR screen_controls->c_commands-exit. command_exit( ).
       WHEN screen_controls->c_commands-cancel. command_cancel( ).
-      WHEN screen_controls->c_commands-cancel. command_restrict_selection( ).
+      WHEN screen_controls->c_commands-restrict_selection. command_restrict_selection( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -230,7 +230,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
   METHOD command_restrict_selection.
     IF table_data->restrict_selection( ) = abap_true.
-      display( ).
+       display( ).
     ENDIF.
   ENDMETHOD.
 
