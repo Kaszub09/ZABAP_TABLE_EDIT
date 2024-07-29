@@ -28,16 +28,18 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
       command_validate,
       command_save,
       command_toggle_display,
-      commad_change_document,
+      command_change_document,
       command_cancel,
       command_exit,
-      command_reset.
+      command_reset,
+      command_restrict_selection.
 
     METHODS:
       on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
 
     DATA:
-      config     TYPE t_config.
+      first_time_display TYPE abap_bool VALUE abap_true,
+      config             TYPE t_config.
 
     DATA:
       in_edit_mode    TYPE abap_bool VALUE abap_false,
@@ -97,6 +99,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD display.
+    IF first_time_display = abap_true.
+      first_time_display = abap_false.
+      command_restrict_selection( ).
+    ENDIF.
+
     screen_controls->update_screen_controls( in_edit_mode ).
     table_data->reset_grid( in_edit_mode ).
     "---EXTENSION CALL---
@@ -117,10 +124,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-save. command_save( ).
       WHEN screen_controls->c_commands-toggle_display. command_toggle_display( ).
       WHEN screen_controls->c_commands-validate. command_validate( ).
-      WHEN screen_controls->c_commands-change_document. commad_change_document( ).
+      WHEN screen_controls->c_commands-change_document. command_change_document( ).
       WHEN screen_controls->c_commands-reset. command_reset( ).
       WHEN screen_controls->c_commands-back OR screen_controls->c_commands-exit. command_exit( ).
       WHEN screen_controls->c_commands-cancel. command_cancel( ).
+      WHEN screen_controls->c_commands-cancel. command_restrict_selection( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -183,7 +191,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDCASE.
   ENDMETHOD.
 
-  METHOD commad_change_document.
+  METHOD command_change_document.
     DATA batch_input TYPE TABLE OF bdcdata.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
@@ -225,4 +233,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
     table_data->reset_grid( in_edit_mode ).
   ENDMETHOD.
+
+  METHOD command_restrict_selection.
+    table_data->restrict_selection( ).
+  ENDMETHOD.
+
 ENDCLASS.
