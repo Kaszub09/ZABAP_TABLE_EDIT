@@ -50,6 +50,7 @@ CLASS tcl_zabap_table_edit_screen IMPLEMENTATION.
     command_enabled( cut->c_commands-validate ).
     command_enabled( cut->c_commands-reset ).
     command_enabled( cut->c_commands-toggle_display ).
+    command_enabled( cut->c_commands-restrict_selection ).
   ENDMETHOD.
 
   METHOD non_edit_mode.
@@ -58,6 +59,7 @@ CLASS tcl_zabap_table_edit_screen IMPLEMENTATION.
     command_disabled( cut->c_commands-validate ).
     command_disabled( cut->c_commands-reset ).
     command_enabled( cut->c_commands-toggle_display ).
+    command_enabled( cut->c_commands-restrict_selection ).
   ENDMETHOD.
 
   METHOD command_disabled.

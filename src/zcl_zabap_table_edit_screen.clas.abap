@@ -3,15 +3,16 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CONSTANTS:
       BEGIN OF c_commands,
-        ok              TYPE syst_ucomm  VALUE 'OK',
-        back            TYPE syst_ucomm  VALUE 'BACK',
-        exit            TYPE syst_ucomm  VALUE 'EXIT',
-        cancel          TYPE syst_ucomm  VALUE 'CANCEL',
-        toggle_display  TYPE syst_ucomm  VALUE 'TOGGLE_DISPLAY',
-        change_document TYPE syst_ucomm  VALUE 'CHANGE_DOCUMENT',
-        save            TYPE syst_ucomm  VALUE 'SAVE',
-        validate        TYPE syst_ucomm  VALUE 'VALIDATE',
-        reset           TYPE syst_ucomm  VALUE 'RESET',
+        ok                 TYPE syst_ucomm  VALUE 'OK',
+        back               TYPE syst_ucomm  VALUE 'BACK',
+        exit               TYPE syst_ucomm  VALUE 'EXIT',
+        cancel             TYPE syst_ucomm  VALUE 'CANCEL',
+        toggle_display     TYPE syst_ucomm  VALUE 'TOGGLE_DISPLAY',
+        change_document    TYPE syst_ucomm  VALUE 'CHANGE_DOCUMENT',
+        save               TYPE syst_ucomm  VALUE 'SAVE',
+        validate           TYPE syst_ucomm  VALUE 'VALIDATE',
+        reset              TYPE syst_ucomm  VALUE 'RESET',
+        restrict_selection TYPE syst_ucomm  VALUE 'RESTRICT_SELECTION',
       END OF c_commands.
 
     TYPES:
@@ -50,6 +51,9 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
       zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-change_document
           description = VALUE #( text = TEXT-004 icon_id = '@46@' icon_text = TEXT-004 ) ).
     ENDIF.
+
+    zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-restrict_selection
+        description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ).
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.
       APPEND c_commands-save TO include_commands.
