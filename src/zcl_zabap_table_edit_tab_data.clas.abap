@@ -23,6 +23,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
         maintenance_view  TYPE REF TO zif_zabap_table_edit_text_tab,
         db                TYPE REF TO zif_zabap_table_edit_db,
+        selection         TYPE REF TO zcl_zabap_table_edit_restr_sel,
       END OF t_table.
 
     METHODS:
@@ -51,9 +52,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
 
-    table-fields     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-locker     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-comparator = NEW #( table_name = config-table_name ). "TODO as interface
+    table-fields     = NEW #( config-table_name ). "TODO as interface
+    table-locker     = NEW #( config-table_name ). "TODO as interface
+    table-comparator = NEW #( config-table_name ). "TODO as interface
 
     "---TEXT TABLE---
     table-text_table = zcl_zabap_table_edit_factory=>get_text_table( CORRESPONDING #( me->config ) ).
@@ -67,6 +68,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     prepare_initial_data( ).
     table-db = zcl_zabap_table_edit_factory=>get_db( ).
+    table-selection = NEW #( config-table_name ).
   ENDMETHOD.
 
   METHOD create_change_doc.
@@ -301,4 +303,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       grid->refresh_table_display( ).
     ENDIF.
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~restrict_selection.
+
+  ENDMETHOD.
+
 ENDCLASS.
