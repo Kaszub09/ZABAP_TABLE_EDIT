@@ -54,7 +54,7 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
         tables_tab               = tables_tab
         fields_tab               = fields_tab
       EXCEPTIONS
-        fields_incomplete        = 1 message dummy                " Only PRIM_FNAME filled
+        fields_incomplete        = 1                " Only PRIM_FNAME filled
         fields_no_join           = 2                " Field assignment without join
         field_not_found          = 3                " Dictionary field not found
         no_tables                = 4                " Table P_TABLES is empty

@@ -23,7 +23,7 @@ INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
     save_data EXPORTING erorr_message TYPE string CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision
               RETURNING VALUE(sucess) TYPE abap_bool,
     get_selected_row_key RETURNING VALUE(tabkey) TYPE string,
-    restrict_selection.
+    restrict_selection RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
 
 
   DATA:

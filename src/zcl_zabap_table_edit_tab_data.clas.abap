@@ -40,8 +40,8 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
 
     DATA:
-      table    TYPE t_table,
-      grid     TYPE REF TO zif_zabap_table_edit_grid_if.
+      table TYPE t_table,
+      grid  TYPE REF TO zif_zabap_table_edit_grid_if.
 
     DATA:
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
@@ -304,7 +304,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_tab_data~restrict_selection.
-
+    changed = table-selection->display( was_data_changed ).
   ENDMETHOD.
 
 ENDCLASS.

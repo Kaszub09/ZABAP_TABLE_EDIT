@@ -101,7 +101,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD display.
     IF first_time_display = abap_true.
       first_time_display = abap_false.
-      command_restrict_selection( ).
+      table_data->restrict_selection( ).
     ENDIF.
 
     screen_controls->update_screen_controls( in_edit_mode ).
@@ -235,7 +235,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_restrict_selection.
-    table_data->restrict_selection( ).
+    IF table_data->restrict_selection( ) = abap_true.
+      display( ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.
