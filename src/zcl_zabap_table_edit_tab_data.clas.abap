@@ -21,7 +21,6 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         locker            TYPE REF TO zcl_zabap_table_edit_lock,
         comparator        TYPE REF TO zcl_zabap_table_comparator,
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
-        maintenance_view  TYPE REF TO zif_zabap_table_edit_text_tab,
         db                TYPE REF TO zif_zabap_table_edit_db,
         selection         TYPE REF TO zcl_zabap_table_edit_restr_sel,
       END OF t_table.
