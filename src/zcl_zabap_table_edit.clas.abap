@@ -200,7 +200,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       APPEND VALUE #( fnam = 'TABKEYLO' fval = selected_row_key ) TO batch_input.
     ENDIF.
 
-    CALL TRANSACTION 'RSSCD100' USING batch_input MODE 'E' UPDATE 'S'.
+    DATA(call_options) = VALUE ctu_params( dismode = 'E' updmode = 'S' nobinpt = abap_true nobiend = abap_true ).
+    CALL TRANSACTION 'RSSCD100' USING batch_input OPTIONS FROM call_options.
   ENDMETHOD.
 
   METHOD command_cancel.
