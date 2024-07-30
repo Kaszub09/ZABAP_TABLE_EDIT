@@ -76,7 +76,11 @@ CLASS tcl_zabap_table_edit_tab_data DEFINITION FINAL FOR TESTING RISK LEVEL HARM
       configure_db_validation IMPORTING pass TYPE abap_bool,
       correct_saved                FOR TESTING,
       cd_called_correctly          FOR TESTING,
-      empty_rows_removed           FOR TESTING.
+      empty_rows_removed           FOR TESTING,
+      restrict_selection_called FOR TESTING,
+      restrict_selection_not_called FOR TESTING,
+      selection_restricted FOR TESTING,
+      invalid_data_restrict_sel FOR TESTING.
 
     CLASS-DATA:
        mocked_db TYPE tt_zabap_te_td_test.
@@ -101,8 +105,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
     DATA(empty) = NEW zcl_zabap_table_edit_empty_ext( ).
     config = VALUE #( table_name = c_table ext-commands = empty ext-data = empty ext-config = empty ).
 
-    zcl_zabap_table_edit_fact_inj=>clear_injected_cd( ).
-    zcl_zabap_table_edit_fact_inj=>clear_injected_db( ).
+    zcl_zabap_table_edit_fact_inj=>clear_all_injections( ).
 
     grid ?= cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_GRID_IF' ).
     cut = zcl_zabap_table_edit_factory=>get_table_data( config = config grid = grid ).
@@ -220,4 +223,68 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = VALUE tt_zabap_te_td_test( BASE mocked_db ( mandt = sy-mandt key1 = 'XYZ' ) ) act = modified ).
   ENDMETHOD.
+  METHOD restrict_selection_called.
+    DATA(selection) = CAST zif_zabap_table_edit_restr_sel( cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ) ).
+    cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ).
+    cl_abap_testdouble=>configure_call( selection )->ignore_all_parameters( )->and_expect( )->is_called_once( ).
+    selection->display( abap_false ).
+
+    config-show_selection_first = abap_true.
+    zcl_zabap_table_edit_fact_inj=>inject_restrict_selection( selection ).
+
+    cut = zcl_zabap_table_edit_factory=>get_table_data( config = config grid = grid ).
+
+    cl_abap_testdouble=>verify_expectations( selection ).
+  ENDMETHOD.
+
+  METHOD restrict_selection_not_called.
+    DATA(selection) = CAST zif_zabap_table_edit_restr_sel( cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ) ).
+    cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ).
+    cl_abap_testdouble=>configure_call( selection )->ignore_all_parameters( )->and_expect( )->is_never_called( ).
+    selection->display( abap_false ).
+
+    config-show_selection_first = abap_false.
+    zcl_zabap_table_edit_fact_inj=>inject_restrict_selection( selection ).
+
+    cut = zcl_zabap_table_edit_factory=>get_table_data( config = config grid = grid ).
+
+    cl_abap_testdouble=>verify_expectations( selection ).
+  ENDMETHOD.
+
+  METHOD selection_restricted.
+    DATA(selection) = CAST zif_zabap_table_edit_restr_sel( cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ) ).
+    cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ).
+    cl_abap_testdouble=>configure_call( selection )->ignore_all_parameters( )->returning(
+        VALUE rsds_where_tab( ( |key1 <> '{ mocked_db[ 1 ]-key1 }'| ) ) ).
+    selection->get_where_cond(  ).
+
+    zcl_zabap_table_edit_fact_inj=>inject_restrict_selection( selection ).
+    cut = zcl_zabap_table_edit_factory=>get_table_data( config = config grid = grid ).
+
+    DATA(cut_base) = CAST zcl_zabap_table_edit_tab_data( cut ).
+    ASSIGN cut_base->table-initial_data->* TO FIELD-SYMBOL(<table>).
+
+    cl_abap_unit_assert=>assert_equals( exp = VALUE tt_zabap_te_td_test( ( mocked_db[ 2 ] ) ) act = <table> ).
+  ENDMETHOD.
+
+  METHOD invalid_data_restrict_sel.
+    configure_db_validation( abap_true ).
+
+    DATA(selection) = CAST zif_zabap_table_edit_restr_sel( cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ) ).
+    cl_abap_testdouble=>create( 'ZIF_ZABAP_TABLE_EDIT_RESTR_SEL' ).
+    cl_abap_testdouble=>configure_call( selection )->ignore_all_parameters( )->returning(
+        VALUE rsds_frange_t( ( fieldname = 'KEY1' selopt_t = VALUE #( ( sign = 'E' option = 'EQ' low = 'KEY11' ) ) ) ) ).
+    selection->get_field_ranges(  ).
+
+    zcl_zabap_table_edit_fact_inj=>inject_restrict_selection( selection ).
+    cut = zcl_zabap_table_edit_factory=>get_table_data( config = config grid = grid ).
+
+    DATA(modified) = VALUE tt_zabap_te_td_test( BASE mocked_db ( VALUE #( key1 = 'KEY11' ) ) ).
+    DATA(cut_base) = CAST zcl_zabap_table_edit_tab_data( cut ).
+    cut_base->table-modified_data_ext = REF #( modified ).
+    cut->validate( IMPORTING result = DATA(result) ).
+
+    cl_abap_unit_assert=>assert_equals( exp = zcl_zabap_table_edit_globals=>c_validation-not_in_selection act = result ).
+  ENDMETHOD.
+
 ENDCLASS.
