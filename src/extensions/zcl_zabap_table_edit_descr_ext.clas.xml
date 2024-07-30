@@ -11,6 +11,26 @@
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
    </VSEOCLASS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <SCONAME>NEW_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>All will be added to displayed grid...</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <SCONAME>QUERY</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Query info that will be run on field change...</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <SCONAME>TRIGGER_CHANGE_FIELDS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>List of field that will trigger select on change...</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
   </asx:values>
  </asx:abap>
 </abapGit>

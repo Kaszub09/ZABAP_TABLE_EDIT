@@ -18,12 +18,23 @@ CLASS zcl_zabap_table_edit_descr_ext DEFINITION PUBLIC FINAL CREATE PUBLIC.
       END OF t_new_fields,
       tt_new_fields TYPE STANDARD TABLE OF t_new_fields WITH EMPTY KEY,
       BEGIN OF t_query,
+        "! Select clause, should use same fields names as new_name in new_fields
         select TYPE string,
+        "! Tables to select from, can be joined
         from   TYPE string,
+        "! should use '@row-[modified_data_ext field]' (new SQL syntax - base table line is mapped to row)
         where  TYPE string,
       END OF t_query.
 
     METHODS:
+      "! <p class="shorttext synchronized" lang="en"></p>
+      "! @parameter trigger_change_fields | <p class="shorttext synchronized" lang="en">List of field that will trigger select on change...</p>
+      "! E.g. MATNR when description should be updated from MAKT
+      "! @parameter new_fields | <p class="shorttext synchronized" lang="en">All will be added to displayed grid...</p>
+      "! New_name should be exactly the same as in query-select. Additional info in line type.
+      "! @parameter query | <p class="shorttext synchronized" lang="en">Query info that will be run on field change...</p>
+      "! Select should have same fields as in new_fields. Where condition should use '[at]row-[modified_data_ext field]'.
+      "! Additional info in line type.
       constructor IMPORTING trigger_change_fields TYPE tt_trigger_change_fields new_fields TYPE tt_new_fields query TYPE t_query.
 
   PRIVATE SECTION.

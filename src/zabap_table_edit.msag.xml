@@ -104,6 +104,12 @@
      <MSGNR>016</MSGNR>
      <TEXT>Change below entries as they do not comply with selection</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>Field &amp;1 is empty - row &amp;2</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
