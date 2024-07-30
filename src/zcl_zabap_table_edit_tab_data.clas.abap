@@ -107,12 +107,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       index = selected_rows[ 1 ]-index.
       RETURN.
     ENDIF.
-
-    grid->get_selected_cells( IMPORTING et_cell = DATA(selected_cells) ).
-    IF lines( selected_cells ) = 1.
-      index = selected_cells[ 1 ]-row_id.
-      RETURN.
-    ENDIF.
   ENDMETHOD.
 
   METHOD on_data_changed.
