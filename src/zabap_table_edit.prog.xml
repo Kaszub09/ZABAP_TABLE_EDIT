@@ -71,6 +71,12 @@
       </item>
       <item>
        <ID>S</ID>
+       <KEY>P_ASKSEL</KEY>
+       <ENTRY>Zacznij ekranem selekcji</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
        <KEY>P_CLASS</KEY>
        <ENTRY>Klasa rozszerzająca program</ENTRY>
        <LENGTH>38</LENGTH>

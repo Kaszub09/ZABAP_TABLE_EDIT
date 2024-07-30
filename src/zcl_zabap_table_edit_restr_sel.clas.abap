@@ -32,7 +32,7 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_restr_sel~display.
-    IF messages->confirm_data_loss( will_data_be_lost_on_change ) = abap_false.
+    IF messages->confirm_data_loss_on_selection( will_data_be_lost_on_change ) = abap_false.
       RETURN.
     ENDIF.
 
@@ -55,7 +55,7 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     DATA fields_tab TYPE STANDARD TABLE OF rsdsfields.
     " Don't use secondary keys because they don't preserve field order
     fields_tab = VALUE #( FOR field IN zcl_zabap_field_catalogue=>get_fc_from_struct_name( table_name )
-        WHERE ( key = abap_true ) ( tablename = table_name fieldname = field-fieldname ) ).
+        WHERE ( key = abap_true and fieldname <> 'MANDT' and datatype <> 'CLNT' ) ( tablename = table_name fieldname = field-fieldname ) ).
 
     CALL FUNCTION 'FREE_SELECTIONS_INIT'
       EXPORTING
