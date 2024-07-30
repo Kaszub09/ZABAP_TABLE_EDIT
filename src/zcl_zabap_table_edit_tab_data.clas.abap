@@ -22,7 +22,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         comparator        TYPE REF TO zcl_zabap_table_comparator,
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
         db                TYPE REF TO zif_zabap_table_edit_db,
-        selection         TYPE REF TO zcl_zabap_table_edit_restr_sel,
+        selection         TYPE REF TO zif_zabap_table_edit_restr_sel,
       END OF t_table.
 
     METHODS:
@@ -67,7 +67,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
 
     "---SELECTION---
-    table-selection = NEW #( config-table_name ).
+    table-selection = zcl_zabap_table_edit_factory=>get_restrict_selection( config-table_name ).
     IF config-show_selection_first = abap_true.
       table-selection->display( abap_false ).
     ENDIF.

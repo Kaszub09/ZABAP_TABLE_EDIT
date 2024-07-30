@@ -1,16 +1,17 @@
-CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
+CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
+    INTERFACES:
+      zif_zabap_table_edit_restr_sel.
+
     METHODS:
-      constructor IMPORTING table_name TYPE string,
-      display IMPORTING will_data_be_lost_on_change TYPE abap_bool RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit,
-      get_where_cond RETURNING VALUE(where) TYPE rsds_where_tab,
-      get_field_ranges RETURNING VALUE(field_ranges) TYPE rsds_frange_t.
+      constructor IMPORTING table_name TYPE string.
 
   PRIVATE SECTION.
     METHODS:
       init_selection RAISING zcx_zabap_table_edit,
       selection_dialog RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
+
     DATA:
       selection_id TYPE dynselid,
       table_name   TYPE string,
@@ -22,21 +23,15 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
         field_ranges  TYPE rsds_trange,
         fields_tab    TYPE STANDARD TABLE OF rsdsfields WITH EMPTY KEY,
       END OF selection.
-
 ENDCLASS.
 
-
-
 CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
-
-
   METHOD constructor.
     me->table_name = table_name.
     messages = NEW #( ).
   ENDMETHOD.
 
-
-  METHOD display.
+  METHOD zif_zabap_table_edit_restr_sel~display.
     IF messages->confirm_data_loss( will_data_be_lost_on_change ) = abap_false.
       RETURN.
     ENDIF.
@@ -48,14 +43,13 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     changed = selection_dialog( ).
   ENDMETHOD.
 
-
-  METHOD get_where_cond.
+  METHOD zif_zabap_table_edit_restr_sel~get_where_cond.
     where = VALUE #( selection-where_clauses[ tablename = table_name ]-where_tab OPTIONAL ).
   ENDMETHOD.
 
-
   METHOD init_selection.
     DATA tables_tab TYPE STANDARD TABLE OF rsdstabs.
+
     APPEND VALUE #( prim_tab = table_name ) TO tables_tab.
 
     DATA fields_tab TYPE STANDARD TABLE OF rsdsfields.
@@ -98,13 +92,11 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD selection_dialog.
     changed = abap_false.
 
     DATA:
       where_clauses TYPE rsds_twhere,
-      expressions   TYPE rsds_texpr,
       field_ranges  TYPE rsds_trange,
       fields_tab    TYPE STANDARD TABLE OF rsdsfields WITH EMPTY KEY.
 
@@ -128,7 +120,6 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_zabap_table_edit EXPORTING custom_message = |FREE_SELECTIONS_DIALOG error { sy-subrc }|.
     ENDIF.
 
-
     IF where_clauses = selection-where_clauses OR sy-subrc = 2.
       "^Nothing to change
       RETURN.
@@ -137,8 +128,8 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     selection = VALUE #( where_clauses = where_clauses field_ranges = field_ranges fields_tab = fields_tab ).
     changed = abap_true.
   ENDMETHOD.
-  METHOD get_field_ranges.
+
+  METHOD zif_zabap_table_edit_restr_sel~get_field_ranges.
     field_ranges = VALUE #( selection-field_ranges[ tablename = table_name ]-frange_t OPTIONAL ).
   ENDMETHOD.
-
 ENDCLASS.
