@@ -37,6 +37,18 @@
      <ENTRY>Change document</ENTRY>
      <LENGTH>25</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>005</KEY>
+     <ENTRY>Selection</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>006</KEY>
+     <ENTRY>Restrict data based on selection</ENTRY>
+     <LENGTH>64</LENGTH>
+    </item>
    </TPOOL>
    <I18N_TPOOL>
     <item>
@@ -65,6 +77,18 @@
        <KEY>004</KEY>
        <ENTRY>Dokument zmian</ENTRY>
        <LENGTH>25</LENGTH>
+      </item>
+      <item>
+       <ID>I</ID>
+       <KEY>005</KEY>
+       <ENTRY>Selekcja</ENTRY>
+       <LENGTH>28</LENGTH>
+      </item>
+      <item>
+       <ID>I</ID>
+       <KEY>006</KEY>
+       <ENTRY>Zawęź dane do wybranych</ENTRY>
+       <LENGTH>64</LENGTH>
       </item>
      </TEXTPOOL>
     </item>

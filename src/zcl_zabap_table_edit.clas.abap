@@ -3,12 +3,13 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     TYPES:
       BEGIN OF t_config,
-        display_text       TYPE string,
-        table_name         TYPE string,
-        change_doc_type    TYPE zabap_change_doc_type,
-        disable_cd_view    TYPE abap_bool,
-        disable_editing    TYPE abap_bool,
-        disable_text_table TYPE abap_bool,
+        display_text         TYPE string,
+        table_name           TYPE string,
+        change_doc_type      TYPE zabap_change_doc_type,
+        disable_cd_view      TYPE abap_bool,
+        disable_editing      TYPE abap_bool,
+        disable_text_table   TYPE abap_bool,
+        show_selection_first TYPE abap_bool,
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,
           config   TYPE REF TO zif_zabap_table_edit_config,
@@ -24,19 +25,20 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PRIVATE SECTION.
     METHODS:
       initialize_extensions,
-      command_validate,
+      command_validate EXPORTING result TYPE i compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
       command_save,
       command_toggle_display,
-      commad_change_document,
+      command_change_document,
       command_cancel,
       command_exit,
-      command_reset.
+      command_reset,
+      command_restrict_selection.
 
     METHODS:
       on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
 
     DATA:
-      config     TYPE t_config.
+      config             TYPE t_config.
 
     DATA:
       in_edit_mode    TYPE abap_bool VALUE abap_false,
@@ -116,10 +118,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-save. command_save( ).
       WHEN screen_controls->c_commands-toggle_display. command_toggle_display( ).
       WHEN screen_controls->c_commands-validate. command_validate( ).
-      WHEN screen_controls->c_commands-change_document. commad_change_document( ).
+      WHEN screen_controls->c_commands-change_document. command_change_document( ).
       WHEN screen_controls->c_commands-reset. command_reset( ).
       WHEN screen_controls->c_commands-back OR screen_controls->c_commands-exit. command_exit( ).
       WHEN screen_controls->c_commands-cancel. command_cancel( ).
+      WHEN screen_controls->c_commands-restrict_selection. command_restrict_selection( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -127,20 +130,10 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_save.
-    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
-
-    CASE result.
-      WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
-        "^Nothing to do - message was already displayed by ALV GRID or by extension
-        RETURN.
-      WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
-        RETURN.
-      WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
-      WHEN OTHERS.
-        messages->unexpected_validation_result( ).
-        RETURN.
-    ENDCASE.
+    command_validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
+    IF result <>  zcl_zabap_table_edit_globals=>c_validation-ok.
+      RETURN.
+    ENDIF.
 
     IF messages->confirm_save( ) = abap_false.
       RETURN.
@@ -169,12 +162,18 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_validate.
-    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
+    table_data->validate( IMPORTING result = result compared = compared ).
     CASE result.
       WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
       WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+        MESSAGE s007(zabap_table_edit) INTO DATA(duplicates_header).
+        messages->show_data( msg = duplicates_header table_name = config-table_name data_table = compared-duplicates
+                             mandant_col_name = table_data->mandant_field ).
+      WHEN zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+        MESSAGE s016(zabap_table_edit) INTO DATA(not_in_selection_header).
+        messages->show_data( msg = not_in_selection_header table_name = config-table_name data_table = compared-not_in_selection
+                             mandant_col_name = table_data->mandant_field ).
       WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
         messages->validation_ok( ).
       WHEN OTHERS.
@@ -182,7 +181,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDCASE.
   ENDMETHOD.
 
-  METHOD commad_change_document.
+  METHOD command_change_document.
     DATA batch_input TYPE TABLE OF bdcdata.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
@@ -201,7 +200,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       APPEND VALUE #( fnam = 'TABKEYLO' fval = selected_row_key ) TO batch_input.
     ENDIF.
 
-    CALL TRANSACTION 'RSSCD100' USING batch_input MODE 'E' UPDATE 'S'.
+    DATA(call_options) = VALUE ctu_params( dismode = 'E' updmode = 'S' nobinpt = abap_true nobiend = abap_true ).
+    CALL TRANSACTION 'RSSCD100' USING batch_input OPTIONS FROM call_options.
   ENDMETHOD.
 
   METHOD command_cancel.
@@ -224,4 +224,11 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
     table_data->reset_grid( in_edit_mode ).
   ENDMETHOD.
+
+  METHOD command_restrict_selection.
+    IF table_data->restrict_selection( ) = abap_true.
+      display( ).
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.

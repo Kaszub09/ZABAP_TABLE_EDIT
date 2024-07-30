@@ -92,6 +92,24 @@
      <MSGNR>014</MSGNR>
      <TEXT>SAP LUW commit returned &amp;1</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>Unsaved data will be lost if you change selection. Continue?</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>Change below entries as they do not comply with selection</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZABAP_TABLE_EDIT</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>Field &amp;1 is empty - row &amp;2</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

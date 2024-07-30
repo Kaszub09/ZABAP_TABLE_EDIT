@@ -18,6 +18,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_ASKSEL</KEY>
+     <ENTRY>Show selection screen first</ENTRY>
+     <LENGTH>35</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_CD</KEY>
      <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
@@ -62,6 +68,12 @@
        <ID>R</ID>
        <ENTRY>Główny program do edycji tabel</ENTRY>
        <LENGTH>70</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_ASKSEL</KEY>
+       <ENTRY>Zacznij ekranem selekcji</ENTRY>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>

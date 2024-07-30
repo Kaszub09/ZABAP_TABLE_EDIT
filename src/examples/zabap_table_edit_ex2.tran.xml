@@ -15,7 +15,7 @@
    <TSTCT>
     <SPRSL>E</SPRSL>
     <TCODE>ZABAP_TABLE_EDIT_EX2</TCODE>
-    <TTEXT>Ex 2 - text table</TTEXT>
+    <TTEXT>Example 2 for table edit</TTEXT>
    </TSTCT>
    <TSTCP>
     <TCODE>ZABAP_TABLE_EDIT_EX2</TCODE>

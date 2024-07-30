@@ -21,8 +21,8 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         locker            TYPE REF TO zcl_zabap_table_edit_lock,
         comparator        TYPE REF TO zcl_zabap_table_comparator,
         text_table        TYPE REF TO zif_zabap_table_edit_text_tab,
-        maintenance_view  TYPE REF TO zif_zabap_table_edit_text_tab,
         db                TYPE REF TO zif_zabap_table_edit_db,
+        selection         TYPE REF TO zif_zabap_table_edit_restr_sel,
       END OF t_table.
 
     METHODS:
@@ -33,15 +33,16 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       "! <p class="shorttext synchronized">Display table to original tab - needed if fields were added</p>
       get_modified_data_no_ext RETURNING VALUE(modified_data) TYPE REF TO data,
       get_selected_row_index RETURNING VALUE(index) TYPE i,
-      remove_empty_rows.
+      remove_empty_rows,
+      get_not_in_selection IMPORTING compared                TYPE zcl_zabap_table_edit_globals=>t_data_comparision
+                           RETURNING VALUE(not_in_selection) TYPE REF TO data.
 
     METHODS:
       on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
 
     DATA:
-      table    TYPE t_table,
-      grid     TYPE REF TO zif_zabap_table_edit_grid_if,
-      messages TYPE REF TO zcl_zabap_table_edit_messages.
+      table TYPE t_table,
+      grid  TYPE REF TO zif_zabap_table_edit_grid_if.
 
     DATA:
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
@@ -51,9 +52,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
 
-    table-fields     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-locker     = NEW #( table_name = config-table_name ). "TODO as interface
-    table-comparator = NEW #( table_name = config-table_name ). "TODO as interface
+    table-fields     = NEW #( config-table_name ). "TODO as interface
+    table-locker     = NEW #( config-table_name ). "TODO as interface
+    table-comparator = NEW #( config-table_name ). "TODO as interface
 
     "---TEXT TABLE---
     table-text_table = zcl_zabap_table_edit_factory=>get_text_table( CORRESPONDING #( me->config ) ).
@@ -65,6 +66,11 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     "---EXTENSION CALL---
     config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
 
+    "---SELECTION---
+    table-selection = zcl_zabap_table_edit_factory=>get_restrict_selection( config-table_name ).
+    IF config-show_selection_first = abap_true.
+      table-selection->display( abap_false ).
+    ENDIF.
     prepare_initial_data( ).
     table-db = zcl_zabap_table_edit_factory=>get_db( ).
   ENDMETHOD.
@@ -101,12 +107,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       index = selected_rows[ 1 ]-index.
       RETURN.
     ENDIF.
-
-    grid->get_selected_cells( IMPORTING et_cell = DATA(selected_cells) ).
-    IF lines( selected_cells ) = 1.
-      index = selected_cells[ 1 ]-row_id.
-      RETURN.
-    ENDIF.
   ENDMETHOD.
 
   METHOD on_data_changed.
@@ -126,7 +126,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->default_select( CHANGING execute = execute_default_select ).
 
     IF execute_default_select = abap_true.
-      SELECT * FROM (config-table_name) INTO TABLE @<initial_data> ORDER BY PRIMARY KEY.
+      "---SELECTION---
+      DATA(where) = table-selection->get_where_cond( ).
+      SELECT * FROM (config-table_name) WHERE (where) ORDER BY PRIMARY KEY INTO TABLE @<initial_data>.
       "TODO maintenance view
     ENDIF.
 
@@ -277,6 +279,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    compared-not_in_selection = get_not_in_selection( compared ).
+    assign_to_table_fs compared-not_in_selection->* <not_in_selection>.
+    IF lines( <not_in_selection> ) > 0.
+      result = zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+      RETURN.
+    ENDIF.
+
     result = zcl_zabap_table_edit_globals=>c_validation-ok.
 
     "---EXTENSION CALL---
@@ -300,4 +309,42 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       grid->refresh_table_display( ).
     ENDIF.
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~restrict_selection.
+    changed = table-selection->display( was_data_changed ).
+    IF changed = abap_true.
+      prepare_initial_data( ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD get_not_in_selection.
+    assign_to_table_fs compared-inserted->* <inserted>.
+    assign_to_table_fs compared-modified->* <modified>.
+
+    CREATE DATA not_in_selection LIKE <inserted>.
+    assign_to_table_fs not_in_selection->* <not_in_selection>.
+
+    APPEND LINES OF <inserted> TO <not_in_selection>.
+    APPEND LINES OF <modified> TO <not_in_selection>.
+
+    DATA(field_ranges) = table-selection->get_field_ranges( ).
+
+    "Do it manually because undermentioned doesn't work (problem with table indexes?).
+    ""DELETE <not_in_selection> WHERE ('field_ranges[ 1 ]-fieldname IN field_ranges[ 1 ]-selopt_t')"
+    LOOP AT <not_in_selection> ASSIGNING FIELD-SYMBOL(<row>).
+      DATA(idx) = sy-tabix.
+      DATA(row_is_valid) = abap_true.
+      LOOP AT field_ranges REFERENCE INTO DATA(field_range).
+        ASSIGN COMPONENT field_range->fieldname OF STRUCTURE <row> TO FIELD-SYMBOL(<field>).
+        IF NOT <field> IN field_range->selopt_t.
+          row_is_valid = abap_false.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+      IF row_is_valid = abap_true.
+        DELETE <not_in_selection> INDEX idx.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
 ENDCLASS.

@@ -13,7 +13,8 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIEN
                      RETURNING VALUE(change_doc) TYPE REF TO zif_zabap_change_document,
       get_table_data IMPORTING config TYPE zif_zabap_table_edit_tab_data=>t_config grid TYPE REF TO zif_zabap_table_edit_grid_if
                      RETURNING VALUE(table_data) TYPE REF TO zif_zabap_table_edit_tab_data,
-      get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if.
+      get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if,
+      get_restrict_selection IMPORTING table_name TYPE string RETURNING VALUE(selection) TYPE REF TO zif_zabap_table_edit_restr_sel.
 
   PRIVATE SECTION.
     CLASS-DATA:
@@ -21,6 +22,7 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIEN
       mock_table_data TYPE REF TO zif_zabap_table_edit_tab_data,
       mock_text_table TYPE REF TO zif_zabap_table_edit_text_tab,
       mock_change_doc TYPE REF TO zif_zabap_change_document,
+      mock_selection  TYPE REF TO zif_zabap_table_edit_restr_sel,
       db              TYPE REF TO zif_zabap_table_edit_db.
 ENDCLASS.
 
@@ -81,6 +83,16 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
     ENDIF.
     "--------------------------------------------------
     grid = NEW zcl_zabap_table_edit_grid( container ).
+  ENDMETHOD.
+
+  METHOD get_restrict_selection.
+    "To avoid doing too many levels of abstraction for the sole purpose of testing
+    IF mock_selection IS BOUND.
+      selection = mock_selection.
+      RETURN.
+    ENDIF.
+    "--------------------------------------------------
+    selection = NEW zcl_zabap_table_edit_restr_sel( table_name ).
   ENDMETHOD.
 
 ENDCLASS.
