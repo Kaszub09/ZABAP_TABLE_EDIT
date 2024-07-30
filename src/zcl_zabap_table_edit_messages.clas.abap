@@ -2,7 +2,7 @@ CLASS zcl_zabap_table_edit_messages DEFINITION PUBLIC CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS:
-      show_duplicates IMPORTING table_name TYPE string duplicates TYPE REF TO data mandant_col_name TYPE string DEFAULT '',
+      show_data IMPORTING msg TYPE string table_name TYPE string data_table TYPE REF TO data mandant_col_name TYPE string DEFAULT '',
       confirm_save RETURNING VALUE(continue) TYPE abap_bool,
       confirm_data_loss_on_selection IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
       confirm_data_loss IMPORTING was_data_changed TYPE abap_bool DEFAULT abap_true RETURNING VALUE(continue) TYPE abap_bool,
@@ -55,16 +55,15 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     MESSAGE s009(zabap_table_edit).
   ENDMETHOD.
 
-  METHOD show_duplicates.
-    FIELD-SYMBOLS <duplicates> TYPE table.
-
-    ASSIGN duplicates->* TO <duplicates>.
+  METHOD show_data.
+    FIELD-SYMBOLS <data_table> TYPE table.
+    ASSIGN data_table->* TO <data_table>.
 
     DATA(popup_table) = NEW zcl_zabap_salv_report( report_id = CONV #( table_name ) handle = 'DUPL' ).
     popup_table->alv_table->set_screen_popup( start_column = 1  end_column = 100  start_line = 1 end_line = 15 ).
-    MESSAGE s007(zabap_table_edit) INTO DATA(msg).
+
     popup_table->set_header( CONV #( msg ) ).
-    popup_table->set_data( EXPORTING create_table_copy = abap_false CHANGING data_table = <duplicates> ).
+    popup_table->set_data( EXPORTING create_table_copy = abap_false CHANGING data_table = <data_table> ).
     IF strlen( mandant_col_name ) > 0.
       popup_table->hide_column( CONV #( mandant_col_name ) ).
     ENDIF.

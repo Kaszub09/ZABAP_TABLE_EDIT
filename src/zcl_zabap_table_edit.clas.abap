@@ -137,8 +137,13 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
         RETURN.
       WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
-        RETURN.
+        MESSAGE s007(zabap_table_edit) INTO DATA(duplicates_header).
+        messages->show_data( msg = duplicates_header table_name = config-table_name data_table = compared-duplicates
+                             mandant_col_name = table_data->mandant_field ).
+      WHEN zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+        MESSAGE s016(zabap_table_edit) INTO DATA(not_in_selection_header).
+        messages->show_data( msg = not_in_selection_header table_name = config-table_name data_table = compared-not_in_selection
+                             mandant_col_name = table_data->mandant_field ).
       WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
       WHEN OTHERS.
         messages->unexpected_validation_result( ).
@@ -177,7 +182,13 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
       WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        messages->show_duplicates( table_name = config-table_name duplicates = compared-duplicates mandant_col_name = table_data->mandant_field ).
+        MESSAGE s007(zabap_table_edit) INTO DATA(duplicates_header).
+        messages->show_data( msg = duplicates_header table_name = config-table_name data_table = compared-duplicates
+                             mandant_col_name = table_data->mandant_field ).
+      WHEN zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+        MESSAGE s016(zabap_table_edit) INTO DATA(not_in_selection_header).
+        messages->show_data( msg = not_in_selection_header table_name = config-table_name data_table = compared-not_in_selection
+                             mandant_col_name = table_data->mandant_field ).
       WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
         messages->validation_ok( ).
       WHEN OTHERS.
@@ -230,7 +241,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
   METHOD command_restrict_selection.
     IF table_data->restrict_selection( ) = abap_true.
-       display( ).
+      display( ).
     ENDIF.
   ENDMETHOD.
 

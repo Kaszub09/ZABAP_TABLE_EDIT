@@ -4,7 +4,8 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
     METHODS:
       constructor IMPORTING table_name TYPE string,
       display IMPORTING will_data_be_lost_on_change TYPE abap_bool RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit,
-      get_where_cond RETURNING VALUE(where) TYPE rsds_where_tab.
+      get_where_cond RETURNING VALUE(where) TYPE rsds_where_tab,
+      get_field_ranges RETURNING VALUE(field_ranges) TYPE rsds_frange_t.
 
   PRIVATE SECTION.
     METHODS:
@@ -18,18 +19,23 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PUBLIC.
     DATA:
       BEGIN OF selection,
         where_clauses TYPE rsds_twhere,
-        expressions   TYPE rsds_texpr,
         field_ranges  TYPE rsds_trange,
         fields_tab    TYPE STANDARD TABLE OF rsdsfields WITH EMPTY KEY,
       END OF selection.
 
 ENDCLASS.
 
+
+
 CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
+
+
   METHOD constructor.
     me->table_name = table_name.
     messages = NEW #( ).
   ENDMETHOD.
+
+
   METHOD display.
     IF messages->confirm_data_loss( will_data_be_lost_on_change ) = abap_false.
       RETURN.
@@ -41,6 +47,12 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
 
     changed = selection_dialog( ).
   ENDMETHOD.
+
+
+  METHOD get_where_cond.
+    where = VALUE #( selection-where_clauses[ tablename = table_name ]-where_tab OPTIONAL ).
+  ENDMETHOD.
+
 
   METHOD init_selection.
     DATA tables_tab TYPE STANDARD TABLE OF rsdstabs.
@@ -86,6 +98,7 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD selection_dialog.
     changed = abap_false.
 
@@ -101,7 +114,6 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
         as_window       = 'X'
       IMPORTING
         where_clauses   = where_clauses
-        expressions     = expressions
         field_ranges    = field_ranges
       TABLES
         fields_tab      = fields_tab
@@ -122,12 +134,11 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    selection = VALUE #( where_clauses = where_clauses expressions = expressions field_ranges = field_ranges fields_tab = fields_tab ).
+    selection = VALUE #( where_clauses = where_clauses field_ranges = field_ranges fields_tab = fields_tab ).
     changed = abap_true.
   ENDMETHOD.
-
-  METHOD get_where_cond.
-    where = VALUE #( selection-where_clauses[ tablename = table_name ]-where_tab OPTIONAL ).
+  METHOD get_field_ranges.
+    field_ranges = VALUE #( selection-field_ranges[ tablename = table_name ]-frange_t OPTIONAL ).
   ENDMETHOD.
 
 ENDCLASS.

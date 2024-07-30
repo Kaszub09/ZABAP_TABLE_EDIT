@@ -33,7 +33,9 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       "! <p class="shorttext synchronized">Display table to original tab - needed if fields were added</p>
       get_modified_data_no_ext RETURNING VALUE(modified_data) TYPE REF TO data,
       get_selected_row_index RETURNING VALUE(index) TYPE i,
-      remove_empty_rows.
+      remove_empty_rows,
+      get_not_in_selection IMPORTING compared                TYPE zcl_zabap_table_edit_globals=>t_data_comparision
+                           RETURNING VALUE(not_in_selection) TYPE REF TO data.
 
     METHODS:
       on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
@@ -283,6 +285,13 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    compared-not_in_selection = get_not_in_selection( compared ).
+    assign_to_table_fs compared-not_in_selection->* <not_in_selection>.
+    IF lines( <not_in_selection> ) > 0.
+      result = zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+      RETURN.
+    ENDIF.
+
     result = zcl_zabap_table_edit_globals=>c_validation-ok.
 
     "---EXTENSION CALL---
@@ -312,6 +321,36 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     IF changed = abap_true.
       prepare_initial_data( ).
     ENDIF.
+  ENDMETHOD.
+
+  METHOD get_not_in_selection.
+    assign_to_table_fs compared-inserted->* <inserted>.
+    assign_to_table_fs compared-modified->* <modified>.
+
+    CREATE DATA not_in_selection LIKE <inserted>.
+    assign_to_table_fs not_in_selection->* <not_in_selection>.
+
+    APPEND LINES OF <inserted> TO <not_in_selection>.
+    APPEND LINES OF <modified> TO <not_in_selection>.
+
+    DATA(field_ranges) = table-selection->get_field_ranges( ).
+
+    "Do it manually because undermentioned doesn't work (problem with table indexes?).
+    ""DELETE <not_in_selection> WHERE ('field_ranges[ 1 ]-fieldname IN field_ranges[ 1 ]-selopt_t')"
+    LOOP AT <not_in_selection> ASSIGNING FIELD-SYMBOL(<row>).
+      DATA(idx) = sy-tabix.
+      DATA(row_is_valid) = abap_true.
+      LOOP AT field_ranges REFERENCE INTO DATA(field_range).
+        ASSIGN COMPONENT field_range->fieldname OF STRUCTURE <row> TO FIELD-SYMBOL(<field>).
+        IF NOT <field> IN field_range->selopt_t.
+          row_is_valid = abap_false.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+      IF row_is_valid = abap_true.
+        DELETE <not_in_selection> INDEX idx.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.
