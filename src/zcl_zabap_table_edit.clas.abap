@@ -25,7 +25,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PRIVATE SECTION.
     METHODS:
       initialize_extensions,
-      command_validate,
+      command_validate EXPORTING result TYPE i compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
       command_save,
       command_toggle_display,
       command_change_document,
@@ -130,25 +130,10 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_save.
-    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
-
-    CASE result.
-      WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
-        "^Nothing to do - message was already displayed by ALV GRID or by extension
-        RETURN.
-      WHEN zcl_zabap_table_edit_globals=>c_validation-duplicates.
-        MESSAGE s007(zabap_table_edit) INTO DATA(duplicates_header).
-        messages->show_data( msg = duplicates_header table_name = config-table_name data_table = compared-duplicates
-                             mandant_col_name = table_data->mandant_field ).
-      WHEN zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
-        MESSAGE s016(zabap_table_edit) INTO DATA(not_in_selection_header).
-        messages->show_data( msg = not_in_selection_header table_name = config-table_name data_table = compared-not_in_selection
-                             mandant_col_name = table_data->mandant_field ).
-      WHEN zcl_zabap_table_edit_globals=>c_validation-ok.
-      WHEN OTHERS.
-        messages->unexpected_validation_result( ).
-        RETURN.
-    ENDCASE.
+    command_validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
+    IF result <>  zcl_zabap_table_edit_globals=>c_validation-ok.
+      RETURN.
+    ENDIF.
 
     IF messages->confirm_save( ) = abap_false.
       RETURN.
@@ -177,7 +162,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_validate.
-    table_data->validate( IMPORTING result = DATA(result) compared = DATA(compared) ).
+    table_data->validate( IMPORTING result = result compared = compared ).
     CASE result.
       WHEN zcl_zabap_table_edit_globals=>c_validation-incorrect_values OR zcl_zabap_table_edit_globals=>c_validation-extension_invalid.
         "^Nothing to do - message was already displayed by ALV GRID or by extension
