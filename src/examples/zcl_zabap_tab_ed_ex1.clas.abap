@@ -91,4 +91,8 @@ CLASS zcl_zabap_tab_ed_ex1 IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_commands~set_edit_mode.
   ENDMETHOD.
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+
+  ENDMETHOD.
+
 ENDCLASS.

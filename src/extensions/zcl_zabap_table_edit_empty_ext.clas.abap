@@ -73,4 +73,8 @@ CLASS zcl_zabap_table_edit_empty_ext IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+
+  ENDMETHOD.
+
 ENDCLASS.

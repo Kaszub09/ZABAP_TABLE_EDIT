@@ -17,6 +17,11 @@
      <DESCRIPT>Change initial config, e.g. disable editing for some users</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
+     <CMPNAME>CHANGE_INIT_SELECTION_FIELDS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Change initial fields displayed when user clicks selection</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
      <CMPNAME>GRID_SETUP</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Called once, e.g. modify commands / hook up other events</DESCRIPT>

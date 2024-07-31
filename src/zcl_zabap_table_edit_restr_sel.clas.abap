@@ -1,11 +1,21 @@
 CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBAL FRIENDS zcl_zabap_table_edit_factory.
 
   PUBLIC SECTION.
+
     INTERFACES:
       zif_zabap_table_edit_restr_sel.
 
+    TYPES:
+      tt_fields_tab TYPE STANDARD TABLE OF rsdsfields WITH EMPTY KEY,
+      BEGIN OF t_config,
+        BEGIN OF ext,
+          config TYPE REF TO zif_zabap_table_edit_config,
+        END OF ext,
+        table_name TYPE string,
+      END OF t_config.
+
     METHODS:
-      constructor IMPORTING table_name TYPE string.
+      constructor IMPORTING config TYPE t_config.
 
   PRIVATE SECTION.
     METHODS:
@@ -13,8 +23,8 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PRIVATE GLOB
       selection_dialog RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit.
 
     DATA:
+      config       TYPE t_config,
       selection_id TYPE dynselid,
-      table_name   TYPE string,
       messages     TYPE REF TO zcl_zabap_table_edit_messages.
 
     DATA:
@@ -27,7 +37,7 @@ ENDCLASS.
 
 CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
   METHOD constructor.
-    me->table_name = table_name.
+    me->config = config.
     messages = NEW #( ).
   ENDMETHOD.
 
@@ -44,18 +54,19 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_restr_sel~get_where_cond.
-    where = VALUE #( selection-where_clauses[ tablename = table_name ]-where_tab OPTIONAL ).
+    where = VALUE #( selection-where_clauses[ tablename = config-table_name ]-where_tab OPTIONAL ).
   ENDMETHOD.
 
   METHOD init_selection.
-    DATA tables_tab TYPE STANDARD TABLE OF rsdstabs.
+    DATA tables_tab TYPE STANDARD TABLE OF rsdstabs WITH EMPTY KEY.
+    APPEND VALUE #( prim_tab = config-table_name ) TO tables_tab.
 
-    APPEND VALUE #( prim_tab = table_name ) TO tables_tab.
-
-    DATA fields_tab TYPE STANDARD TABLE OF rsdsfields.
+    DATA fields_tab type tt_fields_tab.
     " Don't use secondary keys because they don't preserve field order
-    fields_tab = VALUE #( FOR field IN zcl_zabap_field_catalogue=>get_fc_from_struct_name( table_name )
-        WHERE ( key = abap_true and fieldname <> 'MANDT' and datatype <> 'CLNT' ) ( tablename = table_name fieldname = field-fieldname ) ).
+    fields_tab = VALUE #( FOR field IN zcl_zabap_field_catalogue=>get_fc_from_struct_name( config-table_name )
+        WHERE ( key = abap_true AND fieldname <> 'MANDT' AND datatype <> 'CLNT' ) ( tablename = config-table_name fieldname = field-fieldname ) ).
+
+    config-ext-config->change_init_selection_fields( CHANGING fields_tab = fields_tab ).
 
     CALL FUNCTION 'FREE_SELECTIONS_INIT'
       EXPORTING
@@ -130,6 +141,6 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_restr_sel~get_field_ranges.
-    field_ranges = VALUE #( selection-field_ranges[ tablename = table_name ]-frange_t OPTIONAL ).
+    field_ranges = VALUE #( selection-field_ranges[ tablename = config-table_name ]-frange_t OPTIONAL ).
   ENDMETHOD.
 ENDCLASS.

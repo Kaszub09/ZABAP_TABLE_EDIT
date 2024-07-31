@@ -14,7 +14,8 @@ CLASS zcl_zabap_table_edit_factory DEFINITION PUBLIC CREATE PRIVATE GLOBAL FRIEN
       get_table_data IMPORTING config TYPE zif_zabap_table_edit_tab_data=>t_config grid TYPE REF TO zif_zabap_table_edit_grid_if
                      RETURNING VALUE(table_data) TYPE REF TO zif_zabap_table_edit_tab_data,
       get_grid IMPORTING container TYPE REF TO cl_gui_container RETURNING VALUE(grid) TYPE REF TO zif_zabap_table_edit_grid_if,
-      get_restrict_selection IMPORTING table_name TYPE string RETURNING VALUE(selection) TYPE REF TO zif_zabap_table_edit_restr_sel.
+      get_restrict_selection IMPORTING config TYPE zcl_zabap_table_edit_restr_sel=>t_config
+                             RETURNING VALUE(selection) TYPE REF TO zif_zabap_table_edit_restr_sel.
 
   PRIVATE SECTION.
     CLASS-DATA:
@@ -92,7 +93,7 @@ CLASS zcl_zabap_table_edit_factory IMPLEMENTATION.
       RETURN.
     ENDIF.
     "--------------------------------------------------
-    selection = NEW zcl_zabap_table_edit_restr_sel( table_name ).
+    selection = NEW zcl_zabap_table_edit_restr_sel( config ).
   ENDMETHOD.
 
 ENDCLASS.

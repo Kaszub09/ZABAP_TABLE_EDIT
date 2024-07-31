@@ -15,4 +15,8 @@ CLASS zcl_zabap_table_edit_ex3 IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_config~grid_setup.
   ENDMETHOD.
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+
+  ENDMETHOD.
+
 ENDCLASS.

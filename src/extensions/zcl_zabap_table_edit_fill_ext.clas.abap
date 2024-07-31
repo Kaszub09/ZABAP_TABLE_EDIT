@@ -96,4 +96,8 @@ CLASS zcl_zabap_table_edit_fill_ext IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_data~change_display_text.
   ENDMETHOD.
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+
+  ENDMETHOD.
+
 ENDCLASS.

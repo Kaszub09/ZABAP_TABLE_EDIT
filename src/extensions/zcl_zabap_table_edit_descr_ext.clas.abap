@@ -155,4 +155,8 @@ CLASS zcl_zabap_table_edit_descr_ext IMPLEMENTATION.
     SELECT SINGLE (query-select) FROM (query-from) WHERE (query-where) INTO CORRESPONDING FIELDS OF @<query_result>.
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+
+  ENDMETHOD.
+
 ENDCLASS.

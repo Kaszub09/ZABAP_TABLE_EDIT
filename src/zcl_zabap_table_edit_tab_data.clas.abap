@@ -67,7 +67,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
 
     "---SELECTION---
-    table-selection = zcl_zabap_table_edit_factory=>get_restrict_selection( config-table_name ).
+    table-selection = zcl_zabap_table_edit_factory=>get_restrict_selection( corresponding #( config ) ).
     IF config-show_selection_first = abap_true.
       table-selection->display( abap_false ).
     ENDIF.

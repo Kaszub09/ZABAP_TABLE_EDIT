@@ -146,4 +146,10 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
     APPEND interface TO data_interfaces.
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
+    LOOP AT config_interfaces INTO DATA(config_interface).
+      config_interface->change_init_selection_fields( CHANGING fields_tab = fields_tab ).
+    ENDLOOP.
+  ENDMETHOD.
+
 ENDCLASS.
