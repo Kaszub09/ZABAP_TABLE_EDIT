@@ -9,6 +9,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
         disable_cd_view      TYPE abap_bool,
         disable_editing      TYPE abap_bool,
         disable_text_table   TYPE abap_bool,
+        disable_selection       TYPE abap_bool,
         show_selection_first TYPE abap_bool,
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,

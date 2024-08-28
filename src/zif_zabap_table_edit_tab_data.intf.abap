@@ -4,6 +4,7 @@ INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
       table_name           TYPE string,
       change_doc_type      TYPE zabap_change_doc_type,
       disable_text_table   TYPE abap_bool,
+      disable_selection    TYPE abap_bool,
       show_selection_first TYPE abap_bool,
       BEGIN OF ext,
         commands TYPE REF TO zif_zabap_table_edit_commands,

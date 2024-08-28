@@ -49,6 +49,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_DISSEL</KEY>
+     <ENTRY>Disable selection button</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_DISTT</KEY>
      <ENTRY>Disable text table if exists</ENTRY>
      <LENGTH>36</LENGTH>

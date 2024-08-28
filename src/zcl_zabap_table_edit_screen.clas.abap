@@ -20,8 +20,9 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,
         END OF ext,
-        disable_cd_view TYPE abap_bool,
-        disable_editing TYPE abap_bool,
+        disable_cd_view   TYPE abap_bool,
+        disable_editing   TYPE abap_bool,
+        disable_selection TYPE abap_bool,
       END OF t_config.
 
     METHODS:
@@ -52,8 +53,10 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
           description = VALUE #( text = TEXT-004 icon_id = '@46@' icon_text = TEXT-004 ) ).
     ENDIF.
 
-    zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-restrict_selection
-        description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ).
+    IF config-disable_selection = abap_false.
+      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-restrict_selection
+          description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ).
+    ENDIF.
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.
       APPEND c_commands-save TO include_commands.
