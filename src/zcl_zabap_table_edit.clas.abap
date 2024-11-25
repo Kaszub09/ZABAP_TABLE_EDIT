@@ -206,7 +206,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_change_document.
-    DATA batch_input TYPE TABLE OF bdcdata WITH EMPTY KEY.
+    DATA batch_input TYPE STANDARD TABLE OF bdcdata WITH EMPTY KEY.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKT' fval = '' ) TO batch_input.
