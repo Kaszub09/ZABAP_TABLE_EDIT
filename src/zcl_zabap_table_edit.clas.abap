@@ -225,7 +225,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
 
     DATA(call_options) = VALUE ctu_params( dismode = 'E' updmode = 'S' nobinpt = abap_true nobiend = abap_true ).
-    CALL TRANSACTION 'RSSCD100' USING batch_input OPTIONS FROM call_options.
+    CALL TRANSACTION 'RSSCD100' WITH AUTHORITY-CHECK USING batch_input OPTIONS FROM call_options.
   ENDMETHOD.
 
   METHOD command_cancel.
