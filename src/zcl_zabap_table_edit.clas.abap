@@ -9,13 +9,17 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
         disable_cd_view      TYPE abap_bool,
         disable_editing      TYPE abap_bool,
         disable_text_table   TYPE abap_bool,
-        disable_selection       TYPE abap_bool,
+        disable_selection    TYPE abap_bool,
         show_selection_first TYPE abap_bool,
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,
           config   TYPE REF TO zif_zabap_table_edit_config,
           data     TYPE REF TO zif_zabap_table_edit_data,
         END OF ext,
+        BEGIN OF documentation,
+          class TYPE doku_class,
+          name  TYPE string,
+        END OF documentation,
       END OF t_config.
 
     METHODS:
@@ -26,6 +30,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PRIVATE SECTION.
     METHODS:
       initialize_extensions,
+      initialize_documentation,
       command_validate EXPORTING result TYPE i compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
       command_save,
       command_toggle_display,
@@ -33,7 +38,8 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
       command_cancel,
       command_exit,
       command_reset,
-      command_restrict_selection.
+      command_restrict_selection,
+      command_documentation.
 
     METHODS:
       on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
@@ -53,6 +59,8 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
     initialize_extensions( ).
+    initialize_documentation( ).
+
     "---EXTENSION CALL---
     config-ext-config->change_config( CHANGING config = config ).
 
@@ -76,6 +84,20 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     IF NOT config-ext-config IS BOUND.
       config-ext-config = empty_extension.
     ENDIF.
+  ENDMETHOD.
+
+
+  METHOD initialize_documentation.
+    IF config-documentation IS NOT INITIAL.
+      RETURN.
+    ENDIF.
+
+    "Check if table documentation exists - if so, set is as default. 'TB' is documentation type for table.
+    "Looks like English is default fallback language?
+    SELECT SINGLE FROM dokil
+    FIELDS id, object
+    WHERE id = 'TB' AND object = @config-table_name AND langu IN ( @sy-langu , 'E' ) AND dokstate = 'A'
+    INTO ( @config-documentation-class, @config-documentation-name ).
   ENDMETHOD.
 
   METHOD set_edit_mode.
@@ -124,6 +146,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-back OR screen_controls->c_commands-exit. command_exit( ).
       WHEN screen_controls->c_commands-cancel. command_cancel( ).
       WHEN screen_controls->c_commands-restrict_selection. command_restrict_selection( ).
+      WHEN screen_controls->c_commands-documentation. command_documentation( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -231,5 +254,27 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       display( ).
     ENDIF.
   ENDMETHOD.
+
+  METHOD command_documentation.
+    DATA links TYPE STANDARD TABLE OF tline WITH EMPTY KEY.
+    CALL FUNCTION 'HELP_OBJECT_SHOW'
+      EXPORTING
+        dokclass         = config-documentation-class                         " Document class
+        doklangu         = sy-langu                         " Language, for help -> always Sy-Langu
+        dokname          = config-documentation-name                          " Document name
+      TABLES
+        links            = links
+      EXCEPTIONS
+        object_not_found = 1
+        sapscript_error  = 2
+        OTHERS           = 3.
+    IF sy-subrc = 1.
+      MESSAGE replace( val = replace( val = TEXT-e01 sub = '&2' with = config-documentation-name ) sub = '&1' with = config-documentation-class )
+        TYPE 'S' DISPLAY LIKE 'E'.
+    ELSEIF sy-subrc <> 0.
+      MESSAGE TEXT-e02 TYPE 'S' DISPLAY LIKE 'E'.
+    ENDIF.
+  ENDMETHOD.
+
 
 ENDCLASS.

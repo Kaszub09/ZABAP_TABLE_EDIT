@@ -13,6 +13,7 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
         validate           TYPE syst_ucomm  VALUE 'VALIDATE',
         reset              TYPE syst_ucomm  VALUE 'RESET',
         restrict_selection TYPE syst_ucomm  VALUE 'RESTRICT_SELECTION',
+        documentation      TYPE syst_ucomm  VALUE 'DOCUMENTATION',
       END OF c_commands.
 
     TYPES:
@@ -23,6 +24,10 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
         disable_cd_view   TYPE abap_bool,
         disable_editing   TYPE abap_bool,
         disable_selection TYPE abap_bool,
+        BEGIN OF documentation,
+          class TYPE doku_class,
+          name  TYPE string,
+        END OF documentation,
       END OF t_config.
 
     METHODS:
@@ -56,6 +61,11 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
     IF config-disable_selection = abap_false.
       zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-restrict_selection
           description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ).
+    ENDIF.
+
+    IF config-documentation IS NOT INITIAL.
+      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-documentation
+          description = VALUE #( text = TEXT-005 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ).
     ENDIF.
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.

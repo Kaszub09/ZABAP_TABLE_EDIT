@@ -61,6 +61,19 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_DOCCLA</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>33</LENGTH>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_DOCNAM</KEY>
+     <ENTRY>Documentation object name</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_TABNAM</KEY>
      <ENTRY>Table</ENTRY>
      <LENGTH>13</LENGTH>
@@ -71,45 +84,51 @@
      <LANGUAGE>L</LANGUAGE>
      <TEXTPOOL>
       <item>
+       <ID>S</ID>
+       <KEY>P_DISSEL</KEY>
+       <ENTRY>Wyłącz przycisk selekcji</ENTRY>
+       <LENGTH>32</LENGTH>
+      </item>
+      <item>
        <ID>R</ID>
        <ENTRY>Główny program do edycji tabel</ENTRY>
-       <LENGTH>70</LENGTH>
+       <LENGTH>30</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_ASKSEL</KEY>
        <ENTRY>Zacznij ekranem selekcji</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>32</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_CLASS</KEY>
        <ENTRY>Klasa rozszerzająca program</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>35</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISCDV</KEY>
        <ENTRY>Wyłącz przycisk dok. zmian</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>34</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISEDI</KEY>
        <ENTRY>Wyłącz edycję</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>21</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISTT</KEY>
        <ENTRY>Wyłącz tabelę tekstową</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>30</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_TABNAM</KEY>
        <ENTRY>Tabela</ENTRY>
-       <LENGTH>38</LENGTH>
+       <LENGTH>14</LENGTH>
       </item>
       <item>
        <ID>S</ID>
@@ -117,6 +136,19 @@
        <ENTRY>.</ENTRY>
        <LENGTH>9</LENGTH>
        <SPLIT>D</SPLIT>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DOCCLA</KEY>
+       <ENTRY>.</ENTRY>
+       <LENGTH>9</LENGTH>
+       <SPLIT>D</SPLIT>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DOCNAM</KEY>
+       <ENTRY>Nazwa obiektu dokumentacji</ENTRY>
+       <LENGTH>34</LENGTH>
       </item>
      </TEXTPOOL>
     </item>
