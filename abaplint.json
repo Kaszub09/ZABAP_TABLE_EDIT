@@ -1,7 +1,7 @@
 {
   "global": {
     "files": "/src/**/*.*", 
-    "exclude": ["/src/zabap_translations_test/*","/src/screen/zcl_zabap_table_edit_grid*","/src/*/*.testclasses.abap","/src/*.testclasses.abap"],
+    "exclude": ["/src/zabap_translations_test/*","/src/*/*.testclasses.abap","/src/*.testclasses.abap"],
     "noIssues": [],
     "skipGeneratedBOPFInterfaces": false,
     "skipGeneratedFunctionGroups": false,
@@ -299,16 +299,6 @@
       "exclude": [],
       "severity": "Warning",
       "depth": 5
-    },
-    "no_prefixes": {
-      "exclude": [],
-      "severity": "Error",
-      "data": "^[LGM].?_",
-      "statics": "^S.?_",
-      "fieldSymbols": "^<[LGM].?_",
-      "types": "^TY_",
-      "methodParameters": "^[ICER].?_",
-      "allowIsPrefixBoolean": true
     },
     "object_naming": {
       "exclude": [],
