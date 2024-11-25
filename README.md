@@ -33,10 +33,13 @@ See examples package. Either call transaction ZABAP_TABLE_EDIT only with table n
 - Refactoring plus new extension
 - Support for text tables
 - Unit tests
-- 
+  
 ##### v1.1.0 (30.07.2024)
 - Support for selection restriction
 - Utility interfaces (allows for easy combining of multiple interafces / check whether fields are filled / add additional fields with descriptions )
+
+##### v1.2.0 (25.11.2024)
+- Added button to dispaly documentation - either supplied in transaction, or default for table if exists.
   
 ## Known issues
 - Some version of function module 'CHANGEDOCUMENT_MULTIPLE_CASE2' require change indicator field to be named 'KZ', causing shortdump otherwise - you can fix it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
