@@ -56,11 +56,6 @@
      <MSGNR>008</MSGNR>
      <TEXT>Change single Change Document error &amp;1</TEXT>
     </T100>
-    <T100>
-     <SPRSL>E</SPRSL>
-     <ARBGB>ZABAP_CHANGE_DOC</ARBGB>
-     <MSGNR>009</MSGNR>
-    </T100>
    </T100>
   </asx:values>
  </asx:abap>

@@ -31,7 +31,7 @@ CLASS zcl_zabap_table_edit_lock IMPLEMENTATION.
         system_failure = 2
         OTHERS         = 3.
 
-    locked = COND #( WHEN sy-subrc = 0 THEN abap_true ELSE abap_false ).
+    locked = xsdbool( sy-subrc = 0 ).
     IF sy-subrc <> 0.
       MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO error_message.
     ENDIF.

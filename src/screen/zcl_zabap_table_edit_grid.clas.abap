@@ -8,14 +8,14 @@ CLASS zcl_zabap_table_edit_grid DEFINITION PUBLIC INHERITING FROM cl_gui_alv_gri
     METHODS:
       constructor
         IMPORTING
-          VALUE(i_shellstyle)  TYPE i DEFAULT 0
-          VALUE(i_lifetime)    TYPE i OPTIONAL
-          VALUE(i_parent)      TYPE REF TO cl_gui_container
-          VALUE(i_appl_events) TYPE char01 DEFAULT space
+          i_shellstyle  TYPE i DEFAULT 0
+          i_lifetime    TYPE i OPTIONAL
+          i_parent      TYPE REF TO cl_gui_container
+          i_appl_events TYPE char01 DEFAULT space
           i_parentdbg          TYPE REF TO cl_gui_container OPTIONAL
           i_applogparent       TYPE REF TO cl_gui_container OPTIONAL
           i_graphicsparent     TYPE REF TO cl_gui_container OPTIONAL
-          VALUE(i_name)        TYPE string OPTIONAL
+          i_name        TYPE string OPTIONAL
           i_fcat_complete      TYPE sap_bool DEFAULT space.
 
   PRIVATE SECTION.

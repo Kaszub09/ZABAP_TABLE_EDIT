@@ -79,7 +79,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
 
     cd->open( ).
-    cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )
+    cd->change_multi( force_cd_on_all_fields = xsdbool( config-change_doc_type = 'F' )
                        table_name = config-table_name
                        deleted = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-deleted indicator = 'D' )
                        inserted = cd->create_table_with_indicator( table_name = config-table_name original_table = compared-inserted  indicator = 'I' )
@@ -105,7 +105,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     grid->get_selected_rows( IMPORTING et_index_rows = DATA(selected_rows) ).
     IF lines( selected_rows ) = 1.
       index = selected_rows[ 1 ]-index.
-      RETURN.
     ENDIF.
   ENDMETHOD.
 

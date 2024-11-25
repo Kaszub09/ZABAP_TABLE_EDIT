@@ -5,7 +5,7 @@ CLASS tcl_non_db_methods DEFINITION FINAL FOR TESTING RISK LEVEL HARMLESS DURATI
   PRIVATE SECTION.
     "Copied from LSCD0TOP
     TYPES:
-      BEGIN OF ty_tabinfo,
+      BEGIN OF t_tabinfo,
         tabname   TYPE dfies-tabname,                       "B20K8A0G4I
         fieldname TYPE dfies-fieldname,                     "B20K8A0G4I
         rollname  TYPE dfies-rollname,                      "B20K8A0MNS
@@ -16,8 +16,8 @@ CLASS tcl_non_db_methods DEFINITION FINAL FOR TESTING RISK LEVEL HARMLESS DURATI
         datatype  TYPE dfies-datatype,                      "B20K8A0G4I
         inttype   TYPE dfies-inttype,                       "B20K8A0G4I
         outputlen TYPE i,
-      END  OF ty_tabinfo,
-      tt_in_memory_cd_tab TYPE STANDARD TABLE OF ty_tabinfo WITH EMPTY KEY.
+      END  OF t_tabinfo,
+      tt_in_memory_cd_tab TYPE STANDARD TABLE OF t_tabinfo WITH EMPTY KEY.
 
     METHODS:
       setup,

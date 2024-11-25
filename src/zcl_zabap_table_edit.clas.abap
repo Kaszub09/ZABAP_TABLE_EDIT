@@ -181,7 +181,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
         RETURN.
       ENDIF.
     ENDIF.
-    set_edit_mode( COND #( WHEN in_edit_mode = abap_true THEN abap_false ELSE abap_true ) ).
+    set_edit_mode( xsdbool( in_edit_mode = abap_false ) ).
     display( ).
   ENDMETHOD.
 
@@ -206,7 +206,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD command_change_document.
-    DATA batch_input TYPE TABLE OF bdcdata.
+    DATA batch_input TYPE TABLE OF bdcdata WITH EMPTY KEY.
 
     APPEND VALUE #( program = 'RSSCD100' dynpro = '1000' dynbegin = 'X' fnam = 'BDC_CURSOR' fval = 'TABNAME' ) TO batch_input.
     APPEND VALUE #( fnam = 'OBJEKT' fval = '' ) TO batch_input.

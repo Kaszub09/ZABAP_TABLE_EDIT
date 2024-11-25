@@ -104,7 +104,7 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
         text_not_found        = 1
         OTHERS                = 2.
 
-    confirmed = COND #( WHEN answer = '1' THEN abap_true ELSE abap_false ).
+    confirmed = xsdbool( answer = '1' ).
   ENDMETHOD.
 
   METHOD yes_no_cancel.

@@ -16,9 +16,9 @@ CLASS zcl_zabap_table_edit_chain_ext DEFINITION PUBLIC CREATE PUBLIC.
       add_data_interface IMPORTING interface TYPE REF TO zif_zabap_table_edit_data.
   PRIVATE SECTION.
     DATA:
-      command_interfaces TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands,
-      config_interfaces  TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config,
-      data_interfaces    TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_data.
+      command_interfaces TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands WITH EMPTY KEY,
+      config_interfaces  TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config WITH EMPTY KEY,
+      data_interfaces    TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_data WITH EMPTY KEY.
 ENDCLASS.
 
 
