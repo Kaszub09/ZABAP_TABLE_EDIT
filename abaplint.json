@@ -17,7 +17,12 @@
       "url": "https://github.com/abaplint/deps",
       "folder": "/deps",
       "files": "/src/**/*.*"
-    }
+    },
+    {
+      "url": "https://github.com/Kaszub09/zabap_salv_report",
+      "folder": "/src",
+      "files": "/src/**/*.*"
+    }    
   ],
   "syntax": {
     "version": "v750",
