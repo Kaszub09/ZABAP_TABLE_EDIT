@@ -234,7 +234,7 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
     DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( ttable-name ) ).
 
     cd->open( ).
-    cd->change_multi( force_cd_on_all_fields = COND #( WHEN config-change_doc_type = 'F' THEN abap_true ELSE abap_false )
+    cd->change_multi( force_cd_on_all_fields = xsdbool( config-change_doc_type = 'F' )
                        table_name = ttable-name
                        deleted = cd->create_table_with_indicator( table_name = ttable-name original_table = deleted indicator = 'D' )
                        inserted = cd->create_table_with_indicator( table_name = ttable-name original_table = inserted indicator = 'I' )
