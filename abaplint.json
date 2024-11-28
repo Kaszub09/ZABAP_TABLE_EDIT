@@ -1,7 +1,7 @@
 {
   "global": {
     "files": "/src/**/*.*", 
-    "exclude": ["/src/zabap_translations_test/*","/src/**/*.testclasses.abap","/src/tests/*"],
+    "exclude": ["/src/zabap_translations_test/*","/src/*/*.testclasses.abap","/src/tests/*"],
     "noIssues": [],
     "skipGeneratedBOPFInterfaces": false,
     "skipGeneratedFunctionGroups": false,
