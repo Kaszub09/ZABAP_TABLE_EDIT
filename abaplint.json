@@ -391,10 +391,6 @@
       "exclude": [],
       "severity": "Error"
     },
-    "prefer_returning_to_exporting": {
-      "exclude": [],
-      "severity": "Error"
-    },
     "prefer_xsdbool": {
       "exclude": [],
       "severity": "Error"
