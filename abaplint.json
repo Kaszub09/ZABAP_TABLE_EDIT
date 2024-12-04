@@ -85,7 +85,7 @@
       "severity": "Error"
     },
 "check_syntax": {
-  "exclude": ["/src/**/zcl_zabap_table_edit_grid.clas.abap"],
+  "exclude": ["/src/screen/zcl_zabap_table_edit_grid.*"],
   "severity": "Error"
 },
     "check_transformation_exists": {
