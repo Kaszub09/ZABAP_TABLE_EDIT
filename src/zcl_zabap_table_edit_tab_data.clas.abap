@@ -203,6 +203,8 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = config-table_name handle = 'BASE' username = sy-uname )
                                                  is_layout = VALUE #( sel_mode = 'A' ) i_save = 'A'
                                        CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
+
+    grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_tab_data~save_data.
@@ -345,5 +347,4 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
-
 ENDCLASS.

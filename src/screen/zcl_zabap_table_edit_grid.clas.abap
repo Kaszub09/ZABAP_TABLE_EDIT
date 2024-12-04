@@ -8,15 +8,15 @@ CLASS zcl_zabap_table_edit_grid DEFINITION PUBLIC INHERITING FROM cl_gui_alv_gri
     METHODS:
       constructor
         IMPORTING
-          i_shellstyle  TYPE i DEFAULT 0
-          i_lifetime    TYPE i OPTIONAL
-          i_parent      TYPE REF TO cl_gui_container
-          i_appl_events TYPE char01 DEFAULT space
-          i_parentdbg          TYPE REF TO cl_gui_container OPTIONAL
-          i_applogparent       TYPE REF TO cl_gui_container OPTIONAL
-          i_graphicsparent     TYPE REF TO cl_gui_container OPTIONAL
-          i_name        TYPE string OPTIONAL
-          i_fcat_complete      TYPE sap_bool DEFAULT space.
+          i_shellstyle     TYPE i DEFAULT 0
+          i_lifetime       TYPE i OPTIONAL
+          i_parent         TYPE REF TO cl_gui_container
+          i_appl_events    TYPE char01 DEFAULT space
+          i_parentdbg      TYPE REF TO cl_gui_container OPTIONAL
+          i_applogparent   TYPE REF TO cl_gui_container OPTIONAL
+          i_graphicsparent TYPE REF TO cl_gui_container OPTIONAL
+          i_name           TYPE string OPTIONAL
+          i_fcat_complete  TYPE sap_bool DEFAULT space.
 
   PRIVATE SECTION.
     METHODS:
@@ -101,4 +101,9 @@ CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
         is_stable      = is_stable                 " With Stable Rows/Columns
         i_soft_refresh = i_soft_refresh ). " Without Sort, Filter, etc.
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_grid_if~set_ready_for_input.
+    set_ready_for_input( i_ready_for_input ).
+  ENDMETHOD.
+
 ENDCLASS.
