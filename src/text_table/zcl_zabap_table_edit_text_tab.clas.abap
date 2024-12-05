@@ -133,6 +133,10 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
 
   METHOD get_text_elements_cache.
     assign_to_table_fs extended->* <extended>.
+    IF lines( <extended> ) = 0.
+      RETURN.
+    ENDIF.
+
     "Build where clause
     DATA(where) = |{ ttable-field-lang } = @SY-LANGU|.
     LOOP AT ttable-key_mapping REFERENCE INTO DATA(key) WHERE NOT text = ttable-field-mandant.

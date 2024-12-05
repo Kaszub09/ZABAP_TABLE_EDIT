@@ -43,8 +43,11 @@ CLASS lcl_test_data IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_db~delete_data_where.
     cl_abap_unit_assert=>assert_equals( exp = c_text_table act = table ).
-    cl_abap_unit_assert=>assert_equals(
-        exp = |ZABAP_TE_TEST_TT~TABLE_NAME_TT = @row-TABLE_NAME_TT AND ZABAP_TE_TEST_TT~FIELD_NAME_TT = @row-FIELD_NAME_TT|
+    cl_abap_unit_assert=>assert_char_cp(
+        exp = '*ZABAP_TE_TEST_TT~TABLE_NAME_TT = @row-TABLE_NAME_TT*'
+        act = where ).
+    cl_abap_unit_assert=>assert_char_cp(
+        exp = '*ZABAP_TE_TEST_TT~FIELD_NAME_TT = @row-FIELD_NAME_TT*'
         act = where ).
   ENDMETHOD.
 
@@ -139,7 +142,7 @@ CLASS tcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cd_called_correctly.
-    DATA cd_states TYPE TABLE OF c WITH EMPTY KEY.
+    DATA cd_states TYPE STANDARD TABLE OF c WITH EMPTY KEY.
     cd_states = VALUE #( ( space ) ( 'F' ) ( 'X' ) ).
     LOOP AT cd_states REFERENCE INTO DATA(cd_state).
       zcl_zabap_table_edit_fact_inj=>inject_cd( NEW zcl_zabap_table_edit_cd_test( cd_state->* ) ).

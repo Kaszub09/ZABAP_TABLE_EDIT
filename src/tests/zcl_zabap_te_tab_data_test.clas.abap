@@ -23,7 +23,7 @@ CLASS zcl_zabap_te_tab_data_test IMPLEMENTATION.
   METHOD constructor.
     zif_zabap_table_edit_tab_data~mandant_field = 'MANDT'.
 
-    grid = NEW cl_gui_alv_grid( zcl_zabap_screen_with_containe=>get_container( ) ).
+    grid = NEW cl_gui_alv_grid( i_parent = zcl_zabap_screen_with_containe=>get_container( ) ).
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_modified ). "Allows to catch edit events
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_enter ). "Allows also to catch Enter
     SET HANDLER on_data_changed FOR grid.

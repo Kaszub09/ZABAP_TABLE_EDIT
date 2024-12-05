@@ -190,7 +190,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cd_called_correctly.
-    DATA cd_states TYPE TABLE OF c WITH EMPTY KEY.
+    DATA cd_states TYPE STANDARD TABLE OF c WITH EMPTY KEY.
 
     cd_states = VALUE #( ( space ) ( 'F' ) ( 'X' ) ).
     LOOP AT cd_states REFERENCE INTO DATA(cd_state).
