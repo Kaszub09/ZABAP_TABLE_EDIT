@@ -24,6 +24,12 @@
      <ENTRY>Couldnt&apos;t open documentation - SAPscript error.</ENTRY>
      <LENGTH>94</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>E03</KEY>
+     <ENTRY>No authorization to call transaction &amp;1</ENTRY>
+     <LENGTH>68</LENGTH>
+    </item>
    </TPOOL>
    <I18N_TPOOL>
     <item>
@@ -33,13 +39,19 @@
        <ID>I</ID>
        <KEY>E01</KEY>
        <ENTRY>Nie znaleziono dokumentacji - &apos;&amp;1&apos; &apos;&amp;2&apos;</ENTRY>
-       <LENGTH>39</LENGTH>
+       <LENGTH>70</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>E02</KEY>
        <ENTRY>Nie można otworzyć dokumentacji - błąd SAPscript</ENTRY>
-       <LENGTH>48</LENGTH>
+       <LENGTH>94</LENGTH>
+      </item>
+      <item>
+       <ID>I</ID>
+       <KEY>E03</KEY>
+       <ENTRY>Brak autoryzacji do wywołania transakcji &amp;1</ENTRY>
+       <LENGTH>68</LENGTH>
       </item>
      </TEXTPOOL>
     </item>

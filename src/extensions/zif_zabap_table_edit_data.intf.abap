@@ -29,7 +29,7 @@ INTERFACE zif_zabap_table_edit_data PUBLIC.
     "! <p class="shorttext synchronized">After save and COMMIT. Tables are base, not extended</p>
     after_save DEFAULT IGNORE CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
     "! <p class="shorttext synchronized" lang="en">Called before display, after <em>refresh_grid</em></p>
-    change_display_text CHANGING display_text TYPE string.
+    change_display_text DEFAULT IGNORE CHANGING display_text TYPE string.
 
   METHODS:
     "! <p class="shorttext synchronized">CL_GUI_ALV_GRID event - hooked up to grid automatically</p>
