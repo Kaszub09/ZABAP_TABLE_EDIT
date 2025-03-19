@@ -31,7 +31,7 @@ CLASS zcl_zabap_field_catalogue IMPLEMENTATION.
     LOOP AT structdescr->get_ddic_field_list( ) REFERENCE INTO DATA(ddic_field).
       DATA(field) = CORRESPONDING lvc_s_fcat( ddic_field->* MAPPING key = keyflag ref_field = lfieldname
                                                                     ref_table = tabname dd_roll = rollname ).
-      field-tabname = 1.
+      field-tabname = 'TABLE1'.
       field-col_pos = index.
 
       IF field-domname = 'XFELD' OR field-domname = 'XFIELD'.
@@ -39,7 +39,7 @@ CLASS zcl_zabap_field_catalogue IMPLEMENTATION.
       ENDIF.
 
       IF field-domname IS INITIAL.
-        field-coltext = ddic_field->fieldtext.
+        field-coltext = COND lvc_txtcol( WHEN ddic_field->fieldtext IS NOT INITIAL THEN ddic_field->fieldtext ELSE ddic_field->fieldname ).
       ENDIF.
 
       APPEND field TO field_catalogue.

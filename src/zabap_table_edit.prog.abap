@@ -21,7 +21,9 @@ PARAMETERS:
 START-OF-SELECTION.
   "Check if it's correct table
   SELECT SINGLE tabclass FROM dd02l WHERE tabname = @p_tabnam INTO @DATA(tabclass).
-  IF tabclass <> 'TRANSP'.
+  IF tabclass = 'VIEW'.
+    p_disedi = abap_true.
+  ELSEIF tabclass <> 'TRANSP'.
     MESSAGE s001(zabap_table_edit) DISPLAY LIKE 'E'.
     LEAVE LIST-PROCESSING.
   ENDIF.
@@ -53,7 +55,7 @@ START-OF-SELECTION.
   ENDIF.
 
   DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
-    disable_cd_view = p_discdv disable_editing = COND #( WHEN to_upper( p_tabnam(1) ) CA 'YZ' THEN p_disedi ELSE abap_true  )
+    disable_cd_view = p_discdv disable_editing = COND #( WHEN to_upper( p_tabnam(1) ) CA 'YZ' THEN p_disedi ELSE abap_true )
     disable_text_table = p_distt ext = extensions disable_selection = p_dissel show_selection_first = p_asksel
     documentation = VALUE #( name = p_docnam class = p_doccla ) ) ).
   table_edit->display( ).

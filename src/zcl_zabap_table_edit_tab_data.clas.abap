@@ -48,7 +48,11 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
 ENDCLASS.
 
-CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
+
+
+CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
+
+
   METHOD constructor.
     config = configuration.
 
@@ -75,6 +79,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     table-db = zcl_zabap_table_edit_factory=>get_db( ).
   ENDMETHOD.
 
+
   METHOD create_change_doc.
     DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
 
@@ -92,6 +97,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     cd->close( tcode = original_tcode ).
   ENDMETHOD.
 
+
   METHOD get_modified_data_no_ext.
     CREATE DATA modified_data TYPE TABLE OF (config-table_name).
 
@@ -101,6 +107,38 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     <modified_data> = CORRESPONDING #( <modified_data_ext> ).
   ENDMETHOD.
 
+
+  METHOD get_not_in_selection.
+    assign_to_table_fs compared-inserted->* <inserted>.
+    assign_to_table_fs compared-modified->* <modified>.
+
+    CREATE DATA not_in_selection LIKE <inserted>.
+    assign_to_table_fs not_in_selection->* <not_in_selection>.
+
+    APPEND LINES OF <inserted> TO <not_in_selection>.
+    APPEND LINES OF <modified> TO <not_in_selection>.
+
+    DATA(field_ranges) = table-selection->get_field_ranges( ).
+
+    "Do it manually because undermentioned doesn't work (problem with table indexes?).
+    ""DELETE <not_in_selection> WHERE ('field_ranges[ 1 ]-fieldname IN field_ranges[ 1 ]-selopt_t')"
+    LOOP AT <not_in_selection> ASSIGNING FIELD-SYMBOL(<row>).
+      DATA(idx) = sy-tabix.
+      DATA(row_is_valid) = abap_true.
+      LOOP AT field_ranges REFERENCE INTO DATA(field_range).
+        ASSIGN COMPONENT field_range->fieldname OF STRUCTURE <row> TO FIELD-SYMBOL(<field>).
+        IF NOT <field> IN field_range->selopt_t.
+          row_is_valid = abap_false.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+      IF row_is_valid = abap_true.
+        DELETE <not_in_selection> INDEX idx.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
   METHOD get_selected_row_index.
     grid->get_selected_rows( IMPORTING et_index_rows = DATA(selected_rows) ).
     IF lines( selected_rows ) = 1.
@@ -108,9 +146,11 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD on_data_changed.
     was_data_changed = abap_true.
   ENDMETHOD.
+
 
   METHOD prepare_initial_data.
     "TODO   maint view?
@@ -135,6 +175,26 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     config-ext-data->initial_data( CHANGING initial_data = table-initial_data ).
   ENDMETHOD.
 
+
+  METHOD remove_empty_rows.
+    "Build where clause
+    DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
+    DATA(where) = ||.
+    LOOP AT fc REFERENCE INTO DATA(field).
+      where = |{ where } { field->fieldname  } IS INITIAL AND|.
+    ENDLOOP.
+    where = substring( val = where len = strlen( where ) - 4 ).
+    "Remove empty rows
+    assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
+    DATA(lines_before) = lines( <modified_data_ext> ).
+    DELETE <modified_data_ext> WHERE (where).
+
+    IF lines_before <> lines(  <modified_data_ext> ).
+      grid->refresh_table_display( ).
+    ENDIF.
+  ENDMETHOD.
+
+
   METHOD setup_grid.
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_modified ). "Allows to catch edit events
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_enter ). "Allows also to catch Enter
@@ -146,6 +206,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     "---EXTENSION CALL---
     config-ext-config->grid_setup( CHANGING grid = grid ).
   ENDMETHOD.
+
 
   METHOD zif_zabap_table_edit_tab_data~get_selected_row_key.
     DATA(selected) = get_selected_row_index( ).
@@ -167,6 +228,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     tabkey = <key_line>.
   ENDMETHOD.
 
+
   METHOD zif_zabap_table_edit_tab_data~lock_table.
     IF table-locker->lock_table( IMPORTING error_message = error_message ) = abap_false.
       RETURN.
@@ -180,6 +242,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     locked = abap_true.
   ENDMETHOD.
+
 
   METHOD zif_zabap_table_edit_tab_data~reset_grid.
     was_data_changed = abap_false.
@@ -206,6 +269,15 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
   ENDMETHOD.
+
+
+  METHOD zif_zabap_table_edit_tab_data~restrict_selection.
+    changed = table-selection->display( was_data_changed ).
+    IF changed = abap_true.
+      prepare_initial_data( ).
+    ENDIF.
+  ENDMETHOD.
+
 
   METHOD zif_zabap_table_edit_tab_data~save_data.
     TRY.
@@ -254,10 +326,12 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
+
   METHOD zif_zabap_table_edit_tab_data~unlock_table.
     table-locker->unlock_table( ).
     table-text_table->unlock_table( ).
   ENDMETHOD.
+
 
   METHOD zif_zabap_table_edit_tab_data~validate.
     grid->check_changed_data( IMPORTING e_valid = DATA(valid) ).
@@ -291,60 +365,5 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     "---EXTENSION CALL---
     config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
-  ENDMETHOD.
-
-  METHOD remove_empty_rows.
-    "Build where clause
-    DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
-    DATA(where) = ||.
-    LOOP AT fc REFERENCE INTO DATA(field).
-      where = |{ where } { field->fieldname  } IS INITIAL AND|.
-    ENDLOOP.
-    where = substring( val = where len = strlen( where ) - 4 ).
-    "Remove empty rows
-    assign_to_table_fs table-modified_data_ext->* <modified_data_ext>.
-    DATA(lines_before) = lines( <modified_data_ext> ).
-    DELETE <modified_data_ext> WHERE (where).
-
-    IF lines_before <> lines(  <modified_data_ext> ).
-      grid->refresh_table_display( ).
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_tab_data~restrict_selection.
-    changed = table-selection->display( was_data_changed ).
-    IF changed = abap_true.
-      prepare_initial_data( ).
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD get_not_in_selection.
-    assign_to_table_fs compared-inserted->* <inserted>.
-    assign_to_table_fs compared-modified->* <modified>.
-
-    CREATE DATA not_in_selection LIKE <inserted>.
-    assign_to_table_fs not_in_selection->* <not_in_selection>.
-
-    APPEND LINES OF <inserted> TO <not_in_selection>.
-    APPEND LINES OF <modified> TO <not_in_selection>.
-
-    DATA(field_ranges) = table-selection->get_field_ranges( ).
-
-    "Do it manually because undermentioned doesn't work (problem with table indexes?).
-    ""DELETE <not_in_selection> WHERE ('field_ranges[ 1 ]-fieldname IN field_ranges[ 1 ]-selopt_t')"
-    LOOP AT <not_in_selection> ASSIGNING FIELD-SYMBOL(<row>).
-      DATA(idx) = sy-tabix.
-      DATA(row_is_valid) = abap_true.
-      LOOP AT field_ranges REFERENCE INTO DATA(field_range).
-        ASSIGN COMPONENT field_range->fieldname OF STRUCTURE <row> TO FIELD-SYMBOL(<field>).
-        IF NOT <field> IN field_range->selopt_t.
-          row_is_valid = abap_false.
-          EXIT.
-        ENDIF.
-      ENDLOOP.
-      IF row_is_valid = abap_true.
-        DELETE <not_in_selection> INDEX idx.
-      ENDIF.
-    ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
