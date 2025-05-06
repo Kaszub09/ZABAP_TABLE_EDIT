@@ -4,6 +4,7 @@
   <asx:values>
    <DD01V>
     <DOMNAME>ZABAP_CHANGE_DOC_TYPE</DOMNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
     <OUTPUTLEN>000001</OUTPUTLEN>
@@ -12,14 +13,20 @@
    <DD07V_TAB>
     <DD07V>
      <VALPOS>0001</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>X</DOMVALUE_L>
+     <DDTEXT>Only fields marked as change doc</DDTEXT>
     </DD07V>
     <DD07V>
      <VALPOS>0002</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DDTEXT>Don&apos;t save change doc</DDTEXT>
     </DD07V>
     <DD07V>
      <VALPOS>0003</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>F</DOMVALUE_L>
+     <DDTEXT>Force for all fields</DDTEXT>
     </DD07V>
    </DD07V_TAB>
    <I18N_LANGS>
@@ -31,6 +38,25 @@
      <DDTEXT>Typ zapisu dokumentu zmian</DDTEXT>
     </item>
    </DD01_TEXTS>
+   <DD07_TEXTS>
+    <item>
+     <VALPOS>0001</VALPOS>
+     <DDLANGUAGE>L</DDLANGUAGE>
+     <DOMVALUE_L>X</DOMVALUE_L>
+     <DDTEXT>Tylko pola oznaczone dokumentem zmian</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0002</VALPOS>
+     <DDLANGUAGE>L</DDLANGUAGE>
+     <DDTEXT>Nie zapisuj dokumentu zmian</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0003</VALPOS>
+     <DDLANGUAGE>L</DDLANGUAGE>
+     <DOMVALUE_L>F</DOMVALUE_L>
+     <DDTEXT>Wymuś dla wszystkich pól</DDTEXT>
+    </item>
+   </DD07_TEXTS>
   </asx:values>
  </asx:abap>
 </abapGit>

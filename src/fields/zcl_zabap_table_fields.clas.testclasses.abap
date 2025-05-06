@@ -82,13 +82,13 @@ CLASS tcl_zabap_table_fields IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD edit_mode.
-    cut->set_edit_mode( abap_true ).
+    cut->is_in_edit_mode = abap_true.
     fc = cut->get_field_catalogue( ).
     cl_abap_unit_assert=>assert_true( fc[ KEY name fieldname = 'MANDT' ]-edit ).
     cl_abap_unit_assert=>assert_true( fc[ KEY name fieldname = 'KEY1' ]-edit ).
     cl_abap_unit_assert=>assert_true( fc[ KEY name fieldname = 'VAL2' ]-edit ).
 
-    cut->set_edit_mode( abap_false ).
+    cut->is_in_edit_mode = abap_false.
     fc = cut->get_field_catalogue( ).
     cl_abap_unit_assert=>assert_false( fc[ KEY name fieldname = 'MANDT' ]-edit ).
     cl_abap_unit_assert=>assert_false( fc[ KEY name fieldname = 'KEY1' ]-edit ).

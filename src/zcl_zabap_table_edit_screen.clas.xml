@@ -55,6 +55,12 @@
      <ENTRY>Documentation</ENTRY>
      <LENGTH>23</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>008</KEY>
+     <ENTRY>Switch technical display</ENTRY>
+     <LENGTH>48</LENGTH>
+    </item>
    </TPOOL>
    <I18N_TPOOL>
     <item>
@@ -62,45 +68,51 @@
      <TEXTPOOL>
       <item>
        <ID>I</ID>
-       <KEY>007</KEY>
-       <ENTRY>Dokumentacja</ENTRY>
-       <LENGTH>12</LENGTH>
-      </item>
-      <item>
-       <ID>I</ID>
        <KEY>001</KEY>
        <ENTRY>Wyświetlanie &lt;-&gt; Zmiana</ENTRY>
-       <LENGTH>23</LENGTH>
+       <LENGTH>28</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>002</KEY>
        <ENTRY>Sprawdź poprawność</ENTRY>
-       <LENGTH>18</LENGTH>
+       <LENGTH>23</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>003</KEY>
        <ENTRY>Przywróć dane początkowe</ENTRY>
-       <LENGTH>24</LENGTH>
+       <LENGTH>40</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>004</KEY>
        <ENTRY>Dokument zmian</ENTRY>
-       <LENGTH>14</LENGTH>
+       <LENGTH>25</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>005</KEY>
        <ENTRY>Selekcja</ENTRY>
-       <LENGTH>8</LENGTH>
+       <LENGTH>28</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>006</KEY>
        <ENTRY>Zawęź dane do wybranych</ENTRY>
+       <LENGTH>64</LENGTH>
+      </item>
+      <item>
+       <ID>I</ID>
+       <KEY>007</KEY>
+       <ENTRY>Dokumentacja</ENTRY>
        <LENGTH>23</LENGTH>
+      </item>
+      <item>
+       <ID>I</ID>
+       <KEY>008</KEY>
+       <ENTRY>Przełącz wyświetlanie techniczne</ENTRY>
+       <LENGTH>48</LENGTH>
       </item>
      </TEXTPOOL>
     </item>

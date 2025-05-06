@@ -14,6 +14,7 @@ PARAMETERS:
   p_distt  AS CHECKBOX,
   p_dissel AS CHECKBOX DEFAULT abap_true,
   p_asksel AS CHECKBOX,
+  p_distec AS CHECKBOX DEFAULT abap_true,
   p_doccla TYPE doku_class,
   p_docnam TYPE string.
 
@@ -57,5 +58,6 @@ START-OF-SELECTION.
   DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
     disable_cd_view = p_discdv disable_editing = COND #( WHEN to_upper( p_tabnam(1) ) CA 'YZ' THEN p_disedi ELSE abap_true )
     disable_text_table = p_distt ext = extensions disable_selection = p_dissel show_selection_first = p_asksel
+    disable_switch_tech_display = p_distec
     documentation = VALUE #( name = p_docnam class = p_doccla ) ) ).
   table_edit->display( ).

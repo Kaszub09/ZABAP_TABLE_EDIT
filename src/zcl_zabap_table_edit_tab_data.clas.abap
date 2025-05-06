@@ -25,6 +25,11 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
         selection         TYPE REF TO zif_zabap_table_edit_restr_sel,
       END OF t_table.
 
+    CONSTANTS:
+      BEGIN OF c_functions,
+        details TYPE ui_func VALUE 'DETAILS',
+      END OF c_functions.
+
     METHODS:
       setup_grid,
       "! <p class="shorttext synchronized">Initial query from specified table</p>
@@ -35,14 +40,18 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       get_selected_row_index RETURNING VALUE(index) TYPE i,
       remove_empty_rows,
       get_not_in_selection IMPORTING compared                TYPE zcl_zabap_table_edit_globals=>t_data_comparision
-                           RETURNING VALUE(not_in_selection) TYPE REF TO data.
+                           RETURNING VALUE(not_in_selection) TYPE REF TO data,
+      show_row_details.
 
     METHODS:
-      on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender.
+      on_data_changed FOR EVENT data_changed OF zif_zabap_table_edit_grid_if IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender,
+      on_toolbar FOR EVENT toolbar OF zif_zabap_table_edit_grid_if IMPORTING e_object e_interactive sender,
+      on_user_command FOR EVENT user_command OF zif_zabap_table_edit_grid_if IMPORTING e_ucomm sender.
 
     DATA:
-      table TYPE t_table,
-      grid  TYPE REF TO zif_zabap_table_edit_grid_if.
+      table        TYPE t_table,
+      grid         TYPE REF TO zif_zabap_table_edit_grid_if,
+      tech_display TYPE abap_bool VALUE abap_false.
 
     DATA:
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
@@ -50,7 +59,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
+CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -202,6 +211,8 @@ CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
     SET HANDLER on_data_changed FOR grid.
     SET HANDLER config-ext-data->on_data_changed FOR grid.
     SET HANDLER config-ext-data->on_data_changed_finished FOR grid.
+    SET HANDLER on_toolbar FOR grid.
+    SET HANDLER on_user_command FOR grid.
 
     "---EXTENSION CALL---
     config-ext-config->grid_setup( CHANGING grid = grid ).
@@ -255,7 +266,7 @@ CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
     "---TEXT TABLE---
     table-text_table->update_text_elements( CHANGING extended = table-modified_data_ext ).
 
-    table-fields->set_edit_mode( in_edit_mode ).
+    table-fields->is_in_edit_mode = in_edit_mode.
     DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
 
     "---EXTENSION CALL---
@@ -268,6 +279,7 @@ CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
                                        CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
 
     grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
+
   ENDMETHOD.
 
 
@@ -366,4 +378,81 @@ CLASS ZCL_ZABAP_TABLE_EDIT_TAB_DATA IMPLEMENTATION.
     "---EXTENSION CALL---
     config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~switch_tech_display.
+    tech_display = xsdbool( tech_display = abap_false ).
+    table-fields->is_in_technical_view = tech_display.
+    grid->set_frontend_fieldcatalog( it_fieldcatalog = CORRESPONDING #( table-fields->get_fc_with_add_fields( table-additional_fields ) ) ).
+    grid->refresh_table_display( ).
+  ENDMETHOD.
+
+  METHOD on_toolbar.
+    APPEND VALUE #( function = c_functions-details icon = '@16@' text = TEXT-f01 quickinfo = TEXT-f01 ) TO e_object->mt_toolbar.
+  ENDMETHOD.
+
+  METHOD on_user_command.
+    CASE e_ucomm.
+      WHEN c_functions-details.
+        show_row_details( ).
+
+    ENDCASE.
+  ENDMETHOD.
+
+  METHOD show_row_details.
+    DATA(selected) = get_selected_row_index( ).
+    IF selected = 0.
+      grid->get_selected_cells( IMPORTING et_cell = DATA(selected_cells) ).
+      IF lines( selected_cells ) = 0.
+        MESSAGE TEXT-001 TYPE 'S' DISPLAY LIKE 'E'.
+        RETURN.
+      ENDIF.
+      selected = selected_cells[ 1 ]-row_id.
+    ENDIF.
+
+    assign_to_table_fs table-modified_data_ext->* <table>.
+    ASSIGN <table>[ 1 ] TO FIELD-SYMBOL(<row>).
+
+    TYPES:
+      BEGIN OF t_display,
+        field_description   TYPE string,
+        value_converted     TYPE c LENGTH 50,
+        value_not_converted TYPE string,
+        field_name          TYPE string,
+      END OF t_display,
+      tt_display TYPE STANDARD TABLE OF t_display WITH EMPTY KEY.
+    DATA:
+      display TYPE tt_display.
+
+    table-fields->is_in_technical_view = abap_false.
+    DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
+    table-fields->is_in_technical_view = tech_display.
+
+    LOOP AT fc REFERENCE INTO DATA(field).
+      ASSIGN COMPONENT field->fieldname OF STRUCTURE <row> TO FIELD-SYMBOL(<value>).
+      DATA(display_row) = VALUE t_display( ).
+      display_row-field_description = field->scrtext_l.
+      display_row-field_name = field->fieldname.
+      display_row-value_not_converted = <value>.
+      IF field->convexit IS NOT INITIAL.
+        DATA(editmask) = CONV lvc_edtmsk( |=={ field->convexit }| ).
+        WRITE <value> TO display_row-value_converted USING EDIT MASK editmask.
+      ELSE.
+        WRITE <value> TO display_row-value_converted.
+      ENDIF.
+      APPEND display_row TO display.
+    ENDLOOP.
+
+    cl_salv_table=>factory( IMPORTING r_salv_table = DATA(salv) CHANGING t_table = display ).
+    salv->set_screen_popup( start_column = 16 start_line = 2 end_column = 160 end_line = 32 ).
+    salv->get_columns( )->get_column( 'FIELD_DESCRIPTION' )->set_long_text( TEXT-c01 ).
+    salv->get_columns( )->get_column( 'VALUE_CONVERTED' )->set_long_text( TEXT-c02 ).
+    salv->get_columns( )->get_column( 'VALUE_NOT_CONVERTED' )->set_long_text( TEXT-c03 ).
+    salv->get_columns( )->get_column( 'FIELD_NAME' )->set_long_text( TEXT-c04 ).
+    salv->get_columns( )->set_optimize( abap_true ).
+    CAST cl_salv_column_table( salv->get_columns( )->get_column( 'FIELD_DESCRIPTION' ) )->set_color( value = VALUE #( col = 1 ) ).
+    CAST cl_salv_column_table( salv->get_columns( )->get_column( 'VALUE_CONVERTED' ) )->set_color( value = VALUE #( col = 1 ) ).
+    salv->get_functions( )->set_all( ).
+    salv->display( ).
+  ENDMETHOD.
+
 ENDCLASS.

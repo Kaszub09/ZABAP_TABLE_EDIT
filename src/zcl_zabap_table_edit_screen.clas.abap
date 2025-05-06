@@ -3,17 +3,18 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CONSTANTS:
       BEGIN OF c_commands,
-        ok                 TYPE syst_ucomm  VALUE 'OK',
-        back               TYPE syst_ucomm  VALUE 'BACK',
-        exit               TYPE syst_ucomm  VALUE 'EXIT',
-        cancel             TYPE syst_ucomm  VALUE 'CANCEL',
-        toggle_display     TYPE syst_ucomm  VALUE 'TOGGLE_DISPLAY',
-        change_document    TYPE syst_ucomm  VALUE 'CHANGE_DOCUMENT',
-        save               TYPE syst_ucomm  VALUE 'SAVE',
-        validate           TYPE syst_ucomm  VALUE 'VALIDATE',
-        reset              TYPE syst_ucomm  VALUE 'RESET',
-        restrict_selection TYPE syst_ucomm  VALUE 'RESTRICT_SELECTION',
-        documentation      TYPE syst_ucomm  VALUE 'DOCUMENTATION',
+        ok                  TYPE syst_ucomm  VALUE 'OK',
+        back                TYPE syst_ucomm  VALUE 'BACK',
+        exit                TYPE syst_ucomm  VALUE 'EXIT',
+        cancel              TYPE syst_ucomm  VALUE 'CANCEL',
+        toggle_display      TYPE syst_ucomm  VALUE 'TOGGLE_DISPLAY',
+        change_document     TYPE syst_ucomm  VALUE 'CHANGE_DOCUMENT',
+        save                TYPE syst_ucomm  VALUE 'SAVE',
+        validate            TYPE syst_ucomm  VALUE 'VALIDATE',
+        reset               TYPE syst_ucomm  VALUE 'RESET',
+        restrict_selection  TYPE syst_ucomm  VALUE 'RESTRICT_SELECTION',
+        documentation       TYPE syst_ucomm  VALUE 'DOCUMENTATION',
+        switch_tech_display TYPE syst_ucomm  VALUE 'SWITCH_TECH_DISPLAY',
       END OF c_commands.
 
     TYPES:
@@ -21,9 +22,10 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,
         END OF ext,
-        disable_cd_view   TYPE abap_bool,
-        disable_editing   TYPE abap_bool,
-        disable_selection TYPE abap_bool,
+        disable_cd_view             TYPE abap_bool,
+        disable_editing             TYPE abap_bool,
+        disable_selection           TYPE abap_bool,
+        disable_switch_tech_display TYPE abap_bool,
         BEGIN OF documentation,
           class TYPE doku_class,
           name  TYPE string,
@@ -66,6 +68,11 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
     IF config-documentation IS NOT INITIAL.
       zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-documentation
           description = VALUE #( text = TEXT-005 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ).
+    ENDIF.
+
+    IF config-disable_switch_tech_display = abap_false.
+      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-switch_tech_display
+          description = VALUE #( text = TEXT-005 icon_id = '@9N@' icon_text = TEXT-008 quickinfo = TEXT-008 ) ).
     ENDIF.
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.

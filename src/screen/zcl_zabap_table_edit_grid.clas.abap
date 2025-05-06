@@ -21,7 +21,9 @@ CLASS zcl_zabap_table_edit_grid DEFINITION PUBLIC INHERITING FROM cl_gui_alv_gri
   PRIVATE SECTION.
     METHODS:
       on_data_changed FOR EVENT data_changed OF cl_gui_alv_grid IMPORTING er_data_changed e_onf4 e_onf4_before e_onf4_after e_ucomm sender,
-      on_data_changed_finished FOR EVENT data_changed_finished OF cl_gui_alv_grid IMPORTING e_modified et_good_cells sender.
+      on_data_changed_finished FOR EVENT data_changed_finished OF cl_gui_alv_grid IMPORTING e_modified et_good_cells sender,
+      on_toolbar FOR EVENT toolbar OF cl_gui_alv_grid IMPORTING e_object e_interactive,
+      on_added_function FOR EVENT user_command OF cl_gui_alv_grid IMPORTING e_ucomm.
 ENDCLASS.
 
 CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
@@ -83,6 +85,8 @@ CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
 
     SET HANDLER on_data_changed FOR me.
     SET HANDLER on_data_changed_finished FOR me.
+    SET HANDLER on_toolbar FOR me.
+    SET HANDLER on_added_function FOR me.
 
     zif_zabap_table_edit_grid_if~grid = me.
   ENDMETHOD.
@@ -104,6 +108,18 @@ CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_grid_if~set_ready_for_input.
     set_ready_for_input( i_ready_for_input ).
+  ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_grid_if~set_frontend_fieldcatalog.
+    set_frontend_fieldcatalog( it_fieldcatalog ).
+  ENDMETHOD.
+
+  METHOD on_added_function.
+    RAISE EVENT zif_zabap_table_edit_grid_if~user_command EXPORTING e_ucomm = e_ucomm.
+  ENDMETHOD.
+
+  METHOD on_toolbar.
+    RAISE EVENT zif_zabap_table_edit_grid_if~toolbar EXPORTING e_object = e_object e_interactive = e_interactive.
   ENDMETHOD.
 
 ENDCLASS.

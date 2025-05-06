@@ -99,4 +99,13 @@ CLASS zcl_zabap_te_tab_data_test IMPLEMENTATION.
 
     confirmed = xsdbool( answer = '1' ).
   ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~restrict_selection.
+    MESSAGE |Restrict selection changed='{ changed }'| TYPE 'I'.
+  ENDMETHOD.
+
+  METHOD zif_zabap_table_edit_tab_data~switch_tech_display.
+    MESSAGE |Switch tech display| TYPE 'I'.
+  ENDMETHOD.
+
 ENDCLASS.

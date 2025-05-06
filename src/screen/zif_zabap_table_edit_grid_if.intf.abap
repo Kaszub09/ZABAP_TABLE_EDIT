@@ -57,6 +57,10 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
   METHODS set_ready_for_input
     IMPORTING
       VALUE(i_ready_for_input) TYPE int4 DEFAULT 1.
+  "--------------------------------------------------
+  METHODS set_frontend_fieldcatalog
+    IMPORTING
+      VALUE(it_fieldcatalog) TYPE lvc_t_fcat.
   "=================================================================
   "-----------------------------------------------------------------
   EVENTS data_changed
@@ -71,4 +75,13 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
     EXPORTING
       VALUE(e_modified) TYPE char01 OPTIONAL
       VALUE(et_good_cells) TYPE lvc_t_modi OPTIONAL.
+  "--------------------------------------------------
+  EVENTS toolbar
+    EXPORTING
+      VALUE(e_object) TYPE REF TO cl_alv_event_toolbar_set OPTIONAL
+      VALUE(e_interactive) TYPE char01 OPTIONAL.
+  "--------------------------------------------------
+  EVENTS user_command
+    EXPORTING
+      VALUE(e_ucomm) TYPE sy-ucomm OPTIONAL.
 ENDINTERFACE.

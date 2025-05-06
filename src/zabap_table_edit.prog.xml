@@ -55,6 +55,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_DISTEC</KEY>
+     <ENTRY>Disable switch tech vie button</ENTRY>
+     <LENGTH>38</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_DISTT</KEY>
      <ENTRY>Disable text table if exists</ENTRY>
      <LENGTH>36</LENGTH>
@@ -84,51 +90,63 @@
      <LANGUAGE>L</LANGUAGE>
      <TEXTPOOL>
       <item>
-       <ID>S</ID>
-       <KEY>P_DISSEL</KEY>
-       <ENTRY>Wyłącz przycisk selekcji</ENTRY>
-       <LENGTH>32</LENGTH>
-      </item>
-      <item>
        <ID>R</ID>
        <ENTRY>Główny program do edycji tabel</ENTRY>
-       <LENGTH>30</LENGTH>
+       <LENGTH>70</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_ASKSEL</KEY>
        <ENTRY>Zacznij ekranem selekcji</ENTRY>
-       <LENGTH>32</LENGTH>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_CLASS</KEY>
        <ENTRY>Klasa rozszerzająca program</ENTRY>
-       <LENGTH>35</LENGTH>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISCDV</KEY>
        <ENTRY>Wyłącz przycisk dok. zmian</ENTRY>
-       <LENGTH>34</LENGTH>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISEDI</KEY>
        <ENTRY>Wyłącz edycję</ENTRY>
-       <LENGTH>21</LENGTH>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DISSEL</KEY>
+       <ENTRY>Wyłącz przycisk selekcji</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DISTEC</KEY>
+       <ENTRY>Wyłącz przycisk p. wyśw. tech.</ENTRY>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_DISTT</KEY>
        <ENTRY>Wyłącz tabelę tekstową</ENTRY>
-       <LENGTH>30</LENGTH>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_DOCNAM</KEY>
+       <ENTRY>Nazwa obiektu dokumentacji</ENTRY>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
        <KEY>P_TABNAM</KEY>
        <ENTRY>Tabela</ENTRY>
-       <LENGTH>14</LENGTH>
+       <LENGTH>38</LENGTH>
       </item>
       <item>
        <ID>S</ID>
@@ -141,14 +159,8 @@
        <ID>S</ID>
        <KEY>P_DOCCLA</KEY>
        <ENTRY>.</ENTRY>
-       <LENGTH>9</LENGTH>
+       <LENGTH>33</LENGTH>
        <SPLIT>D</SPLIT>
-      </item>
-      <item>
-       <ID>S</ID>
-       <KEY>P_DOCNAM</KEY>
-       <ENTRY>Nazwa obiektu dokumentacji</ENTRY>
-       <LENGTH>34</LENGTH>
       </item>
      </TEXTPOOL>
     </item>

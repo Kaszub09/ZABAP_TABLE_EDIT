@@ -3,14 +3,15 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     TYPES:
       BEGIN OF t_config,
-        display_text         TYPE string,
-        table_name           TYPE string,
-        change_doc_type      TYPE zabap_change_doc_type,
-        disable_cd_view      TYPE abap_bool,
-        disable_editing      TYPE abap_bool,
-        disable_text_table   TYPE abap_bool,
-        disable_selection    TYPE abap_bool,
-        show_selection_first TYPE abap_bool,
+        display_text             TYPE string,
+        table_name               TYPE string,
+        change_doc_type          TYPE zabap_change_doc_type,
+        disable_cd_view          TYPE abap_bool,
+        disable_editing          TYPE abap_bool,
+        disable_text_table       TYPE abap_bool,
+        disable_selection        TYPE abap_bool,
+        show_selection_first     TYPE abap_bool,
+        disable_switch_tech_display TYPE abap_bool,
         BEGIN OF ext,
           commands TYPE REF TO zif_zabap_table_edit_commands,
           config   TYPE REF TO zif_zabap_table_edit_config,
@@ -39,7 +40,8 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
       command_exit,
       command_reset,
       command_restrict_selection,
-      command_documentation.
+      command_documentation,
+      command_switch_tech_display.
 
     METHODS:
       on_user_command FOR EVENT on_user_command OF zcl_zabap_screen_with_containe IMPORTING command.
@@ -147,6 +149,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-cancel. command_cancel( ).
       WHEN screen_controls->c_commands-restrict_selection. command_restrict_selection( ).
       WHEN screen_controls->c_commands-documentation. command_documentation( ).
+      WHEN screen_controls->c_commands-switch_tech_display. command_switch_tech_display( ).
     ENDCASE.
 
     "---EXTENSION CALL---
@@ -280,5 +283,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
+  METHOD command_switch_tech_display.
+    table_data->switch_tech_display( ).
+  ENDMETHOD.
 
 ENDCLASS.

@@ -3,8 +3,6 @@ CLASS zcl_zabap_table_fields DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     METHODS:
         constructor IMPORTING table_name TYPE string editable TYPE abap_bool DEFAULT abap_false,
-        "! <p class="shorttext synchronized">Changes field catalogue 'edit' field</p>
-        set_edit_mode IMPORTING editable TYPE abap_bool DEFAULT abap_false,
         get_field_catalogue RETURNING VALUE(field_catalogue) TYPE zcl_zabap_field_catalogue=>tt_field_cat,
         "! <p class="shorttext synchronized">Based on key fields of table specified in constructor</p>
         "! @parameter include_index_field | <p class="shorttext synchronized">Appends integer field at the end of struct</p>
@@ -21,18 +19,20 @@ CLASS zcl_zabap_table_fields DEFINITION PUBLIC CREATE PUBLIC.
         get_non_keys_structure EXPORTING struct TYPE REF TO cl_abap_structdescr table TYPE REF TO cl_abap_tabledescr.
 
     DATA :
-      has_mandant     TYPE abap_bool READ-ONLY,
-      mandant_field   TYPE string READ-ONLY,
-      key_fields_only TYPE abap_bool READ-ONLY.
+      has_mandant          TYPE abap_bool READ-ONLY,
+      mandant_field        TYPE string READ-ONLY,
+      key_fields_only      TYPE abap_bool READ-ONLY,
+      is_in_edit_mode      TYPE abap_bool,
+      is_in_technical_view TYPE abap_bool.
 
   PRIVATE SECTION.
     METHODS:
-      get_available_index_name RETURNING VALUE(name) TYPE string.
+      get_available_index_name RETURNING VALUE(name) TYPE string,
+      modify_fc CHANGING fc TYPE zcl_zabap_field_catalogue=>tt_field_cat.
 
     DATA:
-      table_name      TYPE string,
-      field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat,
-      is_edit_mode TYPE abap_bool.
+      table_name             TYPE string,
+      field_catalogue        TYPE zcl_zabap_field_catalogue=>tt_field_cat.
 ENDCLASS.
 
 CLASS zcl_zabap_table_fields IMPLEMENTATION.
@@ -58,7 +58,7 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
 
     key_fields_only = xsdbool( NOT line_exists( field_catalogue[ KEY key_col key = space ]  ) ).
 
-    set_edit_mode( editable ).
+    is_in_edit_mode = editable.
   ENDMETHOD.
 
   METHOD get_available_index_name.
@@ -84,15 +84,17 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
       field-fieldname = additional_field->name.
       field-tabname   = 1.
       field-col_pos   = index.
-      field-edit      = is_edit_mode.
       APPEND field TO field_catalogue.
 
       index = index + 1.
     ENDLOOP.
+
+    modify_fc( CHANGING fc = field_catalogue ).
   ENDMETHOD.
 
   METHOD get_field_catalogue.
     field_catalogue = me->field_catalogue.
+    modify_fc( CHANGING fc = field_catalogue ).
   ENDMETHOD.
 
   METHOD get_keys_structure.
@@ -129,13 +131,6 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
     table = cl_abap_tabledescr=>get( p_line_type = struct p_key_kind = cl_abap_tabledescr=>keydefkind_user p_key = keys ).
   ENDMETHOD.
 
-  METHOD set_edit_mode.
-    LOOP AT field_catalogue REFERENCE INTO DATA(field).
-      field->edit = editable.
-    ENDLOOP.
-    is_edit_mode = editable.
-  ENDMETHOD.
-
   METHOD get_non_keys_structure.
     DATA(components) = VALUE cl_abap_structdescr=>component_table( ).
     " Don't use secondary keys because they don't preserve field order
@@ -147,4 +142,19 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
     struct = cl_abap_structdescr=>get( p_components = components ).
     table = cl_abap_tabledescr=>get( p_line_type = struct p_key_kind = cl_abap_tabledescr=>keydefkind_default ).
   ENDMETHOD.
+
+
+  METHOD modify_fc.
+    LOOP AT fc REFERENCE INTO DATA(field).
+      field->edit = is_in_edit_mode.
+
+      IF is_in_technical_view = abap_true.
+        field->no_convext = abap_true.
+        field->checkbox = abap_false.
+        field->reptext = field->scrtext_s = field->scrtext_m = field->scrtext_l = field->fieldname.
+        field->tech_form = 90. "check include <SLVC_CELL_DATA_GET> for effect - 90 means direct copy without any formatting
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
 ENDCLASS.

@@ -18,11 +18,6 @@
      <LANGU>E</LANGU>
      <DESCRIPT>Based on key fields of table specified in constructor</DESCRIPT>
     </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CMPNAME>SET_EDIT_MODE</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Changes field catalogue &apos;edit&apos; field</DESCRIPT>
-    </SEOCOMPOTX>
    </DESCRIPTIONS>
    <DESCRIPTIONS_SUB>
     <SEOSUBCOTX>
