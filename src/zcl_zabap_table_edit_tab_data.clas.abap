@@ -410,7 +410,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDIF.
 
     assign_to_table_fs table-modified_data_ext->* <table>.
-    ASSIGN <table>[ 1 ] TO FIELD-SYMBOL(<row>).
+    ASSIGN <table>[ selected ] TO FIELD-SYMBOL(<row>).
 
     TYPES:
       BEGIN OF t_display,
