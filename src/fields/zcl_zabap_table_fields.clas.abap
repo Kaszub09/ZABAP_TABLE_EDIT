@@ -31,8 +31,8 @@ CLASS zcl_zabap_table_fields DEFINITION PUBLIC CREATE PUBLIC.
       modify_fc CHANGING fc TYPE zcl_zabap_field_catalogue=>tt_field_cat.
 
     DATA:
-      table_name             TYPE string,
-      field_catalogue        TYPE zcl_zabap_field_catalogue=>tt_field_cat.
+      table_name      TYPE string,
+      field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat.
 ENDCLASS.
 
 CLASS zcl_zabap_table_fields IMPLEMENTATION.
@@ -151,7 +151,7 @@ CLASS zcl_zabap_table_fields IMPLEMENTATION.
       IF is_in_technical_view = abap_true.
         field->no_convext = abap_true.
         field->checkbox = abap_false.
-        field->reptext = field->scrtext_s = field->scrtext_m = field->scrtext_l = field->fieldname.
+        field->coltext = field->reptext = field->scrtext_s = field->scrtext_m = field->scrtext_l = field->fieldname.
         field->tech_form = 90. "check include <SLVC_CELL_DATA_GET> for effect - 90 means direct copy without any formatting
       ENDIF.
     ENDLOOP.
