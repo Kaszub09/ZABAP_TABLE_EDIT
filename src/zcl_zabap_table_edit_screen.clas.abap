@@ -40,10 +40,15 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
         config TYPE t_config.
 ENDCLASS.
 
-CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
+
+
+CLASS ZCL_ZABAP_TABLE_EDIT_SCREEN IMPLEMENTATION.
+
+
   METHOD constructor.
     me->config = config.
   ENDMETHOD.
+
 
   METHOD update_screen_controls.
     zcl_zabap_screen_with_containe=>dynamic_commands->remove_all_commands( ).
@@ -67,12 +72,12 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
 
     IF config-documentation IS NOT INITIAL.
       zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-documentation
-          description = VALUE #( text = TEXT-005 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ).
+          description = VALUE #( text = TEXT-007 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ).
     ENDIF.
 
     IF config-disable_switch_tech_display = abap_false.
       zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-switch_tech_display
-          description = VALUE #( text = TEXT-005 icon_id = '@9N@' icon_text = TEXT-008 quickinfo = TEXT-008 ) ).
+          description = VALUE #( text = TEXT-008 icon_id = '@9N@' icon_text = TEXT-008 quickinfo = TEXT-008 ) ).
     ENDIF.
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.
