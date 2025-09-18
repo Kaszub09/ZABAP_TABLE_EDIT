@@ -160,7 +160,7 @@ CLASS tcl_zabap_table_fields IMPLEMENTATION.
 
     create_data created_table table.
 
-    TYPES: tt_zabap_te_cp_test TYPE STANDARD TABLE OF zabap_te_cp_test WITH EMPTY KEY.
+    TYPES: tt_zabap_te_cp_test TYPE STANDARD TABLE OF zabap_te_cp_test.
     FIELD-SYMBOLS: <original_table> TYPE tt_zabap_te_cp_test.
     ASSIGN created_table->* TO <original_table>.
     cl_abap_unit_assert=>assert_subrc( ).
