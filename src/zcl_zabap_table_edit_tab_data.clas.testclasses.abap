@@ -151,7 +151,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     cut->validate( IMPORTING result = DATA(result) ).
 
-    cl_abap_unit_assert=>assert_equals( exp = zcl_zabap_table_edit_globals=>c_validation-incorrect_values act = result ).
+    cl_abap_unit_assert=>assert_equals( exp = zif_zabap_table_edit_data=>c_validation-incorrect_values act = result ).
   ENDMETHOD.
 
   METHOD invalid_data_duplicates.
@@ -164,7 +164,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
     cut_base->table-modified_data_ext = REF #( modified ).
     cut->validate( IMPORTING result = DATA(result) ).
 
-    cl_abap_unit_assert=>assert_equals( exp = zcl_zabap_table_edit_globals=>c_validation-duplicates act = result ).
+    cl_abap_unit_assert=>assert_equals( exp = zif_zabap_table_edit_data=>c_validation-duplicates act = result ).
   ENDMETHOD.
 
   METHOD valid_data.
@@ -177,7 +177,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
     cut_base->table-modified_data_ext = REF #( modified ).
     cut->validate( IMPORTING result = DATA(result) ).
 
-    cl_abap_unit_assert=>assert_equals( exp = zcl_zabap_table_edit_globals=>c_validation-ok act = result ).
+    cl_abap_unit_assert=>assert_equals( exp = zif_zabap_table_edit_data=>c_validation-ok act = result ).
   ENDMETHOD.
 
   METHOD configure_db_validation.
@@ -284,7 +284,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
     cut_base->table-modified_data_ext = REF #( modified ).
     cut->validate( IMPORTING result = DATA(result) ).
 
-    cl_abap_unit_assert=>assert_equals( exp = zcl_zabap_table_edit_globals=>c_validation-not_in_selection act = result ).
+    cl_abap_unit_assert=>assert_equals( exp = zif_zabap_table_edit_data=>c_validation-not_in_selection act = result ).
   ENDMETHOD.
 
 ENDCLASS.

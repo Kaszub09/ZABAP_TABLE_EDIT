@@ -34,12 +34,12 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       setup_grid,
       "! <p class="shorttext synchronized">Initial query from specified table</p>
       prepare_initial_data,
-      create_change_doc IMPORTING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision  RAISING zcx_zabap_table_edit,
+      create_change_doc IMPORTING compared TYPE zif_zabap_table_edit_data=>t_data_comparision RAISING zcx_zabap_table_edit,
       "! <p class="shorttext synchronized">Display table to original tab - needed if fields were added</p>
       get_modified_data_no_ext RETURNING VALUE(modified_data) TYPE REF TO data,
       get_selected_row_index RETURNING VALUE(index) TYPE i,
       remove_empty_rows,
-      get_not_in_selection IMPORTING compared                TYPE zcl_zabap_table_edit_globals=>t_data_comparision
+      get_not_in_selection IMPORTING compared                TYPE zif_zabap_table_edit_data=>t_data_comparision
                            RETURNING VALUE(not_in_selection) TYPE REF TO data,
       show_row_details.
 
@@ -350,7 +350,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD zif_zabap_table_edit_tab_data~validate.
     grid->check_changed_data( IMPORTING e_valid = DATA(valid) ).
     IF valid = abap_false.
-      result = zcl_zabap_table_edit_globals=>c_validation-incorrect_values.
+      result = zif_zabap_table_edit_data=>c_validation-incorrect_values.
       RETURN.
     ENDIF.
 
@@ -364,18 +364,18 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     assign_to_table_fs compared-duplicates->* <duplicates>.
     IF lines( <duplicates> ) > 0.
-      result = zcl_zabap_table_edit_globals=>c_validation-duplicates.
+      result = zif_zabap_table_edit_data=>c_validation-duplicates.
       RETURN.
     ENDIF.
 
     compared-not_in_selection = get_not_in_selection( compared ).
     assign_to_table_fs compared-not_in_selection->* <not_in_selection>.
     IF lines( <not_in_selection> ) > 0.
-      result = zcl_zabap_table_edit_globals=>c_validation-not_in_selection.
+      result = zif_zabap_table_edit_data=>c_validation-not_in_selection.
       RETURN.
     ENDIF.
 
-    result = zcl_zabap_table_edit_globals=>c_validation-ok.
+    result = zif_zabap_table_edit_data=>c_validation-ok.
 
     "---EXTENSION CALL---
     config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).

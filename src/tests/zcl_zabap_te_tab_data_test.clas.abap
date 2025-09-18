@@ -64,8 +64,8 @@ CLASS zcl_zabap_te_tab_data_test IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_tab_data~validate.
     MESSAGE |Validation save called| TYPE 'I'.
-    result = COND i( WHEN yes_no( 'Was validation successful?' ) = abap_true THEN zcl_zabap_table_edit_globals=>c_validation-ok
-                     ELSE zcl_zabap_table_edit_globals=>c_validation-incorrect_values ).
+    result = COND i( WHEN yes_no( 'Was validation successful?' ) = abap_true THEN zif_zabap_table_edit_data=>c_validation-ok
+                     ELSE zif_zabap_table_edit_data=>c_validation-incorrect_values ).
   ENDMETHOD.
 
   METHOD on_data_changed.

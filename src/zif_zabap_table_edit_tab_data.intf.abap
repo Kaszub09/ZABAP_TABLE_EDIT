@@ -21,8 +21,8 @@ INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
     reset_grid IMPORTING in_edit_mode TYPE abap_bool,
     "! <p class="shorttext synchronized">Compare table and check fields with checktables</p>
     "! @parameter result |<p class="shorttext synchronized">Of type <em>zcl_zabap_table_edit_globals-c_validation</em></p>
-    validate EXPORTING result TYPE i compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision,
-    save_data EXPORTING erorr_message TYPE string CHANGING compared TYPE zcl_zabap_table_edit_globals=>t_data_comparision
+    validate EXPORTING result TYPE i compared TYPE zif_zabap_table_edit_data=>t_data_comparision,
+    save_data EXPORTING erorr_message TYPE string CHANGING compared TYPE zif_zabap_table_edit_data=>t_data_comparision
               RETURNING VALUE(sucess) TYPE abap_bool,
     get_selected_row_key RETURNING VALUE(tabkey) TYPE string,
     restrict_selection RETURNING VALUE(changed) TYPE abap_bool RAISING zcx_zabap_table_edit,
