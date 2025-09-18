@@ -9,7 +9,7 @@ CLASS zcl_zabap_table_edit_restr_sel DEFINITION PUBLIC FINAL CREATE PRIVATE GLOB
       tt_fields_tab TYPE STANDARD TABLE OF rsdsfields WITH EMPTY KEY,
       BEGIN OF t_config,
         BEGIN OF ext,
-          config TYPE REF TO zif_zabap_table_edit_config,
+          config TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config WITH EMPTY KEY,
         END OF ext,
         table_name TYPE string,
       END OF t_config.
@@ -61,12 +61,15 @@ CLASS zcl_zabap_table_edit_restr_sel IMPLEMENTATION.
     DATA tables_tab TYPE STANDARD TABLE OF rsdstabs WITH EMPTY KEY.
     APPEND VALUE #( prim_tab = config-table_name ) TO tables_tab.
 
-    DATA fields_tab type tt_fields_tab.
+    DATA fields_tab TYPE tt_fields_tab.
     " Don't use secondary keys because they don't preserve field order
     fields_tab = VALUE #( FOR field IN zcl_zabap_field_catalogue=>get_fc_from_struct_name( config-table_name )
         WHERE ( key = abap_true AND fieldname <> 'MANDT' AND datatype <> 'CLNT' ) ( tablename = config-table_name fieldname = field-fieldname ) ).
 
-    config-ext-config->change_init_selection_fields( CHANGING fields_tab = fields_tab ).
+    "---EXTENSION CALL---
+    LOOP AT config-ext-config INTO DATA(ext).
+      ext->change_init_selection_fields( CHANGING fields_tab = fields_tab ).
+    ENDLOOP.
 
     CALL FUNCTION 'FREE_SELECTIONS_INIT'
       EXPORTING

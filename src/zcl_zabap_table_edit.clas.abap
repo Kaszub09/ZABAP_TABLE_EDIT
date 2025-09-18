@@ -3,19 +3,19 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     TYPES:
       BEGIN OF t_config,
-        display_text             TYPE string,
-        table_name               TYPE string,
-        change_doc_type          TYPE zabap_change_doc_type,
-        disable_cd_view          TYPE abap_bool,
-        disable_editing          TYPE abap_bool,
-        disable_text_table       TYPE abap_bool,
-        disable_selection        TYPE abap_bool,
-        show_selection_first     TYPE abap_bool,
+        display_text                TYPE string,
+        table_name                  TYPE string,
+        change_doc_type             TYPE zabap_change_doc_type,
+        disable_cd_view             TYPE abap_bool,
+        disable_editing             TYPE abap_bool,
+        disable_text_table          TYPE abap_bool,
+        disable_selection           TYPE abap_bool,
+        show_selection_first        TYPE abap_bool,
         disable_switch_tech_display TYPE abap_bool,
         BEGIN OF ext,
-          commands TYPE REF TO zif_zabap_table_edit_commands,
-          config   TYPE REF TO zif_zabap_table_edit_config,
-          data     TYPE REF TO zif_zabap_table_edit_data,
+          commands TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands WITH EMPTY KEY,
+          config   TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config WITH EMPTY KEY,
+          data     TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_data WITH EMPTY KEY,
         END OF ext,
         BEGIN OF documentation,
           class TYPE doku_class,
@@ -30,7 +30,6 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
 
   PRIVATE SECTION.
     METHODS:
-      initialize_extensions,
       initialize_documentation,
       command_validate EXPORTING result TYPE i compared TYPE zif_zabap_table_edit_data=>t_data_comparision,
       command_save,
@@ -60,11 +59,12 @@ ENDCLASS.
 CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
-    initialize_extensions( ).
     initialize_documentation( ).
 
     "---EXTENSION CALL---
-    config-ext-config->change_config( CHANGING config = config ).
+    LOOP AT config-ext-config INTO DATA(ext).
+      ext->change_config( CHANGING config = config ).
+    ENDLOOP.
 
     messages = NEW #( ). "TODO as interface
     screen_controls = NEW #( CORRESPONDING #( config ) ). "TODO as interface
@@ -74,20 +74,6 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     table_data = zcl_zabap_table_edit_factory=>get_table_data( config = CORRESPONDING #( config )
         grid = zcl_zabap_table_edit_factory=>get_grid( zcl_zabap_screen_with_containe=>get_container( ) ) ).
   ENDMETHOD.
-
-  METHOD initialize_extensions.
-    DATA(empty_extension) = NEW zcl_zabap_table_edit_empty_ext( ).
-    IF NOT config-ext-commands IS BOUND.
-      config-ext-commands = empty_extension.
-    ENDIF.
-    IF NOT config-ext-data IS BOUND.
-      config-ext-data = empty_extension.
-    ENDIF.
-    IF NOT config-ext-config IS BOUND.
-      config-ext-config = empty_extension.
-    ENDIF.
-  ENDMETHOD.
-
 
   METHOD initialize_documentation.
     IF config-documentation IS NOT INITIAL.
@@ -105,7 +91,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD set_edit_mode.
     DATA(new_edit_mode) = COND #( WHEN config-disable_editing = abap_true THEN abap_false ELSE editable ).
     "---EXTENSION CALL---
-    config-ext-commands->set_edit_mode( CHANGING editable = new_edit_mode ).
+    LOOP AT config-ext-commands INTO DATA(ext).
+      ext->set_edit_mode( CHANGING editable = new_edit_mode ).
+    ENDLOOP.
 
     "Unlock table first in case of errors or some remaining locks
     table_data->unlock_table( ).
@@ -126,14 +114,19 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     screen_controls->update_screen_controls( in_edit_mode ).
     table_data->reset_grid( in_edit_mode ).
     "---EXTENSION CALL---
-    config-ext-data->change_display_text( CHANGING display_text = config-display_text ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      ext->change_display_text( CHANGING display_text = config-display_text ).
+    ENDLOOP.
+
     zcl_zabap_screen_with_containe=>display( config-display_text ).
   ENDMETHOD.
 
   METHOD on_user_command.
     DATA(cancel_command) = abap_false.
     "---EXTENSION CALL---
-    config-ext-commands->before_command( CHANGING command = command cancel_command = cancel_command ).
+    LOOP AT config-ext-commands INTO DATA(ext).
+      ext->before_command( CHANGING command = command cancel_command = cancel_command ).
+    ENDLOOP.
 
     IF cancel_command = abap_true.
       RETURN.
@@ -153,7 +146,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDCASE.
 
     "---EXTENSION CALL---
-    config-ext-commands->after_command( CHANGING command = command ).
+    LOOP AT config-ext-commands INTO ext.
+      ext->after_command( CHANGING command = command ).
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD command_save.

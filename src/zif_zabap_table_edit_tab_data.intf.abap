@@ -7,9 +7,9 @@ INTERFACE zif_zabap_table_edit_tab_data PUBLIC.
       disable_selection    TYPE abap_bool,
       show_selection_first TYPE abap_bool,
       BEGIN OF ext,
-        commands TYPE REF TO zif_zabap_table_edit_commands,
-        config   TYPE REF TO zif_zabap_table_edit_config,
-        data     TYPE REF TO zif_zabap_table_edit_data,
+        commands TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands WITH EMPTY KEY,
+        config   TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config WITH EMPTY KEY,
+        data     TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_data WITH EMPTY KEY,
       END OF ext,
     END OF t_config.
 

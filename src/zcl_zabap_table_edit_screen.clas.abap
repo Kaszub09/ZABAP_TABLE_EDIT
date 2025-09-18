@@ -20,7 +20,7 @@ CLASS zcl_zabap_table_edit_screen DEFINITION PUBLIC CREATE PUBLIC.
     TYPES:
       BEGIN OF t_config,
         BEGIN OF ext,
-          commands TYPE REF TO zif_zabap_table_edit_commands,
+          commands TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands WITH EMPTY KEY,
         END OF ext,
         disable_cd_view             TYPE abap_bool,
         disable_editing             TYPE abap_bool,
@@ -42,7 +42,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ZABAP_TABLE_EDIT_SCREEN IMPLEMENTATION.
+CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -90,7 +90,9 @@ CLASS ZCL_ZABAP_TABLE_EDIT_SCREEN IMPLEMENTATION.
     ENDIF.
 
     "---EXTENSION CALL---
-    config-ext-commands->change_commands( EXPORTING in_edit_mode = in_edit_mode CHANGING commands = include_commands ).
+    LOOP AT config-ext-commands INTO DATA(ext).
+      ext->change_commands( EXPORTING in_edit_mode = in_edit_mode CHANGING commands = include_commands ).
+    ENDLOOP.
 
     zcl_zabap_screen_with_containe=>top_commands->include_only_commands( include_commands ).
   ENDMETHOD.

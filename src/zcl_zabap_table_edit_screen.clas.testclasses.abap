@@ -20,11 +20,11 @@ ENDCLASS.
 
 CLASS tcl_zabap_table_edit_screen IMPLEMENTATION.
   METHOD setup.
-    cut = NEW #( VALUE #( ext-commands = NEW zcl_zabap_table_edit_empty_ext( ) ) ).
+    cut = NEW #( VALUE #( ) ).
   ENDMETHOD.
 
   METHOD disable_cd_view.
-    cut = NEW #( VALUE #( disable_cd_view = abap_true ext-commands = NEW zcl_zabap_table_edit_empty_ext( ) ) ).
+    cut = NEW #( VALUE #( disable_cd_view = abap_true ) ).
     cut->update_screen_controls( ).
     command_disabled( cut->c_commands-change_document ).
     "Check edit mode
@@ -33,7 +33,7 @@ CLASS tcl_zabap_table_edit_screen IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD disable_edit.
-    cut = NEW #( VALUE #( disable_editing = abap_true ext-commands = NEW zcl_zabap_table_edit_empty_ext( ) ) ).
+    cut = NEW #( VALUE #( disable_editing = abap_true ) ).
     cut->update_screen_controls( ).
     command_disabled( cut->c_commands-toggle_display ).
     top_command_disabled( cut->c_commands-save ).

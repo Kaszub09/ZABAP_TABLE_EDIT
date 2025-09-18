@@ -78,7 +78,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     setup_grid( ).
 
     "---EXTENSION CALL---
-    config-ext-data->additional_fields( CHANGING additional_fields = table-additional_fields ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      ext->additional_fields( CHANGING additional_fields = table-additional_fields ).
+    ENDLOOP.
 
     "---SELECTION---
     table-selection = zcl_zabap_table_edit_factory=>get_restrict_selection( CORRESPONDING #( config ) ).
@@ -172,7 +174,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     DATA(execute_default_select) = abap_true.
     "---EXTENSION CALL---
-    config-ext-data->default_select( CHANGING execute = execute_default_select ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      ext->default_select( CHANGING execute = execute_default_select ).
+    ENDLOOP.
 
     IF execute_default_select = abap_true.
       "---SELECTION---
@@ -182,7 +186,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDIF.
 
     "---EXTENSION CALL---
-    config-ext-data->initial_data( CHANGING initial_data = table-initial_data ).
+    LOOP AT config-ext-data INTO ext.
+      ext->initial_data( CHANGING initial_data = table-initial_data ).
+    ENDLOOP.
   ENDMETHOD.
 
 
@@ -210,13 +216,19 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_enter ). "Allows also to catch Enter
 
     SET HANDLER on_data_changed FOR grid.
-    SET HANDLER config-ext-data->on_data_changed FOR grid.
-    SET HANDLER config-ext-data->on_data_changed_finished FOR grid.
     SET HANDLER on_toolbar FOR grid.
     SET HANDLER on_user_command FOR grid.
 
     "---EXTENSION CALL---
-    config-ext-config->grid_setup( CHANGING grid = grid ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      SET HANDLER ext->on_data_changed FOR grid.
+      SET HANDLER ext->on_data_changed_finished FOR grid.
+    ENDLOOP.
+
+    "---EXTENSION CALL---
+    LOOP AT config-ext-config INTO DATA(config_ext).
+      config_ext->grid_setup( CHANGING grid = grid ).
+    ENDLOOP.
   ENDMETHOD.
 
 
@@ -273,9 +285,11 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     DATA(layout) = VALUE lvc_s_layo( sel_mode = 'A' ).
     DATA(variant) = VALUE disvariant( report = config-table_name handle = 'BASE' username = sy-uname ).
     "---EXTENSION CALL---
-    config-ext-data->refresh_grid( EXPORTING in_edit_mode = in_edit_mode
-        CHANGING field_catalogue = fc initial_data = table-initial_data modified_data_ext = table-modified_data_ext
-                 layout = layout variant = variant ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      ext->refresh_grid( EXPORTING in_edit_mode = in_edit_mode
+          CHANGING field_catalogue = fc initial_data = table-initial_data modified_data_ext = table-modified_data_ext
+                   layout = layout variant = variant ).
+    ENDLOOP.
 
     DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
     grid->set_table_for_first_display( EXPORTING is_variant = variant is_layout = layout i_save = 'A'
@@ -296,7 +310,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
   METHOD zif_zabap_table_edit_tab_data~save_data.
     TRY.
         "---EXTENSION CALL---
-        config-ext-data->before_save( CHANGING compared = compared ).
+        LOOP AT config-ext-data INTO DATA(ext).
+          ext->before_save( CHANGING compared = compared ).
+        ENDLOOP.
 
         assign_to_table_fs compared-modified->* <modified>.
         assign_to_table_fs compared-inserted->* <inserted>.
@@ -328,7 +344,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
         ENDIF.
 
         "---EXTENSION CALL---
-        config-ext-data->after_save( CHANGING compared = compared ).
+        LOOP AT config-ext-data INTO ext.
+          ext->after_save( CHANGING compared = compared ).
+        ENDLOOP.
 
         prepare_initial_data( ).
         sucess = abap_true.
@@ -378,7 +396,9 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     result = zif_zabap_table_edit_data=>c_validation-ok.
 
     "---EXTENSION CALL---
-    config-ext-data->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
+    LOOP AT config-ext-data INTO DATA(ext).
+      ext->additional_validation( CHANGING result = result all_modified_data = modified_data compared = compared ).
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_tab_data~switch_tech_display.
