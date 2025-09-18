@@ -17,7 +17,8 @@ INTERFACE zif_zabap_table_edit_commands PUBLIC.
     "! <p class="shorttext synchronized">Not called if command was cancelled</p>
     after_command DEFAULT IGNORE CHANGING command TYPE syst_ucomm,
     "! <p class="shorttext synchronized" lang="en">Called after setting up the screen</p>
-    "! @parameter commands | <p class="shorttext synchronized">Can be modified to alter displayed commands</p>
+    "! @parameter top_commands | <p class="shorttext synchronized">Can be modified to alter displayed top commands</p>
+    "! @parameter commands | <p class="shorttext synchronized">Can be modified to add/remove commands</p>
     change_commands DEFAULT IGNORE IMPORTING in_edit_mode TYPE abap_bool
                                    CHANGING top_commands TYPE ztt_zabap_commands commands TYPE tt_command.
 ENDINTERFACE.

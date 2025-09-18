@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_EMPTY_EXT</CLSNAME>
+    <CLSNAME>ZCL_ZABAP_TABLE_EDIT_EDIT_EXT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Empty implementation of extensions</DESCRIPT>
+    <DESCRIPT>Allows to set table as editable even if it&apos;s standard</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

@@ -28,9 +28,6 @@ CLASS zcl_zabap_table_edit_fill_ext IMPLEMENTATION.
     APPEND VALUE #( sign = 'E' option = 'EQ' low = 'MANDT' ) TO me->fields_restriction.
   ENDMETHOD.
 
-  METHOD zif_zabap_table_edit_data~additional_fields.
-  ENDMETHOD.
-
   METHOD zif_zabap_table_edit_data~additional_validation.
     FIELD-SYMBOLS <table> TYPE table.
 
@@ -51,53 +48,10 @@ CLASS zcl_zabap_table_edit_fill_ext IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD zif_zabap_table_edit_commands~after_command.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~after_save.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~before_command.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~before_save.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~change_commands.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_config~change_config.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~default_select.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_config~grid_setup.
-  ENDMETHOD.
-
   METHOD zif_zabap_table_edit_data~initial_data.
     DATA(table_descr) = CAST cl_abap_tabledescr( cl_abap_structdescr=>describe_by_data_ref( initial_data ) ).
     DATA(line_descr) = CAST cl_abap_structdescr( table_descr->get_table_line_type( ) ).
     components = line_descr->get_components( ).
     DELETE components WHERE NOT name IN fields_restriction.
   ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~on_data_changed.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~on_data_changed_finished.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~refresh_grid.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~set_edit_mode.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~change_display_text.
-  ENDMETHOD.
-  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
-
-  ENDMETHOD.
-
 ENDCLASS.

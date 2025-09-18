@@ -41,6 +41,7 @@ CLASS zcl_zabap_table_edit_descr_ext DEFINITION PUBLIC FINAL CREATE PUBLIC.
     METHODS:
       run_query IMPORTING row TYPE any,
       update_row CHANGING row TYPE any.
+
     DATA:
       trigger_change_fields TYPE tt_trigger_change_fields,
       new_fields            TYPE tt_new_fields,
@@ -67,38 +68,9 @@ CLASS zcl_zabap_table_edit_descr_ext IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD zif_zabap_table_edit_data~additional_validation.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~after_command.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~after_save.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~before_command.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~before_save.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_commands~change_commands.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_config~change_config.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~default_select.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_config~grid_setup.
-  ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_data~initial_data.
-  ENDMETHOD.
-
   METHOD zif_zabap_table_edit_data~on_data_changed.
     FIELD-SYMBOLS <modified_data> TYPE table.
+
     ASSIGN er_data_changed->mp_mod_rows->* TO <modified_data>.
 
     LOOP AT er_data_changed->mt_mod_cells REFERENCE INTO DATA(modified_cell).
@@ -115,11 +87,9 @@ CLASS zcl_zabap_table_edit_descr_ext IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD zif_zabap_table_edit_data~on_data_changed_finished.
-  ENDMETHOD.
-
   METHOD zif_zabap_table_edit_data~refresh_grid.
     FIELD-SYMBOLS <modified_data_ext> TYPE table.
+
     ASSIGN modified_data_ext->* TO <modified_data_ext>.
 
     LOOP AT <modified_data_ext> ASSIGNING FIELD-SYMBOL(<row>).
@@ -135,11 +105,9 @@ CLASS zcl_zabap_table_edit_descr_ext IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD zif_zabap_table_edit_commands~set_edit_mode.
-  ENDMETHOD.
-
   METHOD zif_zabap_table_edit_data~change_display_text.
   ENDMETHOD.
+
   METHOD update_row.
     ASSIGN query_result->* TO FIELD-SYMBOL(<query_result>).
     LOOP AT new_fields REFERENCE INTO DATA(new_field).
@@ -154,9 +122,4 @@ CLASS zcl_zabap_table_edit_descr_ext IMPLEMENTATION.
     CLEAR <query_result>.
     SELECT SINGLE (query-select) FROM (query-from) WHERE (query-where) INTO CORRESPONDING FIELDS OF @<query_result>.
   ENDMETHOD.
-
-  METHOD zif_zabap_table_edit_config~change_init_selection_fields.
-
-  ENDMETHOD.
-
 ENDCLASS.
