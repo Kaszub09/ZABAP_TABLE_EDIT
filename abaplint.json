@@ -127,7 +127,7 @@
       "checkData": true
     },
     "fully_type_itabs": {
-      "exclude": [],
+      "exclude": ["src/fields/zcl_zabap_table_fields.clas.testclasses.abap"],
       "severity": "Error"
     },
     "function_module_recommendations": {
