@@ -52,48 +52,51 @@ CLASS zcl_zabap_table_edit_screen IMPLEMENTATION.
 
   METHOD update_screen_controls.
     zcl_zabap_screen_with_containe=>dynamic_commands->remove_all_commands( ).
-
-    DATA(include_commands) = VALUE ztt_zabap_commands( ( c_commands-ok ) ( c_commands-back )  ( c_commands-exit )  ( c_commands-cancel ) ).
+    DATA(top_commands) = VALUE ztt_zabap_commands( ( c_commands-ok ) ( c_commands-back )  ( c_commands-exit )  ( c_commands-cancel ) ).
+    DATA(commands) = VALUE zif_zabap_table_edit_commands=>tt_command( ).
 
     IF config-disable_editing = abap_false.
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-toggle_display
-          description = VALUE #( text = TEXT-001 icon_id = '@3I@' icon_text = TEXT-001 ) ).
+      APPEND VALUE #( command = c_commands-toggle_display
+           description = VALUE #( text = TEXT-001 icon_id = '@3I@' icon_text = TEXT-001 ) ) TO commands.
     ENDIF.
 
     IF config-disable_cd_view = abap_false.
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-change_document
-          description = VALUE #( text = TEXT-004 icon_id = '@46@' icon_text = TEXT-004 ) ).
+      APPEND VALUE #( command = c_commands-change_document
+         description = VALUE #( text = TEXT-004 icon_id = '@46@' icon_text = TEXT-004 ) ) TO commands.
     ENDIF.
 
     IF config-disable_selection = abap_false.
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-restrict_selection
-          description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ).
+      APPEND VALUE #( command = c_commands-restrict_selection
+         description = VALUE #( text = TEXT-005 icon_id = '@KG@' icon_text = TEXT-005 quickinfo = TEXT-006 ) ) TO commands.
     ENDIF.
 
     IF config-documentation IS NOT INITIAL.
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-documentation
-          description = VALUE #( text = TEXT-007 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ).
+      APPEND VALUE #( command = c_commands-documentation
+         description = VALUE #( text = TEXT-007 icon_id = '@0S@' icon_text = TEXT-007 quickinfo = TEXT-007 ) ) TO commands.
     ENDIF.
 
     IF config-disable_switch_tech_display = abap_false.
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-switch_tech_display
-          description = VALUE #( text = TEXT-008 icon_id = '@9N@' icon_text = TEXT-008 quickinfo = TEXT-008 ) ).
+      APPEND VALUE #( command = c_commands-switch_tech_display
+         description = VALUE #( text = TEXT-008 icon_id = '@9N@' icon_text = TEXT-008 quickinfo = TEXT-008 ) ) TO commands.
     ENDIF.
 
     IF in_edit_mode = abap_true AND config-disable_editing = abap_false.
-      APPEND c_commands-save TO include_commands.
+      APPEND c_commands-save TO top_commands.
 
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-validate
-          description = VALUE #( text = TEXT-002 icon_id = '@38@' icon_text = TEXT-002 ) ).
-      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = c_commands-reset
-          description = VALUE #( text = TEXT-003 icon_id = '@42@' icon_text = TEXT-003 ) ).
+      APPEND VALUE #( command = c_commands-validate
+          description = VALUE #( text = TEXT-002 icon_id = '@38@' icon_text = TEXT-002 ) ) TO commands.
+      APPEND VALUE #( command = c_commands-reset
+         description = VALUE #( text = TEXT-003 icon_id = '@42@' icon_text = TEXT-003 ) ) TO commands.
     ENDIF.
 
     "---EXTENSION CALL---
     LOOP AT config-ext-commands INTO DATA(ext).
-      ext->change_commands( EXPORTING in_edit_mode = in_edit_mode CHANGING commands = include_commands ).
+      ext->change_commands( EXPORTING in_edit_mode = in_edit_mode CHANGING top_commands = top_commands commands = commands ).
     ENDLOOP.
 
-    zcl_zabap_screen_with_containe=>top_commands->include_only_commands( include_commands ).
+    LOOP AT commands REFERENCE INTO DATA(cmd).
+      zcl_zabap_screen_with_containe=>dynamic_commands->add_command( command = cmd->command description = cmd->description ).
+    ENDLOOP.
+    zcl_zabap_screen_with_containe=>top_commands->include_only_commands( top_commands ).
   ENDMETHOD.
 ENDCLASS.

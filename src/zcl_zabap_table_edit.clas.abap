@@ -55,7 +55,6 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
       table_data      TYPE REF TO zif_zabap_table_edit_tab_data.
 ENDCLASS.
 
-
 CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD constructor.
     config = configuration.
@@ -170,7 +169,6 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ELSE.
       messages->display_error( msg ).
     ENDIF.
-
   ENDMETHOD.
 
   METHOD command_toggle_display.
@@ -259,6 +257,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
   METHOD command_documentation.
     DATA links TYPE STANDARD TABLE OF tline WITH EMPTY KEY.
+
     CALL FUNCTION 'HELP_OBJECT_SHOW'
       EXPORTING
         dokclass         = config-documentation-class                         " Document class
@@ -278,9 +277,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD command_switch_tech_display.
     table_data->switch_tech_display( ).
   ENDMETHOD.
-
 ENDCLASS.

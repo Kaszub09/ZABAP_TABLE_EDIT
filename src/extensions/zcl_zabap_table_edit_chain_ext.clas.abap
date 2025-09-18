@@ -61,7 +61,8 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_commands~change_commands.
     LOOP AT command_interfaces INTO DATA(command_interface).
-      command_interface->change_commands( EXPORTING in_edit_mode = in_edit_mode CHANGING commands = commands ).
+      command_interface->change_commands( EXPORTING in_edit_mode = in_edit_mode
+                                          CHANGING top_commands = top_commands commands = commands ).
     ENDLOOP.
   ENDMETHOD.
 
