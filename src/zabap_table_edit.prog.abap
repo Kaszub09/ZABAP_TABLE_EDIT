@@ -9,6 +9,15 @@ PARAMETERS:
   p_tabnam TYPE string,
   p_cd     TYPE zabap_change_doc_type DEFAULT 'X',
   p_class  TYPE string,
+  p_class1 TYPE string,
+  p_class2 TYPE string,
+  p_class3 TYPE string,
+  p_class4 TYPE string,
+  p_class5 TYPE string,
+  p_class6 TYPE string,
+  p_class7 TYPE string,
+  p_class8 TYPE string,
+  p_class9 TYPE string,
   p_discdv AS CHECKBOX,
   p_disedi AS CHECKBOX,
   p_distt  AS CHECKBOX,
@@ -36,10 +45,17 @@ START-OF-SELECTION.
 
   "Create extensions
   DATA extensions TYPE zcl_zabap_table_edit=>t_config-ext.
-  IF p_class IS NOT INITIAL.
+  DATA classes TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+  classes = VALUE #( ( p_class ) ( p_class1 ) ( p_class2 ) ( p_class3 ) ( p_class4 ) ( p_class5 )
+    ( p_class6 ) ( p_class7 ) ( p_class8 ) ( p_class9 ) ).
+  LOOP AT classes REFERENCE INTO DATA(class).
+    IF strlen( condense( class->* ) ) = 0.
+      CONTINUE.
+    ENDIF.
+
     TRY.
         DATA extension_inst TYPE REF TO object.
-        CREATE OBJECT extension_inst TYPE (p_class).
+        CREATE OBJECT extension_inst TYPE (class->*).
         IF extension_inst IS INSTANCE OF zif_zabap_table_edit_commands.
           APPEND CAST #( extension_inst ) TO extensions-commands.
         ENDIF.
@@ -53,7 +69,8 @@ START-OF-SELECTION.
         MESSAGE create_object_error TYPE 'S' DISPLAY LIKE 'E'.
         RETURN.
     ENDTRY.
-  ENDIF.
+  ENDLOOP.
+
 
   DATA(table_edit) = NEW zcl_zabap_table_edit( VALUE #( display_text = description table_name = p_tabnam change_doc_type = p_cd
     disable_cd_view = p_discdv disable_editing = COND #( WHEN to_upper( p_tabnam(1) ) CA 'YZ' THEN p_disedi ELSE abap_true )

@@ -37,6 +37,60 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_CLASS1</KEY>
+     <ENTRY>Class extending program 1</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS2</KEY>
+     <ENTRY>Class extending program 2</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS3</KEY>
+     <ENTRY>Class extending program 3</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS4</KEY>
+     <ENTRY>Class extending program 4</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS5</KEY>
+     <ENTRY>Class extending program 5</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS6</KEY>
+     <ENTRY>Class extending program 6</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS7</KEY>
+     <ENTRY>Class extending program 7</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS8</KEY>
+     <ENTRY>Class extending program 8</ENTRY>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CLASS9</KEY>
+     <ENTRY>Class extending program 9</ENTRY>
+     <LENGTH>34</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_DISCDV</KEY>
      <ENTRY>Disable CD button</ENTRY>
      <LENGTH>25</LENGTH>
@@ -104,6 +158,60 @@
        <ID>S</ID>
        <KEY>P_CLASS</KEY>
        <ENTRY>Klasa rozszerzająca program</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS1</KEY>
+       <ENTRY>Klasa rozszerzająca program 1</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS2</KEY>
+       <ENTRY>Klasa rozszerzająca program 2</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS3</KEY>
+       <ENTRY>Klasa rozszerzająca program 3</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS4</KEY>
+       <ENTRY>Klasa rozszerzająca program 4</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS5</KEY>
+       <ENTRY>Klasa rozszerzająca program 5</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS6</KEY>
+       <ENTRY>Klasa rozszerzająca program 6</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS7</KEY>
+       <ENTRY>Klasa rozszerzająca program 7</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS8</KEY>
+       <ENTRY>Klasa rozszerzająca program 8</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CLASS9</KEY>
+       <ENTRY>Klasa rozszerzająca program 9</ENTRY>
        <LENGTH>38</LENGTH>
       </item>
       <item>
