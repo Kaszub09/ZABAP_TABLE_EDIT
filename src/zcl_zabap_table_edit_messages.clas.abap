@@ -59,16 +59,17 @@ CLASS zcl_zabap_table_edit_messages IMPLEMENTATION.
     FIELD-SYMBOLS <data_table> TYPE table.
     ASSIGN data_table->* TO <data_table>.
 
-    DATA(popup_table) = NEW zcl_zabap_salv_report( report_id = CONV #( table_name ) handle = 'DUPL' ).
-    popup_table->alv_table->set_screen_popup( start_column = 1  end_column = 100  start_line = 1 end_line = 15 ).
+    cl_salv_table=>factory( IMPORTING r_salv_table = DATA(salv) CHANGING t_table = <data_table> ).
+    salv->set_screen_popup( start_column = 1  end_column = 100  start_line = 1 end_line = 15 ).
+    salv->get_display_settings( )->set_list_header( CONV #( msg ) ).
+    salv->get_functions( )->set_all( ).
+    salv->get_columns( )->set_optimize( abap_true ).
 
-    popup_table->set_header( CONV #( msg ) ).
-    popup_table->set_data( EXPORTING create_table_copy = abap_false CHANGING data_table = <data_table> ).
     IF strlen( mandant_col_name ) > 0.
-      popup_table->hide_column( CONV #( mandant_col_name ) ).
+      salv->get_columns( )->get_column( CONV #( mandant_col_name ) )->set_technical( abap_true ).
     ENDIF.
 
-    popup_table->display_data( ).
+    salv->display( ).
   ENDMETHOD.
 
   METHOD unexpected_validation_result.
