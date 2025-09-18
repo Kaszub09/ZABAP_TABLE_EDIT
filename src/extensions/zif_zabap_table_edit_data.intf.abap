@@ -18,6 +18,7 @@ INTERFACE zif_zabap_table_edit_data PUBLIC.
     "! @parameter initial_data | <p class="shorttext synchronized">Ref to table of given type with non-modified data</p>
     refresh_grid DEFAULT IGNORE IMPORTING in_edit_mode TYPE abap_bool
                  CHANGING field_catalogue TYPE zcl_zabap_field_catalogue=>tt_field_cat
+                          layout TYPE lvc_s_layo variant TYPE disvariant
                           initial_data TYPE REF TO data modified_data_ext TYPE REF TO data,
     "! <p class="shorttext synchronized">After internal validation. Tables are base, not extended</p>
     "! @parameter result | <p class="shorttext synchronized">Of type zcl_zabap_table_edit_globals-c_validation</p>

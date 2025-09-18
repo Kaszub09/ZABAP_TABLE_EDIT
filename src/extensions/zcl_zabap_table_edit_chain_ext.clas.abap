@@ -1,5 +1,5 @@
 "! <p class="shorttext synchronized" lang="en">Allows for easy chaining of multiple interfaces</p>
-"! You can inherti from it and add additional interfaces in constructor, as well as redefine some methods
+"! You can inherit from it and add additional interfaces in constructor, as well as redefine some methods
 "! - but remember to call super (base class implementation) inside them
 CLASS zcl_zabap_table_edit_chain_ext DEFINITION PUBLIC CREATE PUBLIC.
 
@@ -106,7 +106,7 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
     LOOP AT data_interfaces INTO DATA(data_interface).
       data_interface->refresh_grid( EXPORTING in_edit_mode = in_edit_mode
                                     CHANGING field_catalogue = field_catalogue initial_data = initial_data
-                                             modified_data_ext = modified_data_ext ).
+                                             modified_data_ext = modified_data_ext layout = layout variant = variant ).
     ENDLOOP.
   ENDMETHOD.
 

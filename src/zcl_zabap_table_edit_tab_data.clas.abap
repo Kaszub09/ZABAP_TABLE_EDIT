@@ -68,6 +68,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     table-fields     = NEW #( config-table_name ). "TODO as interface
     table-locker     = NEW #( config-table_name ). "TODO as interface
     table-comparator = NEW #( config-table_name ). "TODO as interface
+    mandant_field = table-fields->mandant_field.
 
     "---TEXT TABLE---
     table-text_table = zcl_zabap_table_edit_factory=>get_text_table( CORRESPONDING #( me->config ) ).
@@ -269,17 +270,18 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     table-fields->is_in_edit_mode = in_edit_mode.
     DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
 
+    DATA(layout) = VALUE lvc_s_layo( sel_mode = 'A' ).
+    DATA(variant) = VALUE disvariant( report = config-table_name handle = 'BASE' username = sy-uname ).
     "---EXTENSION CALL---
     config-ext-data->refresh_grid( EXPORTING in_edit_mode = in_edit_mode
-        CHANGING field_catalogue = fc initial_data = table-initial_data modified_data_ext = table-modified_data_ext ).
+        CHANGING field_catalogue = fc initial_data = table-initial_data modified_data_ext = table-modified_data_ext
+                 layout = layout variant = variant ).
 
     DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
-    grid->set_table_for_first_display( EXPORTING is_variant = VALUE #( report = config-table_name handle = 'BASE' username = sy-uname )
-                                                 is_layout = VALUE #( sel_mode = 'A' ) i_save = 'A'
+    grid->set_table_for_first_display( EXPORTING is_variant = variant is_layout = layout i_save = 'A'
                                        CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
 
     grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
-
   ENDMETHOD.
 
 
