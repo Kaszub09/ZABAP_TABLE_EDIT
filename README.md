@@ -45,5 +45,9 @@ See examples package. Either call transaction ZABAP_TABLE_EDIT only with table n
 - Added support for technical display - whole table, as well as details, similar to SE16N
 ![obraz](https://github.com/user-attachments/assets/3eb49167-57f1-41cc-b158-a73fb29deef6)
 
+##### (18.09.2025)
+- drop versioning
+- add new extensions - easy row statuss/colors,  force allow edit
+
 ## Known issues
 - Some version of function module 'CHANGEDOCUMENT_MULTIPLE_CASE2' require change indicator field to be named 'KZ', causing shortdump otherwise - you can fix it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
