@@ -293,6 +293,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     DATA(field_cat) = CORRESPONDING lvc_t_fcat( fc ).
     grid->set_table_for_first_display( EXPORTING is_variant = variant is_layout = layout i_save = 'A'
+                                                 it_toolbar_excluding = VALUE #( ( cl_gui_alv_grid=>mc_fc_info ) )
                                        CHANGING it_outtab = <modified_data_ext> it_fieldcatalog = field_cat ).
 
     grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
