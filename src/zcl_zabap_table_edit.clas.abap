@@ -144,10 +144,14 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       WHEN screen_controls->c_commands-switch_tech_display. command_switch_tech_display( ).
     ENDCASE.
 
+    DATA(refresh_grid) = abap_false.
     "---EXTENSION CALL---
     LOOP AT config-ext-commands INTO ext.
       ext->after_command( CHANGING command = command ).
     ENDLOOP.
+    IF refresh_grid = abap_true.
+      table_data->refresh_table_display( ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD command_save.

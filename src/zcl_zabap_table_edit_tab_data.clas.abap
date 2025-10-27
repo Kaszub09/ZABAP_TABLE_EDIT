@@ -478,4 +478,7 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     salv->display( ).
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_tab_data~refresh_table_display.
+    grid->refresh_table_display( ).
+  ENDMETHOD.
 ENDCLASS.

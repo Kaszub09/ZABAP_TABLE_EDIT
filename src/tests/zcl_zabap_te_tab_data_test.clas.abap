@@ -108,4 +108,7 @@ CLASS zcl_zabap_te_tab_data_test IMPLEMENTATION.
     MESSAGE |Switch tech display| TYPE 'I'.
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_tab_data~refresh_table_display.
+    grid->refresh_table_display( ).
+  ENDMETHOD.
 ENDCLASS.

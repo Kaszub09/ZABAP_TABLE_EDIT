@@ -15,7 +15,7 @@ INTERFACE zif_zabap_table_edit_commands PUBLIC.
     "! @parameter cancel_command | <p class="shorttext synchronized">Doesn't execute command</p>
     before_command DEFAULT IGNORE CHANGING command TYPE syst_ucomm cancel_command TYPE abap_bool,
     "! <p class="shorttext synchronized">Not called if command was cancelled</p>
-    after_command DEFAULT IGNORE CHANGING command TYPE syst_ucomm,
+    after_command DEFAULT IGNORE CHANGING command TYPE syst_ucomm refresh_grid TYPE abap_bool,
     "! <p class="shorttext synchronized" lang="en">Called after setting up the screen</p>
     "! @parameter top_commands | <p class="shorttext synchronized">Can be modified to alter displayed top commands</p>
     "! @parameter commands | <p class="shorttext synchronized">Can be modified to add/remove commands</p>
