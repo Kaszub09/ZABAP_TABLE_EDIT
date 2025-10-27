@@ -37,7 +37,7 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_commands~after_command.
     LOOP AT command_interfaces INTO DATA(command_interface).
-      command_interface->after_command( CHANGING command = command ).
+      command_interface->after_command( CHANGING command = command refresh_grid = refresh_grid ).
     ENDLOOP.
   ENDMETHOD.
 
@@ -65,6 +65,8 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
                                           CHANGING top_commands = top_commands commands = commands ).
     ENDLOOP.
   ENDMETHOD.
+
+
 
   METHOD zif_zabap_table_edit_config~change_config.
     LOOP AT config_interfaces INTO DATA(config_interface).

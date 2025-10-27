@@ -147,7 +147,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     DATA(refresh_grid) = abap_false.
     "---EXTENSION CALL---
     LOOP AT config-ext-commands INTO ext.
-      ext->after_command( CHANGING command = command ).
+      ext->after_command( CHANGING command = command refresh_grid = refresh_grid ).
     ENDLOOP.
     IF refresh_grid = abap_true.
       table_data->refresh_table_display( ).
