@@ -180,7 +180,16 @@ CLASS zcl_zabap_table_edit_text_tab IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD save.
-    DATA(initial_text) = map_to_text_table( initial ).
+    assign_to_table_fs extended->* <extended>.
+    DATA extended_initial TYPE REF TO data.
+    CREATE DATA extended_initial LIKE <extended>.
+
+    assign_to_table_fs extended_initial->* <extended_initial>.
+    assign_to_table_fs initial->* <initial>.
+    <extended_initial> = CORRESPONDING #( <initial> ).
+    update_text_elements( CHANGING extended = extended_initial ).
+
+    DATA(initial_text) = map_to_text_table( extended_initial ).
     DATA(extended_text) = map_to_text_table( extended ).
     assign_to_table_fs initial_text->* <initial_text>.
     assign_to_table_fs extended_text->* <extended_text>.
