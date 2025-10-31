@@ -272,7 +272,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     CALL FUNCTION 'HELP_OBJECT_SHOW'
       EXPORTING
         dokclass         = config-documentation-class
-        doklangu         = config-documentation-language
+        doklangu         = COND #( WHEN config-documentation-language IS INITIAL THEN sy-langu ELSE config-documentation-language )
         dokname          = config-documentation-name
       TABLES
         links            = links
