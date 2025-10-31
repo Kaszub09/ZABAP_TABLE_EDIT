@@ -18,8 +18,9 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
           data     TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_data WITH EMPTY KEY,
         END OF ext,
         BEGIN OF documentation,
-          class TYPE doku_class,
-          name  TYPE string,
+          language TYPE sy-langu,
+          class    TYPE doku_class,
+          name     TYPE string,
         END OF documentation,
       END OF t_config.
 
@@ -80,11 +81,17 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     ENDIF.
 
     "Check if table documentation exists - if so, set is as default. 'TB' is documentation type for table.
-    "Looks like English is default fallback language?
-    SELECT SINGLE FROM dokil
-    FIELDS id, object
-    WHERE id = 'TB' AND object = @config-table_name AND langu IN ( @sy-langu , 'E' ) AND dokstate = 'A'
-    INTO ( @config-documentation-class, @config-documentation-name ).
+    "Look for: current language, then english, then any other language
+    SELECT FROM dokil
+    FIELDS CASE WHEN langu = @sy-langu THEN 1 WHEN langu = 'E' THEN 2 ELSE 3 END AS priority, langu AS language, id AS class, object AS name
+    WHERE id = 'TB' AND object = @config-table_name AND dokstate = 'A'
+    ORDER BY priority ASCENDING
+    INTO TABLE @DATA(dokil_tab)
+    UP TO 1 ROWS.
+
+    IF sy-subrc = 0.
+      config-documentation = CORRESPONDING #( dokil_tab[ 1 ] ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD set_edit_mode.
@@ -264,9 +271,9 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
 
     CALL FUNCTION 'HELP_OBJECT_SHOW'
       EXPORTING
-        dokclass         = config-documentation-class                         " Document class
-        doklangu         = sy-langu                         " Language, for help -> always Sy-Langu
-        dokname          = config-documentation-name                          " Document name
+        dokclass         = config-documentation-class
+        doklangu         = config-documentation-language
+        dokname          = config-documentation-name
       TABLES
         links            = links
       EXCEPTIONS
