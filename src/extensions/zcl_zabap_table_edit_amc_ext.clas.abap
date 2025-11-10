@@ -29,7 +29,7 @@ CLASS zcl_zabap_table_edit_amc_ext DEFINITION PUBLIC CREATE PUBLIC.
 
     DATA:
       message_consumer TYPE REF TO if_amc_message_consumer,
-      receivers        TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_amc.
+      receivers        TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_amc WITH EMPTY KEY.
 ENDCLASS.
 
 CLASS zcl_zabap_table_edit_amc_ext IMPLEMENTATION.
