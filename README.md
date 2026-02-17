@@ -52,6 +52,10 @@ See examples package. Either call transaction ZABAP_TABLE_EDIT only with table n
 ##### (10.11.2025)
 - add new extension - AMC channel broadcast. Can be used to react to changes in table content, e.g. in order to invalidate cache. [Example](src/examples/zabap_table_edit_ex5.prog.abap)
 
+##### (17.02.2026)
+- add new extension (as option) - force edited entries to be transported.
+
+
 
 ## Known issues
 - Some version of function module 'CHANGEDOCUMENT_MULTIPLE_CASE2' require change indicator field to be named 'KZ', causing shortdump otherwise - you can fix it by implementing SAP notes https://github.com/Kaszub09/ZABAP_TABLE_EDIT/issues/2#issuecomment-2065116253
