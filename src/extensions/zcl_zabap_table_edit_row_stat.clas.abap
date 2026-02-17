@@ -65,27 +65,32 @@ CLASS zcl_zabap_table_edit_row_stat IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_data~additional_fields.
+    super->zif_zabap_table_edit_data~additional_fields( CHANGING additional_fields = additional_fields ).
+
     APPEND VALUE #( name = c_field-status type = CAST #( cl_abap_typedescr=>describe_by_name( 'CHAR01' ) ) ) TO additional_fields.
     APPEND VALUE #( name = c_field-color type = CAST #( cl_abap_typedescr=>describe_by_name( 'LVC_T_SCOL' ) ) ) TO additional_fields.
     APPEND VALUE #( name = c_field-msg type = CAST #( cl_abap_typedescr=>describe_by_name( 'CHAR128' ) ) ) TO additional_fields.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_data~refresh_grid.
+    super->zif_zabap_table_edit_data~refresh_grid( EXPORTING in_edit_mode = in_edit_mode
+      CHANGING field_catalogue = field_catalogue layout = layout variant = variant initial_data = initial_data modified_data_ext = modified_data_ext ).
+
     me->modified_data_ext = modified_data_ext.
 
     IF in_edit_mode = abap_true.
-        DATA(msg_ref) = REF #( field_catalogue[ KEY name fieldname = c_field-msg ] ).
-        msg_ref->reptext = TEXT-001.
-        msg_ref->scrtext_l = msg_ref->reptext.
-        msg_ref->scrtext_m = msg_ref->scrtext_l.
-        msg_ref->scrtext_s = msg_ref->scrtext_m.
+      DATA(msg_ref) = REF #( field_catalogue[ KEY name fieldname = c_field-msg ] ).
+      msg_ref->reptext = TEXT-001.
+      msg_ref->scrtext_l = msg_ref->reptext.
+      msg_ref->scrtext_m = msg_ref->scrtext_l.
+      msg_ref->scrtext_s = msg_ref->scrtext_m.
 
-        layout-ctab_fname = c_field-color.
-        layout-excp_fname = c_field-status.
-        layout-excp_group = '2'.
+      layout-ctab_fname = c_field-color.
+      layout-excp_fname = c_field-status.
+      layout-excp_group = '2'.
 
-        field_catalogue[ KEY name fieldname = c_field-status ]-edit = abap_false.
-        field_catalogue[ KEY name fieldname = c_field-msg ]-edit = abap_false.
+      field_catalogue[ KEY name fieldname = c_field-status ]-edit = abap_false.
+      field_catalogue[ KEY name fieldname = c_field-msg ]-edit = abap_false.
 
     ELSE.
       field_catalogue[ KEY name fieldname = c_field-status ]-tech = abap_true.
@@ -106,6 +111,7 @@ CLASS zcl_zabap_table_edit_row_stat IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_zabap_table_edit_config~grid_setup.
+    super->zif_zabap_table_edit_config~grid_setup( CHANGING grid = grid ).
     me->grid = grid->grid.
   ENDMETHOD.
 

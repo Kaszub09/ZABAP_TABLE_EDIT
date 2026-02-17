@@ -134,6 +134,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_FOR_TR</KEY>
+     <ENTRY>Force transport on edit</ENTRY>
+     <LENGTH>31</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_TABNAM</KEY>
      <ENTRY>Table</ENTRY>
      <LENGTH>13</LENGTH>
@@ -248,6 +254,12 @@
        <ID>S</ID>
        <KEY>P_DOCNAM</KEY>
        <ENTRY>Nazwa obiektu dokumentacji</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_FOR_TR</KEY>
+       <ENTRY>Wymuś transport wpisów</ENTRY>
        <LENGTH>38</LENGTH>
       </item>
       <item>

@@ -310,10 +310,14 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_tab_data~save_data.
     TRY.
+        DATA(cancel) = abap_false.
         "---EXTENSION CALL---
         LOOP AT config-ext-data INTO DATA(ext).
-          ext->before_save( CHANGING compared = compared ).
+          ext->before_save( CHANGING compared = compared cancel = cancel ).
         ENDLOOP.
+        IF cancel = abap_true.
+          RETURN.
+        ENDIF.
 
         assign_to_table_fs compared-modified->* <modified>.
         assign_to_table_fs compared-inserted->* <inserted>.

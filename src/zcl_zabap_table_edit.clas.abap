@@ -12,6 +12,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
         disable_selection           TYPE abap_bool,
         show_selection_first        TYPE abap_bool,
         disable_switch_tech_display TYPE abap_bool,
+        force_transport             TYPE abap_bool,
         BEGIN OF ext,
           commands TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_commands WITH EMPTY KEY,
           config   TYPE STANDARD TABLE OF REF TO zif_zabap_table_edit_config WITH EMPTY KEY,
@@ -32,6 +33,7 @@ CLASS zcl_zabap_table_edit DEFINITION PUBLIC CREATE PUBLIC.
   PRIVATE SECTION.
     METHODS:
       initialize_documentation,
+      init_internal_extensions,
       command_validate EXPORTING result TYPE i compared TYPE zif_zabap_table_edit_data=>t_data_comparision,
       command_save,
       command_toggle_display,
@@ -65,6 +67,7 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
     LOOP AT config-ext-config INTO DATA(ext).
       ext->change_config( CHANGING config = config ).
     ENDLOOP.
+    init_internal_extensions( ).
 
     messages = NEW #( ). "TODO as interface
     screen_controls = NEW #( CORRESPONDING #( config ) ). "TODO as interface
@@ -93,6 +96,17 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
       config-documentation = CORRESPONDING #( dokil_tab[ 1 ] ).
     ENDIF.
   ENDMETHOD.
+
+  METHOD init_internal_extensions.
+    IF config-force_transport = abap_true.
+      DATA(force_transport_ext) = NEW zcl_zabap_table_edit_tr_ext( ).
+      APPEND force_transport_ext TO config-ext-commands.
+      APPEND force_transport_ext TO config-ext-config.
+      APPEND force_transport_ext TO config-ext-data.
+      force_transport_ext->zif_zabap_table_edit_config~change_config( CHANGING config = config ).
+    ENDIF.
+  ENDMETHOD.
+
 
   METHOD set_edit_mode.
     DATA(new_edit_mode) = COND #( WHEN config-disable_editing = abap_true THEN abap_false ELSE editable ).
@@ -291,4 +305,5 @@ CLASS zcl_zabap_table_edit IMPLEMENTATION.
   METHOD command_switch_tech_display.
     table_data->switch_tech_display( ).
   ENDMETHOD.
+
 ENDCLASS.

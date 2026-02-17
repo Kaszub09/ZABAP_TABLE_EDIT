@@ -55,7 +55,7 @@ CLASS zcl_zabap_table_edit_chain_ext IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_data~before_save.
     LOOP AT data_interfaces INTO DATA(data_interface).
-      data_interface->before_save( CHANGING compared = compared ).
+      data_interface->before_save( CHANGING compared = compared cancel = cancel ).
     ENDLOOP.
   ENDMETHOD.
 

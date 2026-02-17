@@ -76,6 +76,12 @@
      <DESCRIPT>Of type zcl_zabap_table_edit_globals-c_validation</DESCRIPT>
     </SEOSUBCOTX>
     <SEOSUBCOTX>
+     <CMPNAME>BEFORE_SAVE</CMPNAME>
+     <SCONAME>CANCEL</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Cancel saving before any data is commited</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
      <CMPNAME>DEFAULT_SELECT</CMPNAME>
      <SCONAME>EXECUTE</SCONAME>
      <LANGU>E</LANGU>

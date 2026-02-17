@@ -102,7 +102,7 @@ CLASS tcl_zabap_table_edit_tab_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD setup.
-    config = VALUE #( ).
+    config = VALUE #( table_name = c_table ).
 
     zcl_zabap_table_edit_fact_inj=>clear_all_injections( ).
 

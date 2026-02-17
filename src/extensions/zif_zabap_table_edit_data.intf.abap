@@ -14,7 +14,9 @@ INTERFACE zif_zabap_table_edit_data PUBLIC.
       incorrect_values  TYPE i VALUE 0,
       duplicates        TYPE i VALUE 1,
       ok                TYPE i VALUE 2,
+      "Extension decided that data is invalid
       extension_invalid TYPE i VALUE 3,
+      "Data doesn't comply with chosen free selections
       not_in_selection  TYPE i VALUE 4,
     END OF c_validation.
 
@@ -45,7 +47,8 @@ INTERFACE zif_zabap_table_edit_data PUBLIC.
     "! <p class="shorttext synchronized">After validation, before save. Base tables, not extended...</p>
     "! Can be used to further modify data or cancel with MESSAGE 'E'. Can be used to insert additional data to other tables,
     "! since COMMIT is called after this function and before <em>after_save</em> function
-    before_save DEFAULT IGNORE CHANGING compared TYPE t_data_comparision,
+    "! @parameter cancel | <p class="shorttext synchronized">Cancel saving before any data is commited</p>
+    before_save DEFAULT IGNORE CHANGING compared TYPE t_data_comparision cancel TYPE abap_bool,
     "! <p class="shorttext synchronized">After save and COMMIT. Tables are base, not extended</p>
     after_save DEFAULT IGNORE CHANGING compared TYPE t_data_comparision,
     "! <p class="shorttext synchronized" lang="en">Called before display, after <em>refresh_grid</em></p>
