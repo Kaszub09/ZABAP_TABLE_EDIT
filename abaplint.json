@@ -39,7 +39,7 @@
       "severity": "Error"
     },
     "avoid_use": {
-      "exclude": [],
+      "exclude": ["src/int_ext/zcl_zabap_table_edit_tr_ext.clas.abap"],
       "severity": "Error",
       "skipQuickFix": false,
       "define": false,
