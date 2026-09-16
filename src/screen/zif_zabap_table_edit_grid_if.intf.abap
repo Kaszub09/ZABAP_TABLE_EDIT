@@ -4,21 +4,20 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
       "! interface implements only methods that are required internally
        grid TYPE REF TO cl_gui_alv_grid READ-ONLY.
   "--------------------------------------------------
-  METHODS
-    register_edit_event
-      IMPORTING
-        VALUE(i_event_id) TYPE i
-      EXCEPTIONS
-        error.
+  METHODS register_edit_event
+    IMPORTING
+      VALUE(i_event_id) TYPE i
+    EXCEPTIONS
+      error.
   "--------------------------------------------------
   METHODS get_selected_rows
     EXPORTING
-      !et_index_rows TYPE lvc_t_row
-      !et_row_no     TYPE lvc_t_roid .
+      et_index_rows TYPE lvc_t_row
+      et_row_no     TYPE lvc_t_roid.
   "--------------------------------------------------
   METHODS get_selected_cells
     EXPORTING
-      !et_cell TYPE lvc_t_cell .
+      et_cell TYPE lvc_t_cell.
   "--------------------------------------------------
   METHODS set_table_for_first_display
     IMPORTING
@@ -36,18 +35,18 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
       VALUE(it_hyperlink)         TYPE lvc_t_hype OPTIONAL
       VALUE(it_alv_graphics)      TYPE dtc_t_tc OPTIONAL
       VALUE(it_except_qinfo)      TYPE lvc_t_qinf OPTIONAL
-      !ir_salv_adapter            TYPE REF TO if_salv_adapter OPTIONAL
+      ir_salv_adapter            TYPE REF TO if_salv_adapter OPTIONAL
     CHANGING
-      !it_outtab                  TYPE STANDARD TABLE
+      it_outtab                  TYPE STANDARD TABLE
       VALUE(it_fieldcatalog)      TYPE lvc_t_fcat OPTIONAL
       VALUE(it_sort)              TYPE lvc_t_sort OPTIONAL
       VALUE(it_filter)            TYPE lvc_t_filt OPTIONAL.
   "--------------------------------------------------
   METHODS check_changed_data
     EXPORTING
-      !e_valid   TYPE char01
+      e_valid   TYPE char01
     CHANGING
-      !c_refresh TYPE char01 DEFAULT 'X' .
+      c_refresh TYPE char01 DEFAULT 'X'.
   "--------------------------------------------------
   METHODS refresh_table_display
     IMPORTING
@@ -61,6 +60,10 @@ INTERFACE zif_zabap_table_edit_grid_if PUBLIC.
   METHODS set_frontend_fieldcatalog
     IMPORTING
       VALUE(it_fieldcatalog) TYPE lvc_t_fcat.
+  "--------------------------------------------------
+  METHODS get_filter_criteria
+    EXPORTING
+      et_filter TYPE lvc_t_filt.
   "=================================================================
   "-----------------------------------------------------------------
   EVENTS data_changed

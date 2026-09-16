@@ -122,4 +122,7 @@ CLASS zcl_zabap_table_edit_grid IMPLEMENTATION.
     RAISE EVENT zif_zabap_table_edit_grid_if~toolbar EXPORTING e_object = e_object e_interactive = e_interactive.
   ENDMETHOD.
 
+  METHOD zif_zabap_table_edit_grid_if~get_filter_criteria.
+    get_filter_criteria( IMPORTING et_filter = et_filter ).
+  ENDMETHOD.
 ENDCLASS.
