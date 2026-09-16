@@ -39,7 +39,7 @@
       "severity": "Error"
     },
     "avoid_use": {
-      "exclude": ["src/int_ext/zcl_zabap_table_edit_tr_ext.clas.abap"],
+      "exclude": ["src/int_ext/zcl_zabap_table_edit_tr_ext.clas.abap","src/extensions/zcl_zabap_table_edit_tran_ext"],
       "severity": "Error",
       "skipQuickFix": false,
       "define": false,
