@@ -57,11 +57,7 @@ CLASS zcl_zabap_table_edit_tab_data DEFINITION PUBLIC FINAL CREATE PRIVATE GLOBA
       config          TYPE zif_zabap_table_edit_tab_data=>t_config.
 ENDCLASS.
 
-
-
 CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
-
-
   METHOD constructor.
     config = configuration.
 
@@ -91,7 +87,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     table-db = zcl_zabap_table_edit_factory=>get_db( ).
   ENDMETHOD.
 
-
   METHOD create_change_doc.
     DATA(cd) = zcl_zabap_table_edit_factory=>get_change_doc( objectclass = CONV #( config-table_name ) objectid = CONV #( config-table_name ) ).
 
@@ -109,7 +104,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     cd->close( tcode = original_tcode ).
   ENDMETHOD.
 
-
   METHOD get_modified_data_no_ext.
     CREATE DATA modified_data TYPE TABLE OF (config-table_name).
 
@@ -118,7 +112,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     <modified_data> = CORRESPONDING #( <modified_data_ext> ).
   ENDMETHOD.
-
 
   METHOD get_not_in_selection.
     assign_to_table_fs compared-inserted->* <inserted>.
@@ -150,7 +143,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-
   METHOD get_selected_row_index.
     grid->get_selected_rows( IMPORTING et_index_rows = DATA(selected_rows) ).
     IF lines( selected_rows ) = 1.
@@ -158,11 +150,14 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD on_data_changed.
     was_data_changed = abap_true.
+    IF table-fields->has_mandant = abap_true.
+      LOOP AT er_data_changed->mt_inserted_rows REFERENCE INTO DATA(row).
+        er_data_changed->modify_cell( i_row_id = row->row_id i_fieldname = CONV #( table-fields->mandant_field ) i_value = sy-mandt ).
+      ENDLOOP.
+    ENDIF.
   ENDMETHOD.
-
 
   METHOD prepare_initial_data.
     "TODO   maint view?
@@ -191,13 +186,12 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-
   METHOD remove_empty_rows.
     "Build where clause
     DATA(fc) = table-fields->get_fc_with_add_fields( table-additional_fields ).
     DATA(where) = ||.
     LOOP AT fc REFERENCE INTO DATA(field).
-      where = |{ where } { field->fieldname  } IS INITIAL AND|.
+      where = |{ where } { field->fieldname } IS INITIAL AND|.
     ENDLOOP.
     where = substring( val = where len = strlen( where ) - 4 ).
     "Remove empty rows
@@ -209,7 +203,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
       grid->refresh_table_display( ).
     ENDIF.
   ENDMETHOD.
-
 
   METHOD setup_grid.
     grid->register_edit_event( cl_gui_alv_grid=>mc_evt_modified ). "Allows to catch edit events
@@ -231,7 +224,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-
   METHOD zif_zabap_table_edit_tab_data~get_selected_row_key.
     DATA(selected) = get_selected_row_index( ).
     IF selected = 0.
@@ -252,7 +244,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     tabkey = <key_line>.
   ENDMETHOD.
 
-
   METHOD zif_zabap_table_edit_tab_data~lock_table.
     IF table-locker->lock_table( IMPORTING error_message = error_message ) = abap_false.
       RETURN.
@@ -266,7 +257,6 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
 
     locked = abap_true.
   ENDMETHOD.
-
 
   METHOD zif_zabap_table_edit_tab_data~reset_grid.
     was_data_changed = abap_false.
@@ -299,14 +289,12 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     grid->set_ready_for_input( COND #( WHEN in_edit_mode = abap_true THEN 1 ELSE 0 ) ).
   ENDMETHOD.
 
-
   METHOD zif_zabap_table_edit_tab_data~restrict_selection.
     changed = table-selection->display( was_data_changed ).
     IF changed = abap_true.
       prepare_initial_data( ).
     ENDIF.
   ENDMETHOD.
-
 
   METHOD zif_zabap_table_edit_tab_data~save_data.
     TRY.
@@ -363,12 +351,10 @@ CLASS zcl_zabap_table_edit_tab_data IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-
   METHOD zif_zabap_table_edit_tab_data~unlock_table.
     table-locker->unlock_table( ).
     table-text_table->unlock_table( ).
   ENDMETHOD.
-
 
   METHOD zif_zabap_table_edit_tab_data~validate.
     grid->check_changed_data( IMPORTING e_valid = DATA(valid) ).
