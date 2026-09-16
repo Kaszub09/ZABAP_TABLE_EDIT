@@ -74,7 +74,8 @@ CLASS zcl_zabap_table_edit_row_stat IMPLEMENTATION.
 
   METHOD zif_zabap_table_edit_data~refresh_grid.
     super->zif_zabap_table_edit_data~refresh_grid( EXPORTING in_edit_mode = in_edit_mode
-      CHANGING field_catalogue = field_catalogue layout = layout variant = variant initial_data = initial_data modified_data_ext = modified_data_ext ).
+      CHANGING field_catalogue = field_catalogue layout = layout variant = variant
+               initial_data = initial_data modified_data_ext = modified_data_ext ).
 
     me->modified_data_ext = modified_data_ext.
 
